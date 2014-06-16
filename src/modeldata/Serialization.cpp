@@ -109,7 +109,7 @@ void Mesh::serialize(json::BaseJSONWriter &writer) const {
 void Attributes::serialize(json::BaseJSONWriter &writer) const {
 	const unsigned int len = length();
 	writer.arr(len, 8);
-	for (unsigned int i = 0; i < 5; i++)
+	for (unsigned int i = 0; i < len; i++)
 	{
 		writer << json::obj;
 		//const char *test = name(i);
@@ -126,6 +126,8 @@ void Attributes::serialize(json::BaseJSONWriter &writer) const {
 		writer << "type" << v.type;
 		writer << "attribute" << v.name;
 		writer << json::end;
+		if(i >=4)
+			break;
 	}
 	writer.end();
 }
