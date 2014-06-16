@@ -40,11 +40,11 @@ struct FbxConvCommand {
 		settings->flipV = false;
 		settings->packColors = false;
 		settings->verbose = false;
-		settings->maxNodePartBonesCount = 12;
+		settings->maxNodePartBonesCount = 64;
 		settings->maxVertexBonesCount = 4;
 		settings->maxVertexCount = (1<<15)-1;
 		settings->maxIndexCount = (1<<15)-1;
-		settings->outType = FILETYPE_AUTO;
+		settings->outType = FILETYPE_G3DJ;
 		settings->inType = FILETYPE_AUTO;
 
 		for (int i = 1; i < argc; i++) {
@@ -113,7 +113,7 @@ struct FbxConvCommand {
 		printf("<input>  : The filename of the file to convert.\n");
 		printf("<output> : The filename of the converted file.\n");
 		printf("\n");
-		printf("<type>   : FBX, G3DJ (json) or G3DB (binary).\n");
+		printf("<type>   : FBX, C3T (json) or G3D (binary).\n");
 	}
 private:
 	void validate() {
@@ -152,7 +152,7 @@ private:
 			return FILETYPE_FBX;
 		else if (stricmp(arg, "g3db")==0)
 			return FILETYPE_G3DB;
-		else if (stricmp(arg, "g3dj")==0)
+		else if (stricmp(arg, "c3t")==0)
 			return FILETYPE_G3DJ;
 		if (def < 0)
 			log->error(error = log::eCommandLineUnknownFiletype, arg);
@@ -179,7 +179,7 @@ private:
 		switch(type) {
 		case FILETYPE_FBX:	return setExtension(fn, "fbx");
 		case FILETYPE_G3DB:	return setExtension(fn, "g3db");
-		case FILETYPE_G3DJ:	return setExtension(fn, "g3dj");
+		case FILETYPE_G3DJ:	return setExtension(fn, "c3t");
 		default:			return setExtension(fn, "");
 		}
 	}

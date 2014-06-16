@@ -21,6 +21,7 @@
 #define MODELDATA_ATTRIBUTES_H
 
 #include "../json/BaseJSONWriter.h"
+#include <map>
 
 #define ATTRIBUTE_UNKNOWN		0
 #define ATTRIBUTE_POSITION		1
@@ -60,10 +61,11 @@
 namespace fbxconv {
 namespace modeldata {
 	static const char * AttributeNames[] = {
-		"UNKNOWN", "POSITION", "NORMAL", "COLOR", "COLORPACKED", "TANGENT", "BINORMAL",
-		"TEXCOORD0", "TEXCOORD1", "TEXCOORD2", "TEXCOORD3", "TEXCOORD4", "TEXCOORD5", "TEXCOORD6", "TEXCOORD7",
-		"BLENDWEIGHT0", "BLENDWEIGHT1", "BLENDWEIGHT2", "BLENDWEIGHT3", "BLENDWEIGHT4", "BLENDWEIGHT5", "BLENDWEIGHT6", "BLENDWEIGHT7"
+		"UNKNOWN", "VERTEX_ATTRIB_POSITION", "VERTEX_ATTRIB_NORMAL", "COLOR", "COLORPACKED", "TANGENT", "BINORMAL",
+		"VERTEX_ATTRIB_TEX_COORD", "TEXCOORD1", "TEXCOORD2", "TEXCOORD3", "TEXCOORD4", "TEXCOORD5", "TEXCOORD6", "TEXCOORD7",
+		"VERTEX_ATTRIB_BLEND_WEIGHT", "VERTEX_ATTRIB_BLEND_INDEX", "BLENDWEIGHT2", "BLENDWEIGHT3", "BLENDWEIGHT4", "BLENDWEIGHT5", "BLENDWEIGHT6", "BLENDWEIGHT7"
 	};
+
 
 	static const unsigned short AttributeTypeV2[]		= {ATTRIBUTE_TYPE_FLOAT, ATTRIBUTE_TYPE_FLOAT};
 	static const unsigned short AttributeTypeV4[]		= {ATTRIBUTE_TYPE_FLOAT, ATTRIBUTE_TYPE_FLOAT, ATTRIBUTE_TYPE_FLOAT, ATTRIBUTE_TYPE_FLOAT};
@@ -97,12 +99,59 @@ namespace modeldata {
 		INIT_VECTOR(unsigned short, AttributeTypeBlend)	// Blendweight7
 	};
 
+	//mesh vertex attribute
+	struct MeshVertexAttrib
+	{
+		//attribute size
+		int size;
+		//GL_FLOAT
+		std::string type;
+		//VERTEX_ATTRIB_POSITION,VERTEX_ATTRIB_COLOR,VERTEX_ATTRIB_TEX_COORD,VERTEX_ATTRIB_NORMAL, VERTEX_ATTRIB_BLEND_WEIGHT, VERTEX_ATTRIB_BLEND_INDEX, GLProgram for detail
+		std::string name;
+		//size in bytes
+		int attribSizeBytes;
+	};
+
+		
+	
+
 	#define ATTRIBUTE_SIZE(idx) (AttributeTypes[idx].size())
 
 	struct Attributes : public json::ConstSerializable {
 		unsigned long value;
+		std::map<std::string, MeshVertexAttrib> attributemap;
+		Attributes() : value(0) {
 
-		Attributes() : value(0) {}
+		MeshVertexAttrib v1;
+		v1.name = "VERTEX_ATTRIB_POSITION";
+		v1.size = 3;
+		v1.type = "GL_FLOAT";
+		attributemap["VERTEX_ATTRIB_POSITION"]= v1;
+
+		v1.name = "VERTEX_ATTRIB_NORMAL";
+		v1.size = 3;
+		v1.type = "GL_FLOAT";
+		attributemap["VERTEX_ATTRIB_NORMAL"]= v1;
+
+		v1.name = "VERTEX_ATTRIB_TEX_COORD";
+		v1.size = 2;
+		v1.type = "GL_FLOAT";
+		attributemap["VERTEX_ATTRIB_TEX_COORD"]= v1;
+
+		
+		v1.name = "VERTEX_ATTRIB_BLEND_WEIGHT";
+		v1.size = 4;
+		v1.type = "GL_FLOAT";
+		attributemap["VERTEX_ATTRIB_BLEND_WEIGHT"]= v1;
+
+		v1.name = "VERTEX_ATTRIB_BLEND_INDEX";
+		v1.size = 4;
+		v1.type = "GL_FLOAT";
+		attributemap["VERTEX_ATTRIB_BLEND_INDEX"]= v1;
+
+		}
+
+
 
 		Attributes(const unsigned long &v) : value(v) {}
 

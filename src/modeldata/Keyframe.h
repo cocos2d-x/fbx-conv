@@ -33,6 +33,7 @@ namespace modeldata {
 		bool hasTranslation;
 		bool hasRotation;
 		bool hasScale;
+		int outtype;
 
 		Keyframe() {
 			time = 0.;
@@ -40,6 +41,7 @@ namespace modeldata {
 			rotation[0] = rotation[1] = rotation[2] = 0.; rotation[3] = 1.;
 			scale[0] = scale[1] = scale[2] = 1.;
 			hasTranslation = hasRotation = hasScale = false;
+			outtype = 0;
 		}
 
 		Keyframe(const Keyframe &rhs) {

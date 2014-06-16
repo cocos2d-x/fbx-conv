@@ -237,8 +237,16 @@ namespace readers {
 			const std::vector<BlendWeight> &weights = pointBlendWeights[point];
 			const unsigned int s = (unsigned int)weights.size();
 			const BlendBones &bones = partBones[polyPartMap[poly]].bones[polyPartBonesMap[poly]];
-			data[offset++] = weightIndex < s ? (float)bones.idx(weights[weightIndex].index) : 0.f;
+			//data[offset++] = weightIndex < s ? (float)bones.idx(weights[weightIndex].index) : 0.f;
 			data[offset++] = weightIndex < s ? weights[weightIndex].weight : 0.f;
+		}
+
+		inline void getBlendWeightIndex(float * const &data, unsigned int &offset, const unsigned int &weightIndex, const unsigned int &poly, const unsigned int &polyIndex, const unsigned int &point) const {
+			const std::vector<BlendWeight> &weights = pointBlendWeights[point];
+			const unsigned int s = (unsigned int)weights.size();
+			const BlendBones &bones = partBones[polyPartMap[poly]].bones[polyPartBonesMap[poly]];
+			data[offset++] = weightIndex < s ? (float)bones.idx(weights[weightIndex].index) : 0.f;
+			//data[offset++] = weightIndex < s ? weights[weightIndex].weight : 0.f;
 		}
 
 		inline void getVertex(float * const &data, unsigned int &offset, const unsigned int &poly, const unsigned int &polyIndex, const unsigned int &point, const Matrix3<float> * const &uvTransforms) const {
@@ -258,6 +266,8 @@ namespace readers {
 				getUV(data, offset, i, polyIndex, point, uvTransforms[i]);
 			for (unsigned int i = 0; i < vertexBlendWeightCount; i++)
 				getBlendWeight(data, offset, i, poly, polyIndex, point);
+			for (unsigned int i = 0; i < vertexBlendWeightCount; i++)
+				getBlendWeightIndex(data, offset, i, poly, polyIndex, point);
 		}
 
 		inline void getVertex(float * const &data, const unsigned int &poly, const unsigned int &polyIndex, const unsigned int &point, const Matrix3<float> * const &uvTransforms) const {

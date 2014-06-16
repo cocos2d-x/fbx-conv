@@ -34,6 +34,9 @@ namespace modeldata {
 			float rotation[4];
 			float scale[3];
 		} transform;
+
+		float transforms[16];
+
 		std::string id;
 		std::vector<NodePart *> parts;
 		std::vector<Node *> children;

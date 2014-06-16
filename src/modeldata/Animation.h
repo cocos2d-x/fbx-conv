@@ -31,6 +31,7 @@ namespace modeldata {
 
 	struct Animation : public json::ConstSerializable {
 		std::string id;
+		float length;
 		std::vector<NodeAnimation *> nodeAnimations;
 
 		Animation() {}

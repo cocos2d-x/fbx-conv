@@ -215,6 +215,11 @@ namespace readers {
 			set<3>(node->transform.translation, m.GetT().mData);
 			set<4>(node->transform.rotation, m.GetQ().mData);
 			set<3>(node->transform.scale, m.GetS().mData);
+			for(int i= 0; i < 4; i++)
+			{
+				for(int j = 0; j < 4; j++)
+				node->transforms[i*4 + j] = m.Get(i,j); 
+			}
 
 			if (fbxMeshMap.find(node->source->GetGeometry()) != fbxMeshMap.end()) {
 				FbxMeshInfo *meshInfo = fbxMeshMap[node->source->GetGeometry()];
@@ -290,7 +295,8 @@ namespace readers {
 			FbxAMatrix init;
 			cluster->GetTransformLinkMatrix(init);
 			FbxAMatrix relinit = init.Inverse() * reference;
-			out = relinit.Inverse();
+			out = relinit;//.Inverse();
+			//out = init;//init.Inverse();
 		}
 
 		// Iterate throught the nodes (from the leaves up) and the meshes it references. This might help that meshparts that are closer together are more likely to be merged
@@ -619,9 +625,11 @@ namespace readers {
 				nodeAnim->scale = (*itr).second.scale;
 				const float stepSize = (*itr).second.framerate <= 0.f ? (*itr).second.stop - (*itr).second.start : 1000.f / (*itr).second.framerate;
 				const float last = (*itr).second.stop + stepSize * 0.5f;
+				
 				FbxTime fbxTime;
+				float time;
 				// Calculate all keyframes upfront
-				for (float time = (*itr).second.start; time <= last; time += stepSize) {
+				for (time = (*itr).second.start; time <= last; time += stepSize) {
 					time = std::min(time, (*itr).second.stop);
 					fbxTime.SetMilliSeconds((FbxLongLong)time);
 					Keyframe *kf = new Keyframe();
@@ -642,6 +650,10 @@ namespace readers {
 					kf->scale[2] = (float)v.mData[2];
 					frames.push_back(kf);
 				}
+				
+
+				animation->length = frames[frames.size()-1]->time;
+				animation->length /= 1000;
 				// Only add keyframes really needed
 				addKeyframes(nodeAnim, frames);
 				if (nodeAnim->rotate || nodeAnim->scale || nodeAnim->translate)
@@ -686,6 +698,7 @@ namespace readers {
 			if (!keyframes.empty()) {
 				anim->keyframes.push_back(keyframes[0]);
 				const int last = (int)keyframes.size()-1;
+				float max = keyframes[last]->time;
 				Keyframe *k1 = keyframes[0], *k2, *k3;
 				for (int i = 1; i < last; i++) {
 					k2 = keyframes[i];
@@ -694,13 +707,19 @@ namespace readers {
 					if ((translate && !isLerp(k1->translation, k1->time, k2->translation, k2->time, k3->translation, k3->time, 3)) ||
 						(rotate && !isLerp(k1->rotation, k1->time, k2->rotation, k2->time, k3->rotation, k3->time, 3)) || // FIXME use slerp for quaternions
 						(scale && !isLerp(k1->scale, k1->time, k2->scale, k2->time, k3->scale, k3->time, 3))) {
+
+							k2->time /= max;
 							anim->keyframes.push_back(k2);
 							k1 = k2;
 					} else
 						delete k2;
 				}
 				if (last > 0)
+				{	
+					keyframes[last]->time = 1;
 					anim->keyframes.push_back(keyframes[last]);
+				}
+
 			}
 		}
 

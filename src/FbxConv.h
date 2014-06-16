@@ -72,13 +72,13 @@ class FbxConv {
 			Settings settings;
 			FbxConvCommand command(log, argc, argv, &settings);
 
-			if (command.error != log::iNoError)
-				command.printCommand();
-			else if (!command.help)
+//			if (command.error != log::iNoError)
+//				command.printCommand();
+//			else if (!command.help)
 				return execute(&settings);
 
-			command.printHelp();
-			return false;
+			//command.printHelp();
+//			return false;
 		}
 
 		bool execute(Settings * const &settings) {

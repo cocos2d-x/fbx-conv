@@ -31,6 +31,7 @@ namespace modeldata {
 	struct NodeAnimation : public json::ConstSerializable {
 		const Node *node;
 		std::vector<Keyframe *> keyframes;
+		float length;
 		bool translate, rotate, scale;
 
 		NodeAnimation() : node(0), translate(false), rotate(false), scale(false) {}
