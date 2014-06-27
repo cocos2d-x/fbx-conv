@@ -71,7 +71,7 @@ struct FbxConvCommand {
 					settings->maxVertexCount = settings->maxIndexCount = atoi(argv[++i]);*/
 				else if(arg[1] == 'b')
 					settings->outType = FILETYPE_C3B;
-				else if(arg[1] == 'j')
+				else if(arg[1] == 't')
 					settings->outType = FILETYPE_C3J;
 				else if(arg[1] == 'a')
 					settings->outType = FILETYPE_ALL;
