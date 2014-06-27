@@ -96,6 +96,7 @@ namespace modeldata {
 		}
 
 		virtual void serialize(json::BaseJSONWriter &writer) const;
+		void writeBinary(FILE* file);
 	};
 }
 }

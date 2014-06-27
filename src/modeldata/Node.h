@@ -40,7 +40,9 @@ namespace modeldata {
 		std::string id;
 		std::vector<NodePart *> parts;
 		std::vector<Node *> children;
+		std::vector<Node *> links;
 		FbxNode *source;
+		Node* parent;
 
 		Node(const char *id = NULL) : source(0) {
 			memset(&transform, 0, sizeof(transform));
@@ -86,7 +88,19 @@ namespace modeldata {
 			return false;
 		}
 
+
+		ObjRef object;
+		ObjRef* GetObj() 
+		{
+			object.tpyeid = MESHSKIN_ID;
+			object.id = id + "_skin";
+			object.fPosition = 0;
+			return &object;
+		}
 		virtual void serialize(json::BaseJSONWriter &writer) const;
+		void writeBinary(FILE* file);    
+
+
 	};
 }
 }

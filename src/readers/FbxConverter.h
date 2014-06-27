@@ -180,7 +180,7 @@ namespace readers {
 			addMesh(model);
 			addNode(model);
 			for (std::vector<Node *>::iterator itr = model->nodes.begin(); itr != model->nodes.end(); ++itr)
-				updateNode(model, *itr);
+				updateNode(model, *itr, *itr, (*itr)->links);
 			addAnimations(model, scene);
 			return true;
 		}
@@ -205,12 +205,19 @@ namespace readers {
 				model->nodes.push_back(n);
 			else
 				parent->children.push_back(n);
+			
+			// save parent.
+			n->parent = parent;		
 
 			for (int i = 0; i < node->GetChildCount(); i++)
 				addNode(model, n, node->GetChild(i));
 		}
 
-		void updateNode(Model * const &model, Node * const &node) {
+		void updateNode(Model * const &model, Node * const &node, Node* const& parent,std::vector<Node *>& links) {
+			if(node != parent)
+				node->parent = parent;
+
+
 			FbxAMatrix &m = node->source->EvaluateLocalTransform();
 			set<3>(node->transform.translation, m.GetT().mData);
 			set<4>(node->transform.rotation, m.GetQ().mData);
@@ -258,7 +265,15 @@ namespace readers {
 			}
 
 			for (std::vector<Node *>::iterator itr = node->children.begin(); itr != node->children.end(); ++itr)
-				updateNode(model, *itr);
+			{
+				links.push_back(*itr);
+			}
+
+			for (std::vector<Node *>::iterator itr = node->children.begin(); itr != node->children.end(); ++itr)
+			{
+				//parent->links.push_back(*itr);
+				updateNode(model, *itr, node,links);
+			}
 		}
 
 		FbxAMatrix convertMatrix(const FbxMatrix& mat)
@@ -322,6 +337,7 @@ namespace readers {
 				model->meshes.push_back(mesh);
 				mesh->attributes = meshInfo->attributes;
 				mesh->vertexSize = mesh->attributes.size();
+				mesh->id = node->GetName();
 			}
 
 			std::vector<std::vector<MeshPart *> > &parts = meshParts[meshInfo];

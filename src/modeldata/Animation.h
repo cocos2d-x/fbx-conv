@@ -34,7 +34,7 @@ namespace modeldata {
 		float length;
 		std::vector<NodeAnimation *> nodeAnimations;
 
-		Animation() {}
+		Animation() { length = 0;}
 
 		Animation(const Animation &copyFrom) {
 			id = copyFrom.id;
@@ -48,7 +48,17 @@ namespace modeldata {
 					delete *itr;
 		}
 
+		ObjRef object;
+		ObjRef* GetObj() 
+		{
+			object.tpyeid = ANIMATIONS_ID;
+			object.id = id;
+			object.fPosition = 0;
+			return &object;
+		}
+
 		virtual void serialize(json::BaseJSONWriter &writer) const;
+		void writeBinary(FILE* file);
 	};
 } }
 

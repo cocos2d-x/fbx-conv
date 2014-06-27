@@ -31,7 +31,7 @@ namespace modeldata {
 	struct NodeAnimation : public json::ConstSerializable {
 		const Node *node;
 		std::vector<Keyframe *> keyframes;
-		float length;
+		//float length;
 		bool translate, rotate, scale;
 
 		NodeAnimation() : node(0), translate(false), rotate(false), scale(false) {}
@@ -51,7 +51,17 @@ namespace modeldata {
 					delete *itr;
 		}
 
+		ObjRef object;
+		ObjRef* GetObj() 
+		{
+			object.tpyeid = ANIMATIONS_ID;
+			object.id = node->id;
+			object.fPosition = 0;
+			return &object;
+		}	
+
 		virtual void serialize(json::BaseJSONWriter &writer) const;
+		void writeBinary(FILE* file);
 	};
 } }
 

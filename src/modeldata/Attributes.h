@@ -109,7 +109,9 @@ namespace modeldata {
 		//VERTEX_ATTRIB_POSITION,VERTEX_ATTRIB_COLOR,VERTEX_ATTRIB_TEX_COORD,VERTEX_ATTRIB_NORMAL, VERTEX_ATTRIB_BLEND_WEIGHT, VERTEX_ATTRIB_BLEND_INDEX, GLProgram for detail
 		std::string name;
 		//size in bytes
-		int attribSizeBytes;
+		unsigned int attribSizeBytes;
+
+		unsigned int usage;
 	};
 
 		
@@ -289,6 +291,7 @@ namespace modeldata {
 		}
 
 		virtual void serialize(json::BaseJSONWriter &writer) const;
+		void writeBinary(FILE* file);
 	};
 } }
 

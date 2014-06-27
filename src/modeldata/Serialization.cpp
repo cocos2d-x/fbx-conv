@@ -296,10 +296,6 @@ void Keyframe::serialize(json::BaseJSONWriter &writer) const {
 	//if (hasTranslation)
 		writer << "translation" = translation;
 	writer << json::end;
-
-
-
-
 }
 
 } }

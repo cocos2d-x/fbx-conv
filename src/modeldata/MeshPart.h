@@ -29,6 +29,7 @@
 #include <string>
 #include <fbxsdk.h>
 #include "../json/BaseJSONWriter.h"
+#include "Reference.h"
 
 namespace fbxconv {
 namespace modeldata {
@@ -59,6 +60,16 @@ namespace modeldata {
 			this->primitiveType = primitiveType;
 			this->indices.clear();
 			this->indices.insert(this->indices.end(), indices.begin(), indices.end());
+		}
+
+
+		ObjRef object;
+		ObjRef* GetObj() 
+		{
+			object.tpyeid = MESHPART_ID;
+			object.id = id;
+			object.fPosition = 0;
+			return &object;
 		}
 
 		virtual void serialize(json::BaseJSONWriter &writer) const;

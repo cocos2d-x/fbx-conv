@@ -109,7 +109,18 @@ namespace modeldata {
 			return -1;
 		}
 
+
+		ObjRef object;
+		ObjRef* GetObj() 
+		{
+			object.tpyeid = MATERIAL_ID;
+			object.id = id + "mat";
+			object.fPosition = 0;
+			return &object;
+		}
+
 		virtual void serialize(json::BaseJSONWriter &writer) const;
+		void writeBinary(FILE* file);
 	};
 }
 }

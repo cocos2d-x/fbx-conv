@@ -24,6 +24,7 @@
 #include "MeshPart.h"
 #include "Attributes.h"
 #include "../json/BaseJSONWriter.h"
+#include "Reference.h"
 
 namespace fbxconv {
 namespace modeldata {
@@ -39,6 +40,8 @@ namespace modeldata {
 		std::vector<unsigned int> hashes;
 		/** the indexed parts of this mesh */
 		std::vector<MeshPart *> parts;
+
+		std::string id;
 
 		/** ctor */
 		Mesh() : attributes(0), vertexSize(0) {}
@@ -96,8 +99,18 @@ namespace modeldata {
 					return false;
 			return true;
 		}
+	
+		ObjRef object;
+		ObjRef* GetObj() 
+		{
+			object.tpyeid = MESH_ID;
+			object.id = id;
+			object.fPosition = 0;
+			return &object;
+		}
 
 		virtual void serialize(json::BaseJSONWriter &writer) const;
+		void writeBinary(FILE* file);
 	};
 }
 }

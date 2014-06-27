@@ -44,7 +44,7 @@ struct FbxConvCommand {
 		settings->maxVertexBonesCount = 4;
 		settings->maxVertexCount = (1<<15)-1;
 		settings->maxIndexCount = (1<<15)-1;
-		settings->outType = FILETYPE_G3DJ;
+		settings->outType = FILETYPE_C3B;
 		settings->inType = FILETYPE_AUTO;
 
 		for (int i = 1; i < argc; i++) {
@@ -52,8 +52,8 @@ struct FbxConvCommand {
 			const int len = (int)strlen(arg);
 			if (len > 1 && arg[0] == '-') {
 				if (arg[1] == '?')
-					help = true;
-				else if (arg[1] == 'f')
+					help = false;
+				/*else if (arg[1] == 'f')
 					settings->flipV = true;
 				else if (arg[1] == 'v')
 					settings->verbose = true;
@@ -68,7 +68,13 @@ struct FbxConvCommand {
 				else if ((arg[1] == 'w') && (i + 1 < argc))
 					settings->maxVertexBonesCount = atoi(argv[++i]);
 				else if ((arg[1] == 'm') && (i + 1 < argc))
-					settings->maxVertexCount = settings->maxIndexCount = atoi(argv[++i]);
+					settings->maxVertexCount = settings->maxIndexCount = atoi(argv[++i]);*/
+				else if(arg[1] == 'b')
+					settings->outType = FILETYPE_C3B;
+				else if(arg[1] == 'j')
+					settings->outType = FILETYPE_C3J;
+				else if(arg[1] == 'a')
+					settings->outType = FILETYPE_ALL;
 				else
 					log->error(error = log::eCommandLineUnknownOption, arg);
 			}

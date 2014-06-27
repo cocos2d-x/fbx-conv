@@ -1,18 +1,18 @@
 /*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
+* Copyright 2011 See AUTHORS file.
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*   http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+******************************************************************************/
 /** @author Xoppa */
 #ifdef _MSC_VER
 #pragma once
@@ -42,17 +42,18 @@
 #include "json/JSONWriter.h"
 #include "json/UBJSONWriter.h"
 #include "readers/FbxConverter.h"
+#include "modeldata/CKBFile.h"
 
 namespace fbxconv {
 
-void simpleTextureCallback(std::map<std::string, readers::TextureFileInfo> &textures) {
-	for (std::map<std::string, readers::TextureFileInfo>::iterator it = textures.begin(); it != textures.end(); ++it) {
-		//printf("Texture name: %s\nbounds: %01.2f, %01.2f, %01.2f, %01.2f\ncount: %d\n", it->first.c_str(), it->second.bounds[0], it->second.bounds[1], it->second.bounds[2], it->second.bounds[3], it->second.nodeCount);
-		it->second.path = it->first.substr(it->first.find_last_of("/\\")+1);
+	void simpleTextureCallback(std::map<std::string, readers::TextureFileInfo> &textures) {
+		for (std::map<std::string, readers::TextureFileInfo>::iterator it = textures.begin(); it != textures.end(); ++it) {
+			//printf("Texture name: %s\nbounds: %01.2f, %01.2f, %01.2f, %01.2f\ncount: %d\n", it->first.c_str(), it->second.bounds[0], it->second.bounds[1], it->second.bounds[2], it->second.bounds[3], it->second.nodeCount);
+			it->second.path = it->first.substr(it->first.find_last_of("/\\")+1);
+		}
 	}
-}
 
-class FbxConv {
+	class FbxConv {
 	public:
 		fbxconv::log::Log *log;
 
@@ -72,13 +73,13 @@ class FbxConv {
 			Settings settings;
 			FbxConvCommand command(log, argc, argv, &settings);
 
-//			if (command.error != log::iNoError)
-//				command.printCommand();
-//			else if (!command.help)
-				return execute(&settings);
+			//			if (command.error != log::iNoError)
+			//				command.printCommand();
+			//			else if (!command.help)
+			return execute(&settings);
 
 			//command.printHelp();
-//			return false;
+			//			return false;
 		}
 
 		bool execute(Settings * const &settings) {
@@ -131,32 +132,53 @@ class FbxConv {
 
 		bool save(Settings * const &settings, modeldata::Model *model) {
 			bool result = false;
-			std::ofstream myfile;
-			myfile.open (settings->outFile.c_str(), std::ios::binary);
+			
 
 			json::BaseJSONWriter *jsonWriter = 0;
-			switch(settings->outType) {
-			case FILETYPE_G3DB: 
-				log->status(log::sExportToG3DB, settings->outFile.c_str());
-				jsonWriter = new json::UBJSONWriter(myfile);
-				break;
-			case FILETYPE_G3DJ: 
-				log->status(log::sExportToG3DJ, settings->outFile.c_str());
-				jsonWriter = new json::JSONWriter(myfile);
-				break;
-			default: 
-				log->error(log::eExportFiletypeUnknown);
-				break;
-			}
+			if(settings->outType == FILETYPE_ALL || settings->outType == FILETYPE_C3J)
+			{
+				std::string out = settings->outFile;
+				int o = out.find_first_of(".");
+				out = out.substr(0, o+1) + "c3j";
 
-			if (jsonWriter) {
+				std::ofstream myfile;
+				myfile.open (out.c_str(), std::ios::binary);
+
+				log->status(log::sExportToG3DJ, out.c_str());
+				jsonWriter = new json::JSONWriter(myfile);
 				(*jsonWriter) << model;
 				delete jsonWriter;
 				result = true;
+				myfile.close();
+			}
+			/*switch(settings->outType) {
+			case FILETYPE_G3DB: 
+			log->status(log::sExportToG3DB, settings->outFile.c_str());
+			jsonWriter = new json::UBJSONWriter(myfile);
+			break;
+			case FILETYPE_G3DJ: 
+			log->status(log::sExportToG3DJ, settings->outFile.c_str());
+			jsonWriter = new json::JSONWriter(myfile);
+			break;
+			default: 
+			log->error(log::eExportFiletypeUnknown);
+			break;
+			}*/
+
+			if(settings->outType == FILETYPE_ALL || settings->outType == FILETYPE_C3B)
+			{
+				std::string out = settings->outFile;
+				int o = out.find_first_of(".");
+				out = out.substr(0, o+1) + "c3b";
+				CKBFile file;
+				file.AddModel(model);
+				file.saveBinary(out);
+				log->status(log::sExportToG3DB, out.c_str());
 			}
 
+
 			log->status(log::sExportClose);
-			myfile.close();
+
 
 			return result;
 		}
