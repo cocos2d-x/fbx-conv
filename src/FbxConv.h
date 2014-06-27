@@ -139,7 +139,7 @@ namespace fbxconv {
 			{
 				std::string out = settings->outFile;
 				int o = out.find_first_of(".");
-				out = out.substr(0, o+1) + "c3b";
+				out = out.substr(0, o+1) + "c3t";
 
 				std::ofstream myfile;
 				myfile.open (out.c_str(), std::ios::binary);
