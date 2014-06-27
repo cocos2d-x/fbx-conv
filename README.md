@@ -30,14 +30,14 @@ You'll need premake and an installation of the FBX SDK 2014. Once installed/down
 FBX_SDK_ROOT to the directory where you installed the FBX SDK. Then run one of the 
 generate_XXX scripts. These will generate a Visual Studio/XCode project, or a Makefile.
 
-How to
+Example
 ========
-Export all
+Export both .c3b and .c3t file
 fbx-conv -a xxx.fbx
 
-Export c3b
+Export .c3b
 fbx-conv -b xxx.fbx
 
-Export c3t
+Export .c3t
 fbx-conv -t xxx.fbx
 

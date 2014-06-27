@@ -5,6 +5,11 @@ namespace fbxconv
 
 	
 // Writing out a binary file //
+void write(size_t value, FILE* file)
+{
+	size_t r = fwrite(&value, sizeof(size_t), 1, file);
+}
+
 
 void write(unsigned char value, FILE* file)
 {
@@ -25,11 +30,11 @@ void write(const char* str, FILE* file)
     assert(r == length);
 }
 
-void write(unsigned int value, FILE* file)
-{
-    size_t r = fwrite(&value, sizeof(unsigned int), 1, file);
-    assert(r == 1);
-}
+//void write(unsigned int value, FILE* file)
+//{
+//    size_t r = fwrite(&value, sizeof(unsigned int), 1, file);
+//    assert(r == 1);
+//}
 
 void write(unsigned short value, FILE* file)
 {
@@ -57,7 +62,7 @@ void write(const float* values, int length, FILE* file)
 void write(const std::string& str, FILE* file)
 {
     // Write the length of the string
-    write((unsigned int)str.size(), file);
+    write((size_t)str.size(), file);
     
     if (str.size() > 0)
     {
