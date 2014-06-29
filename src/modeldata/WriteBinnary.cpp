@@ -95,7 +95,7 @@ namespace modeldata {
 		};
 
 
-		int size = 0;
+		unsigned int size = 0;
 		std::vector<MeshVertexAttrib> attribs;
 		MeshVertexAttrib attrib;
 		// Has Position
@@ -167,7 +167,8 @@ namespace modeldata {
 			}
 		}
 
-		write(attribs.size(), file);
+        size = attribs.size();
+		write(size, file);
 		for(int i = 0; i <attribs.size(); i++)
 		{
 			write(attribs[i].usage, file);
@@ -194,8 +195,9 @@ namespace modeldata {
 		//for(auto itr = parts.begin(); itr != parts.end(); itr++)
 		if(parts.size()>0)
 		{
-			NodePart* nodepart = parts[0];	
-			write(nodepart->bones.size(), file);
+			NodePart* nodepart = parts[0];
+            unsigned int size = nodepart->bones.size();
+			write(size, file);
 			for(auto itr = nodepart->bones.begin(); itr != nodepart->bones.end(); itr++)
 			{
 				// write name
@@ -216,7 +218,7 @@ namespace modeldata {
 
 		// links
 		if(links.size() > 0)
-			write(links.size(), file);
+			write(static_cast<unsigned int>(links.size()), file);
 		else
 			return;
 		for(auto itr = links.begin(); itr != links.end(); itr++)
@@ -242,14 +244,14 @@ namespace modeldata {
 		// for NodeAnimation each keyframe
 		write(id, file);
 		write(length, file);
-		write(nodeAnimations.size(), file);
+		write(static_cast<unsigned int>(nodeAnimations.size()), file);
 
 		for(auto itr = nodeAnimations.begin(); itr != nodeAnimations.end(); itr++)
 		{
 			NodeAnimation* nodeanim = *itr;
 			write(nodeanim->node->id, file);
 			
-			write(nodeanim->keyframes.size(), file);
+			write(static_cast<unsigned int>(nodeanim->keyframes.size()), file);
 			
 			for(auto itr1 = nodeanim->keyframes.begin(); itr1 != nodeanim->keyframes.end(); itr1++)
 			{
