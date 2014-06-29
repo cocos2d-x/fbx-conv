@@ -25,7 +25,8 @@ ObjRef* ReferenceTable::get(const std::string& xref)
 
 void ReferenceTable::writeBinary(FILE* file)
 {
-	write(_tables.size(),file);
+    unsigned int size = _tables.size();
+	write(size,file);
 	for(auto itr = _tables.begin(); itr != _tables.end(); itr++)
 	{
 		itr->second.writeBinary(file);
