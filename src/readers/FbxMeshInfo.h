@@ -106,7 +106,7 @@ namespace readers {
 			usePackedColors(usePackedColors),
 			maxVertexBlendWeightCount(maxVertexBlendWeightCount), 
 			vertexBlendWeightCount(0),
-			forceMaxVertexBlendWeightCount(forceMaxVertexBlendWeightCount),
+			forceMaxVertexBlendWeightCount(true),
 			pointCount(mesh->GetControlPointsCount()),
 			polyCount(mesh->GetPolygonCount()),
 			points(mesh->GetControlPoints()),

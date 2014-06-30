@@ -28,6 +28,8 @@
 namespace fbxconv {
 namespace modeldata {
 
+std::string version = "0.2";
+
 static const char* getPrimitiveTypeString(const int &primitiveTypeId) {
 	switch(primitiveTypeId){
 	case 0:
@@ -74,7 +76,7 @@ static const char* getTextureUseString(const Material::Texture::Usage &textureUs
 
 void Model::serialize(json::BaseJSONWriter &writer) const {
 	writer.obj(6);
-	writer << "version" = "1.2";
+	writer << "version" = version;
 	//writer << "file_type" = "c3t";
 	writer << "mesh" = meshes;
 	writer << "material" = materials;
@@ -85,7 +87,7 @@ void Model::serialize(json::BaseJSONWriter &writer) const {
 
 void Mesh::serialize(json::BaseJSONWriter &writer) const {
 	writer << json::obj;
-	writer << "version" = "1.2";
+	writer << "version" = version;
 	writer << "attributes" = attributes;
 
 	writer.val("body").is().arr();
@@ -142,7 +144,7 @@ void MeshPart::serialize(json::BaseJSONWriter &writer) const {
 
 void Material::serialize(json::BaseJSONWriter &writer) const {
 	writer << json::obj;
-	writer << "version" = "1.2";
+	writer << "version" = version;
 	//writer << "id" = id;
 	//if (ambient[0] != 0.f || ambient[1] != 0.f || ambient[2] != 0.f)
 	//	writer << "ambient" = ambient;
@@ -272,7 +274,7 @@ void NodePart::serialize(json::BaseJSONWriter &writer) const {
 
 void Animation::serialize(json::BaseJSONWriter &writer) const {
 	writer.obj(3);
-	writer << "version" << "1.2";
+	writer << "version" << version;
 	writer << "id" = id;
 	writer << "length" = length;
 	writer << "bones" = nodeAnimations;
