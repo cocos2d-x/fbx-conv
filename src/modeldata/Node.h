@@ -61,7 +61,7 @@ namespace modeldata {
 				children.push_back(new Node(**itr));
 		}
 
-		~Node() {
+		virtual ~Node() {
 			for (std::vector<NodePart *>::iterator itr = parts.begin(); itr != parts.end(); ++itr)
 				delete (*itr);
 			for (std::vector<Node *>::iterator itr = children.begin(); itr != children.end(); ++itr)

@@ -45,7 +45,7 @@ namespace modeldata {
 			set(copyFrom.id.c_str(), copyFrom.primitiveType, copyFrom.indices);
 		}
 
-		~MeshPart() {
+		virtual ~MeshPart() {
 			clear();
 		}
 

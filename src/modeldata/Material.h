@@ -51,10 +51,12 @@ namespace modeldata {
 			// FIXME add Matrix3<float> uvTransform;
 			Usage usage;
 
-			Texture() : usage(Unknown), source(0) {
+			Texture() : source(0),usage(Unknown) {
 				uvTranslation[0] = uvTranslation[1] = 0.f;
 				uvScale[0] = uvScale[1] = 1.f;
 			}
+            
+            virtual ~Texture(){}
 
 			virtual void serialize(json::BaseJSONWriter &writer) const;
 		};
@@ -89,7 +91,7 @@ namespace modeldata {
 			source = copyFrom.source;
 		}
 
-		~Material() {
+		virtual ~Material() {
 			for (std::vector<Texture *>::iterator itr = textures.begin(); itr != textures.end(); ++itr)
 				delete (*itr);
 		}

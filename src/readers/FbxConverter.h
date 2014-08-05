@@ -62,6 +62,7 @@ namespace readers {
 		// Helper maps/lists, resources in those will not be disposed
 		std::map<FbxGeometry *, FbxMeshInfo *> fbxMeshMap;
 		std::map<FbxSurfaceMaterial *, Material *> materialsMap;
+		std::vector<Material*> materials;
 		std::map<std::string, TextureFileInfo> textureFiles;
 		std::map<FbxMeshInfo *, std::vector<std::vector<MeshPart *> > > meshParts;
 		std::map<const FbxNode *, Node *> nodeMap;
@@ -111,7 +112,7 @@ namespace readers {
 
 			if (importer->Initialize(settings->inFile.c_str(), -1, manager->GetIOSettings())) {
 				importer->GetAxisInfo(&axisSystem, &systemUnits);
-				scene = FbxScene::Create(manager,"__FBX_SCENE__");
+					scene = FbxScene::Create(manager,"__FBX_SCENE__");
 				importer->Import(scene);
 			} else {
 				log->error(fbxconv::log::eSourceLoadFbxSdk, "Unknown");
@@ -172,9 +173,10 @@ namespace readers {
 					uvTransforms[i].translate(0.f, 1.f).scale(1.f, -1.f);
 			}
 
-			for (std::map<FbxSurfaceMaterial *, Material *>::iterator it = materialsMap.begin(); it != materialsMap.end(); ++it) {
-				model->materials.push_back(it->second);
-				for (std::vector<Material::Texture *>::iterator tt = it->second->textures.begin(); tt != it->second->textures.end(); ++tt)
+		//	for (std::map<FbxSurfaceMaterial *, Material *>::iterator it = materialsMap.begin(); it != materialsMap.end(); ++it) 
+			for (auto it = materials.begin(); it != materials.end(); ++it) {
+				model->materials.push_back(*it);
+				for (std::vector<Material::Texture *>::iterator tt = (*it)->textures.begin(); tt != (*it)->textures.end(); ++tt)
 					(*tt)->path = textureFiles[(*tt)->path].path;
 			}
 			addMesh(model);
@@ -365,6 +367,8 @@ namespace readers {
 			unsigned int pidx = 0;
 			for (unsigned int poly = 0; poly < meshInfo->polyCount; poly++) {
 				unsigned int ps = meshInfo->mesh->GetPolygonSize(poly);
+				unsigned int x = meshInfo->polyPartMap[poly];
+				unsigned int y = meshInfo->polyPartBonesMap[poly];
 				MeshPart * const &part = parts[meshInfo->polyPartMap[poly]][meshInfo->polyPartBonesMap[poly]];
 				Material * const &material = materialsMap[node->GetMaterial(meshInfo->polyPartMap[poly])];
 
@@ -452,6 +456,7 @@ namespace readers {
 			FbxGeometryConverter converter(manager);
 			for (int i = 0; i < cnt; i++) {
 				FbxGeometry * const geometry = scene->GetGeometry(i);
+				//std::string name = geometry->GetElementMaterial(0)->GetName();
 				if (fbxMeshMap.find(geometry) == fbxMeshMap.end()) {
 					FbxMesh *mesh;
 					if (geometry->Is<FbxMesh>() && ((FbxMesh*)geometry)->IsTriangleMesh())
@@ -476,11 +481,11 @@ namespace readers {
 					fbxMeshMap[geometry] = info;
 					if (info->bonesOverflow)
 						log->warning(log::wSourceConvertFbxExceedsBones);
-					if (info->elementMaterialCount <= 0) {
+				/*	if (info->elementMaterialCount <= 0) {
 						log->error(log::eSourceConvertFbxNoMaterial, getGeometryName(geometry));
 						scene = 0;
 						break;
-					}
+					}*/
 				}
 			}
 		}
@@ -490,7 +495,11 @@ namespace readers {
 			for (int i = 0; i < cnt; i++) {
 				FbxSurfaceMaterial * const &material = scene->GetMaterial(i);
 				if (materialsMap.find(material) == materialsMap.end())
-					materialsMap[material] = createMaterial(material);
+				{
+					Material* mat = createMaterial(material);
+					materialsMap[material] = mat;
+					materials.push_back(mat);
+				}
 			}
 		}
 

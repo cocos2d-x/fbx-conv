@@ -28,7 +28,7 @@
 namespace fbxconv {
 namespace modeldata {
 
-std::string version = "0.2";
+std::string versions = "0.2";
 
 static const char* getPrimitiveTypeString(const int &primitiveTypeId) {
 	switch(primitiveTypeId){
@@ -76,7 +76,7 @@ static const char* getTextureUseString(const Material::Texture::Usage &textureUs
 
 void Model::serialize(json::BaseJSONWriter &writer) const {
 	writer.obj(6);
-	writer << "version" = version;
+	writer << "version" = versions;
 	//writer << "file_type" = "c3t";
 	writer << "mesh" = meshes;
 	writer << "material" = materials;
@@ -87,23 +87,21 @@ void Model::serialize(json::BaseJSONWriter &writer) const {
 
 void Mesh::serialize(json::BaseJSONWriter &writer) const {
 	writer << json::obj;
-	writer << "version" = version;
+	//writer << "version" = version;
 	writer << "attributes" = attributes;
 
-	writer.val("body").is().arr();
+	writer.val("vertex").is().arr();
 	writer << json::obj;
 	writer.val("vertices").is().data(vertices, vertexSize);
-	//writer << ""
-	//writer << "parts" = parts;
+	
 	writer << "vertexsize" = vertices.size();
-	writer.val("indices").is().data(parts[0]->indices, 12);
-	writer << "indexnum" = parts[0]->indices.size();
-//	writer << "test" = parts[0]->indices;
-	//writer.val(parts);
 
 	writer << json::end;
+	writer.end();
+	writer << "submesh" = parts;
 
-		writer.end();
+
+	
 		writer << json::end;
 
 }
@@ -137,14 +135,15 @@ void Attributes::serialize(json::BaseJSONWriter &writer) const {
 void MeshPart::serialize(json::BaseJSONWriter &writer) const {
 	writer.obj(3);
 	writer << "id" = id;
-	writer << "type" = getPrimitiveTypeString(primitiveType);
+	//writer << "type" = getPrimitiveTypeString(primitiveType);
 	writer.val("indices").is().data(indices, 12);
+	writer << "indexnum" << indices.size();
 	writer << json::end;
 }
 
 void Material::serialize(json::BaseJSONWriter &writer) const {
 	writer << json::obj;
-	writer << "version" = version;
+	//writer << "version" = version;
 	//writer << "id" = id;
 	//if (ambient[0] != 0.f || ambient[1] != 0.f || ambient[2] != 0.f)
 	//	writer << "ambient" = ambient;
@@ -159,8 +158,14 @@ void Material::serialize(json::BaseJSONWriter &writer) const {
 	//if (shininess != 0.f)
 	//	writer << "shininess" = shininess;
 	if (!textures.empty())
-		writer << "base" = textures;
-
+	{
+		//writer << ""<< textures;
+		for(auto i = 0; i < textures.size(); i++)
+		{
+			writer << "id" = textures[i]->id;
+			writer << "textures" << textures[i]->path;
+		}
+	}
 	writer << json::end;
 }
 
@@ -274,7 +279,7 @@ void NodePart::serialize(json::BaseJSONWriter &writer) const {
 
 void Animation::serialize(json::BaseJSONWriter &writer) const {
 	writer.obj(3);
-	writer << "version" << version;
+	//writer << "version" << version;
 	writer << "id" = id;
 	writer << "length" = length;
 	writer << "bones" = nodeAnimations;

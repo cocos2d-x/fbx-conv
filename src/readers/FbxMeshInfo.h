@@ -386,7 +386,10 @@ namespace readers {
 			for (unsigned int poly = 0; poly < polyCount; poly++) {
 				int mp = -1;
 				for (int i = 0; i < elementMaterialCount && mp < 0; i++)
+				{
 					mp = mesh->GetElementMaterial(i)->GetIndexArray()[poly];
+					std::string name = mesh->GetElementMaterial(i)->GetName();
+				}
 				if (mp < 0 || mp >= meshPartCount)
 					polyPartMap[poly] = -1;
 				else {

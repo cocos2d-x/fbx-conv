@@ -5,26 +5,26 @@
 
 namespace fbxconv {
 
-    // TypeID's
-    enum TypeID
-    {
-        SCENE_ID = 1,
-        NODE_ID = 2,
-        ANIMATIONS_ID = 3,
-        ANIMATION_ID = 4,
-        ANIMATIONCHANNEL_ID = 5,
-        NODEINSTANCE_ID = 8,
-        MODEL_ID = 11,
-        MATERIAL_ID = 16,
-        EFFECT_ID = 17,
-        CAMERA_ID = 32,
-        LIGHT_ID = 33,
-        MESH_ID = 34,
-        MESHPART_ID = 35,
-        MESHSKIN_ID = 36,
-		BONEPART_ID = 37,
-        FONT_ID = 128,
-    };
+// TypeID's
+enum TypeID
+{
+    SCENE_ID = 1,
+    NODE_ID = 2,
+    ANIMATIONS_ID = 3,
+    ANIMATION_ID = 4,
+    ANIMATIONCHANNEL_ID = 5,
+    NODEINSTANCE_ID = 8,
+    MODEL_ID = 11,
+    MATERIAL_ID = 16,
+    EFFECT_ID = 17,
+    CAMERA_ID = 32,
+    LIGHT_ID = 33,
+    MESH_ID = 34,
+    MESHPART_ID = 35,
+    MESHSKIN_ID = 36,
+    BONEPART_ID = 37,
+    FONT_ID = 128,
+};
 
 struct ObjRef
 {

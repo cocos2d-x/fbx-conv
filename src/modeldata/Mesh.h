@@ -55,7 +55,7 @@ namespace modeldata {
 				parts.push_back(new MeshPart(**itr));
 		}
 
-		~Mesh() {
+		virtual ~Mesh() {
 			clear();
 		}
 

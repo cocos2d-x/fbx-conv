@@ -24,6 +24,9 @@ namespace modeldata {
 		}
 		
 		// write material
+		materials[0]->object.fPosition = ftell(file);
+		unsigned int size = materials.size();
+		write(size, file);
 		for(auto itr = materials.begin(); itr != materials.end(); itr++)
 		{
 			(*itr)->writeBinary(file);
@@ -63,6 +66,8 @@ namespace modeldata {
 		}
 
 		// write parts.
+		unsigned int size = parts.size();
+		write(size, file);
 		for(auto itr = parts.begin(); itr != parts.end(); itr++)
 		{
 			// indices size
@@ -72,6 +77,7 @@ namespace modeldata {
 			// indices.
 			for(auto itr1 = (*itr)->indices.begin(); itr1 != (*itr)->indices.end(); itr1++)
 				write(*itr1,file);
+
 		}
 
 	}
@@ -179,7 +185,7 @@ namespace modeldata {
 	
 	void Material::writeBinary(FILE* file)
 	{
-		object.fPosition = ftell(file);
+		//object.fPosition = ftell(file);
 		//const std::string matname = textures[0]->path;
 		write(textures[0]->path, file);
 	}

@@ -5,18 +5,21 @@
 namespace fbxconv {
 
 Reference::Reference():
-	_type(0),
-	_offset(0),
-	_ref(NULL)
+_ref(nullptr),
+_xref(""),
+_type(0),
+_offset(0),
+_fPosition(0.f)
 {
 
 }
 
 Reference::Reference(std::string xref, ObjRef* ref):
-	_xref(xref),
-	_type(ref->tpyeid),
-	_offset(0),
-	_ref(ref)
+_ref(ref),
+_xref(xref),
+_type(ref->tpyeid),
+_offset(0),
+_fPosition(0.f)
 {
 
 }

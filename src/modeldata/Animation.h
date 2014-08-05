@@ -42,7 +42,7 @@ namespace modeldata {
 				nodeAnimations.push_back(new NodeAnimation(*(*itr)));
 		}
 
-		~Animation() {
+		virtual ~Animation() {
 			for (std::vector<NodeAnimation *>::iterator itr = nodeAnimations.begin(); itr != nodeAnimations.end(); ++itr)
 				if ((*itr)!=0)
 					delete *itr;

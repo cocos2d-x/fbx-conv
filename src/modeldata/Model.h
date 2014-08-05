@@ -58,7 +58,7 @@ namespace modeldata {
 				nodes.push_back(new Node(**itr));
 		}
 
-		~Model() {
+		virtual ~Model() {
 			clear();
 		}
 

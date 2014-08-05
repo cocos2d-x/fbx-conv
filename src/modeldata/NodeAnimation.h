@@ -45,7 +45,7 @@ namespace modeldata {
 				keyframes.push_back(new Keyframe(*(*itr)));
 		}
 
-		~NodeAnimation() {
+		virtual ~NodeAnimation() {
 			for (std::vector<Keyframe *>::iterator itr = keyframes.begin(); itr != keyframes.end(); ++itr)
 				if ((*itr)!=0)
 					delete *itr;
