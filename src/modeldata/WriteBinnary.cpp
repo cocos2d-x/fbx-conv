@@ -24,7 +24,9 @@ namespace modeldata {
 		}
 		
 		// write material
-		materials[0]->object.fPosition = ftell(file);
+        if (materials.size() > 0)
+		    materials[0]->object.fPosition = ftell(file);
+
 		unsigned int size = materials.size();
 		write(size, file);
 		for(auto itr = materials.begin(); itr != materials.end(); itr++)
@@ -187,7 +189,8 @@ namespace modeldata {
 	{
 		//object.fPosition = ftell(file);
 		//const std::string matname = textures[0]->path;
-		write(textures[0]->path, file);
+        if (textures.size() > 0)
+            write(textures[0]->path, file);
 	}
 	
 	void Node::writeBinary(FILE* file)
