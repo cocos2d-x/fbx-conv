@@ -1,18 +1,18 @@
 /*******************************************************************************
-* Copyright 2011 See AUTHORS file.
-* 
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* 
-*   http://www.apache.org/licenses/LICENSE-2.0
-* 
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-******************************************************************************/
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 /** @author Xoppa */
 #ifdef _MSC_VER
 #pragma once
@@ -43,17 +43,16 @@
 #include "json/UBJSONWriter.h"
 #include "readers/FbxConverter.h"
 #include "modeldata/CKBFile.h"
-
 namespace fbxconv {
 
-	void simpleTextureCallback(std::map<std::string, readers::TextureFileInfo> &textures) {
-		for (std::map<std::string, readers::TextureFileInfo>::iterator it = textures.begin(); it != textures.end(); ++it) {
-			//printf("Texture name: %s\nbounds: %01.2f, %01.2f, %01.2f, %01.2f\ncount: %d\n", it->first.c_str(), it->second.bounds[0], it->second.bounds[1], it->second.bounds[2], it->second.bounds[3], it->second.nodeCount);
-			it->second.path = it->first.substr(it->first.find_last_of("/\\")+1);
-		}
+void simpleTextureCallback(std::map<std::string, readers::TextureFileInfo> &textures) {
+	for (std::map<std::string, readers::TextureFileInfo>::iterator it = textures.begin(); it != textures.end(); ++it) {
+		//printf("Texture name: %s\nbounds: %01.2f, %01.2f, %01.2f, %01.2f\ncount: %d\n", it->first.c_str(), it->second.bounds[0], it->second.bounds[1], it->second.bounds[2], it->second.bounds[3], it->second.nodeCount);
+		it->second.path = it->first.substr(it->first.find_last_of("/\\")+1);
 	}
+}
 
-	class FbxConv {
+class FbxConv {
 	public:
 		fbxconv::log::Log *log;
 
@@ -72,20 +71,32 @@ namespace fbxconv {
 		bool execute(int const &argc, const char** const &argv) {
 			Settings settings;
 			FbxConvCommand command(log, argc, argv, &settings);
+#ifdef DEBUG
+			log->filter |= log::Log::LOG_DEBUG;
+#else
+			log->filter &= ~log::Log::LOG_DEBUG;
+#endif
+			if (settings.verbose)
+				log->filter |= log::Log::LOG_VERBOSE;
+			else
+				log->filter &= ~log::Log::LOG_VERBOSE;
 
-			//			if (command.error != log::iNoError)
-			//				command.printCommand();
-			//			else if (!command.help)
-			return execute(&settings);
 
-			//command.printHelp();
-			//			return false;
+			if (command.error != log::iNoError)
+				command.printCommand();
+			else if (!command.help)
+				return execute(&settings);
+
+			command.printHelp();
+			return false;
 		}
 
 		bool execute(Settings * const &settings) {
 			bool result = false;
 			modeldata::Model *model = new modeldata::Model();
 			if (load(settings, model)) {
+				if (settings->verbose)
+					info(model);
 				if (save(settings, model))
 					result = true;
 			}
@@ -132,8 +143,6 @@ namespace fbxconv {
 
 		bool save(Settings * const &settings, modeldata::Model *model) {
 			bool result = false;
-			
-
 			json::BaseJSONWriter *jsonWriter = 0;
 			if(settings->outType == FILETYPE_ALL || settings->outType == FILETYPE_C3J)
 			{
@@ -151,20 +160,6 @@ namespace fbxconv {
 				result = true;
 				myfile.close();
 			}
-			/*switch(settings->outType) {
-			case FILETYPE_G3DB: 
-			log->status(log::sExportToG3DB, settings->outFile.c_str());
-			jsonWriter = new json::UBJSONWriter(myfile);
-			break;
-			case FILETYPE_G3DJ: 
-			log->status(log::sExportToG3DJ, settings->outFile.c_str());
-			jsonWriter = new json::JSONWriter(myfile);
-			break;
-			default: 
-			log->error(log::eExportFiletypeUnknown);
-			break;
-			}*/
-
 			if(settings->outType == FILETYPE_ALL || settings->outType == FILETYPE_C3B)
 			{
 				std::string out = settings->outFile;
@@ -180,7 +175,22 @@ namespace fbxconv {
 			log->status(log::sExportClose);
 
 
+
+
 			return result;
+		}
+
+		void info(modeldata::Model *model) {
+			if (!model)
+				log->verbose(log::iModelInfoNull);
+			else {
+				log->verbose(log::iModelInfoStart);
+				log->verbose(log::iModelInfoID, model->id.c_str());
+				log->verbose(log::iModelInfoVersion, model->version[0], model->version[1]);
+				log->verbose(log::iModelInfoMeshesSummary, model->meshes.size(), model->getTotalVertexCount(), model->getMeshpartCount(), model->getTotalIndexCount());
+				log->verbose(log::iModelInfoNodesSummary, model->nodes.size(), model->getTotalNodeCount(), model->getTotalNodePartCount());
+				log->verbose(log::iModelInfoMaterialsSummary, model->materials.size(), model->getTotalTextureCount());
+			}
 		}
 	};
 }

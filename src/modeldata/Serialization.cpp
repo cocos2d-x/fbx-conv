@@ -27,9 +27,7 @@
 
 namespace fbxconv {
 namespace modeldata {
-
-std::string versions = "0.2";
-
+std::string versions = "0.3";
 static const char* getPrimitiveTypeString(const int &primitiveTypeId) {
 	switch(primitiveTypeId){
 	case 0:
@@ -46,7 +44,17 @@ static const char* getPrimitiveTypeString(const int &primitiveTypeId) {
 		return "UNKNOWN";
 	}
 }
-
+static const char* getWrapModeUseString(const FbxFileTexture::EWrapMode &textureUse)
+{
+    switch(textureUse){
+	case FbxFileTexture::EWrapMode::eRepeat:
+		return "REPEAT";
+	case FbxFileTexture::EWrapMode::eClamp:
+		return "CLAMP";
+	default:
+		return "UNKNOWN";
+	}
+}
 static const char* getTextureUseString(const Material::Texture::Usage &textureUse) {
 	switch(textureUse){
 	case Material::Texture::Ambient:
@@ -75,35 +83,35 @@ static const char* getTextureUseString(const Material::Texture::Usage &textureUs
 }
 
 void Model::serialize(json::BaseJSONWriter &writer) const {
+
+    std::list<std::string> _bonenames;
+    for (std::vector<Node *>::const_iterator itr = nodes.begin(); itr != nodes.end(); ++itr)
+    {
+        bool skeleton=false;
+        (*itr)->loadBoneNames(_bonenames);
+    }
+    for (std::vector<Node *>::const_iterator itr = nodes.begin(); itr != nodes.end(); ++itr)
+    {
+        bool skeleton=false;
+        (*itr)->checkIsSkeleton(skeleton,_bonenames);
+        (*itr)->setSkeleton(skeleton);
+    }
 	writer.obj(6);
 	writer << "version" = versions;
-	//writer << "file_type" = "c3t";
-	writer << "mesh" = meshes;
-	writer << "material" = materials;
-	writer << "skin" = nodes;
-	writer << "animation" = animations;
+	writer << "id" = id;
+	writer << "meshes" = meshes;
+	writer << "materials" = materials;
+	writer << "nodes" = nodes;
+	writer << "animations" = animations;
 	writer.end();
 }
 
 void Mesh::serialize(json::BaseJSONWriter &writer) const {
-	writer << json::obj;
-	//writer << "version" = version;
+	writer.obj(3);
 	writer << "attributes" = attributes;
-
-	writer.val("vertex").is().arr();
-	writer << json::obj;
 	writer.val("vertices").is().data(vertices, vertexSize);
-	
-	writer << "vertexsize" = vertices.size();
-
-	writer << json::end;
+	writer << "parts" = parts;
 	writer.end();
-	writer << "submesh" = parts;
-
-
-	
-		writer << json::end;
-
 }
 
 void Attributes::serialize(json::BaseJSONWriter &writer) const {
@@ -115,8 +123,8 @@ void Attributes::serialize(json::BaseJSONWriter &writer) const {
 		//const char *test = name(i);
 		//writer.val(name(i));
 
-		int size;
-		std::string type;
+		//int size;
+		//std::string type;
 		//std::string name;
 
 		MeshVertexAttrib v;
@@ -131,56 +139,65 @@ void Attributes::serialize(json::BaseJSONWriter &writer) const {
 	}
 	writer.end();
 }
-
 void MeshPart::serialize(json::BaseJSONWriter &writer) const {
 	writer.obj(3);
 	writer << "id" = id;
-	//writer << "type" = getPrimitiveTypeString(primitiveType);
+	writer << "type" = getPrimitiveTypeString(primitiveType);
 	writer.val("indices").is().data(indices, 12);
-	writer << "indexnum" << indices.size();
 	writer << json::end;
 }
 
 void Material::serialize(json::BaseJSONWriter &writer) const {
 	writer << json::obj;
-	//writer << "version" = version;
-	//writer << "id" = id;
-	//if (ambient[0] != 0.f || ambient[1] != 0.f || ambient[2] != 0.f)
-	//	writer << "ambient" = ambient;
-	//if (diffuse[0] != 0.f || diffuse[1] != 0.f || diffuse[2] != 0.f)
-	//	writer << "diffuse" = diffuse;
-	//if (emissive[0] != 0.f || emissive[1] != 0.f || emissive[2] != 0.f)
-	//	writer << "emissive" = emissive;
-	//if (opacity != 1.f)
-	//	writer << "opacity" = opacity;
-	//if (specular[0] != 0.f || specular[1] != 0.f || specular[2] != 0.f)
-	//	writer << "specular" = specular;
-	//if (shininess != 0.f)
-	//	writer << "shininess" = shininess;
+	writer << "id" = id;
+	if (ambient.valid)
+		writer << "ambient" = ambient.value;
+	if (diffuse.valid)
+		writer << "diffuse" = diffuse.value;
+	if (emissive.valid)
+		writer << "emissive" = emissive.value;
+	if (opacity.valid)
+		writer << "opacity" = opacity.value;
+	if (specular.valid)
+		writer << "specular" = specular.value;
+	if (shininess.valid)
+		writer << "shininess" = shininess.value;
 	if (!textures.empty())
-	{
-		//writer << ""<< textures;
-		for(auto i = 0; i < textures.size(); i++)
-		{
-			writer << "id" = textures[i]->id;
-			writer << "textures" << textures[i]->path;
-		}
-	}
+		writer << "textures" = textures;
 	writer << json::end;
 }
 
 void Material::Texture::serialize(json::BaseJSONWriter &writer) const {
 	writer << json::obj;
-	//writer << "id" = id;
+	writer << "id" = id;
 	writer << "filename" = path;
-	//if (uvTranslation[0] != 0.f || uvTranslation[1] != 0.f)
-	//	writer << "uvtranslation" = uvTranslation;
-	//if (uvScale[0] != 1.f || uvScale[1] != 1.f)
-	//	writer << "uvscaling" = uvScale;
-	//writer << "type" = getTextureUseString(usage);
+	if (uvTranslation[0] != 0.f || uvTranslation[1] != 0.f)
+		writer << "uvtranslation" = uvTranslation;
+	if (uvScale[0] != 1.f || uvScale[1] != 1.f)
+		writer << "uvscaling" = uvScale;
+	writer << "type" = getTextureUseString(usage);
+    writer << "wrapModeU" = getWrapModeUseString(wrapModeU);
+    writer << "wrapModeV"  =getWrapModeUseString(wrapModeV);
 	writer << json::end;
 }
 
+void Node::serialize(json::BaseJSONWriter &writer) const {
+	writer << json::obj;
+	writer << "id" = id;
+    writer << "skeleton" = _skeleton;
+    writer << "transform" << transforms; 
+	//if (transform.rotation[0] != 0. || transform.rotation[1] != 0. || transform.rotation[2] != 0. || transform.rotation[3] != 1.)
+	//	writer << "rotation" = transform.rotation;
+	//if (transform.scale[0] != 1. || transform.scale[1] != 1. || transform.scale[2] != 1.)
+	//	writer << "scale" = transform.scale;
+	//if (transform.translation[0] != 0. || transform.translation[1] != 0. || transform.translation[2] != 0.)
+	//	writer << "translation" = transform.translation;
+	if (!parts.empty())
+		writer << "parts" = parts;
+	if (!children.empty())
+		writer << "children" = children;
+	writer << json::end;
+}
 
 template<class T, size_t n> void writeAsFloat(json::BaseJSONWriter &writer, const char *k, const T(&v)[n]) {
 	static float tmp[n];
@@ -188,54 +205,6 @@ template<class T, size_t n> void writeAsFloat(json::BaseJSONWriter &writer, cons
 		tmp[i] = (float)v[i];
 	writer << k << tmp;
 }
-
-void Node::serialize(json::BaseJSONWriter &writer) const {
-	writer << json::obj;
-//	writer << "version" = 1.2;
-	writer << "id" = id;
-	//if (transform.rotation[0] != 0. || transform.rotation[1] != 0. || transform.rotation[2] != 0. || transform.rotation[3] != 1.)
-	//	writer << "rotation" = transform.rotation;
-	//if (transform.scale[0] != 1. || transform.scale[1] != 1. || transform.scale[2] != 1.)
-	//	writer << "scale" = transform.scale;
-	//if (transform.translation[0] != 0. || transform.translation[1] != 0. || transform.translation[2] != 0.)
-	//	writer << "translation" = transform.translation;
-
-	writer << "tansform" << transforms; 
-
-
-	if (!parts.empty())
-	{
-		//writer << "parts" = parts;
-		if (!parts[0]->bones.empty()) {
-		writer.val("bones").is().arr();
-		for (std::vector<std::pair<Node *, FbxAMatrix> >::const_iterator it = parts[0]->bones.begin(); it != parts[0]->bones.end(); ++it) {
-			writer << json::obj;
-			writer << "node" = it->first->id;
-			//writeAsFloat(writer, "translation", it->second.GetT().mData);
-			//writeAsFloat(writer, "rotation", it->second.GetQ().mData);
-			//writeAsFloat(writer, "scale", it->second.GetS().mData);
-			//writeAsFloat(writer, "transform", it->second.Double44());
-			float tmp[16];
-			for(int i = 0; i < 4; i++)
-			{
-				for(int j = 0; j < 4; j++)
-				{
-					tmp[i*4 + j] = it->second.Double44()[i][j];
-				}
-			}
-			writeAsFloat(writer, "bindshape", tmp);
-
-			writer << json::end;
-		}
-		writer.end();
-	}
-	}
-	
-	if (!children.empty())
-		writer << "children" = children;
-	writer << json::end;
-}
-
 
 void NodePart::serialize(json::BaseJSONWriter &writer) const {
 	writer << json::obj;
@@ -246,42 +215,39 @@ void NodePart::serialize(json::BaseJSONWriter &writer) const {
 		for (std::vector<std::pair<Node *, FbxAMatrix> >::const_iterator it = bones.begin(); it != bones.end(); ++it) {
 			writer << json::obj;
 			writer << "node" = it->first->id;
+            float tmp[16];
+            for(int i = 0; i < 4; i++)
+            {
+                for(int j = 0; j < 4; j++)
+                {
+                    tmp[i*4 + j] = it->second.Double44()[i][j];
+                }
+            }
+            writer << "transform" << tmp; 
 			//writeAsFloat(writer, "translation", it->second.GetT().mData);
 			//writeAsFloat(writer, "rotation", it->second.GetQ().mData);
 			//writeAsFloat(writer, "scale", it->second.GetS().mData);
-			//writeAsFloat(writer, "transform", it->second.Double44());
-			float tmp[16];
-			for(int i = 0; i < 4; i++)
-			{
-				for(int j = 0; j < 4; j++)
-				{
-					tmp[i*4 + j] = it->second.Double44()[i][j];
-				}
-			}
-			writeAsFloat(writer, "transform", tmp);
-
 			writer << json::end;
 		}
 		writer.end();
 	}
-	//if (!uvMapping.empty()) {
-	//	writer.val("uvMapping").is().arr(uvMapping.size(), 16);
-	//	for (std::vector<std::vector<Material::Texture *> >::const_iterator it = uvMapping.begin(); it != uvMapping.end(); ++it) {
-	//		writer.arr((*it).size(), 16);
-	//		for (std::vector<Material::Texture *>::const_iterator tt = (*it).begin(); tt != (*it).end(); ++tt)
-	//			writer << material->getTextureIndex(*tt);
-	//		writer.end();
-	//	}
-	//	writer.end();
-	//}
+	if (!uvMapping.empty()) {
+		writer.val("uvMapping").is().arr(uvMapping.size(), 16);
+		for (std::vector<std::vector<Material::Texture *> >::const_iterator it = uvMapping.begin(); it != uvMapping.end(); ++it) {
+			writer.arr((*it).size(), 16);
+			for (std::vector<Material::Texture *>::const_iterator tt = (*it).begin(); tt != (*it).end(); ++tt)
+				writer << material->getTextureIndex(*tt);
+			writer.end();
+		}
+		writer.end();
+	}
 	writer << json::end;
 }
 
 void Animation::serialize(json::BaseJSONWriter &writer) const {
-	writer.obj(3);
-	//writer << "version" << version;
+	writer.obj(2);
 	writer << "id" = id;
-	writer << "length" = length;
+    writer << "length" = length;
 	writer << "bones" = nodeAnimations;
 	writer.end();
 }
@@ -297,11 +263,11 @@ void Keyframe::serialize(json::BaseJSONWriter &writer) const {
 	writer << json::obj;
 	writer << "keytime" = time;
 	//if (hasRotation)
-		writer << "rotation" = rotation;
+	writer << "rotation" = rotation;
 	//if (hasScale)
-		writer << "scale" = scale;
+	writer << "scale" = scale;
 	//if (hasTranslation)
-		writer << "translation" = translation;
+	writer << "translation" = translation;
 	writer << json::end;
 }
 

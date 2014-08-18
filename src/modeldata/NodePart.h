@@ -43,8 +43,6 @@ namespace modeldata {
 			for (unsigned int i = 0; i < uvMapping.size(); i++)
 				uvMapping[i].insert(uvMapping[i].begin(), copyFrom.uvMapping[i].begin(), copyFrom.uvMapping[i].end());
 		}
-        
-        virtual ~NodePart(){}
 
 		virtual void serialize(json::BaseJSONWriter &writer) const;
 	};

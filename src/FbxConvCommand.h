@@ -18,7 +18,6 @@
 #define FBXCONVCOMMAND_H
 
 //#define ALLOW_INPUT_TYPE
-
 #include "Settings.h"
 #include <string>
 #include "log/log.h"
@@ -40,25 +39,28 @@ struct FbxConvCommand {
 		settings->flipV = false;
 		settings->packColors = false;
 		settings->verbose = false;
-		settings->maxNodePartBonesCount = 64;
+		settings->maxNodePartBonesCount = 40;
 		settings->maxVertexBonesCount = 4;
 		settings->maxVertexCount = (1<<15)-1;
 		settings->maxIndexCount = (1<<15)-1;
 		settings->outType = FILETYPE_C3B;
 		settings->inType = FILETYPE_AUTO;
+        settings->needReusableMesh = true;
 
 		for (int i = 1; i < argc; i++) {
 			const char *arg = argv[i];
 			const int len = (int)strlen(arg);
 			if (len > 1 && arg[0] == '-') {
 				if (arg[1] == '?')
-					help = false;
-				/*else if (arg[1] == 'f')
+					help = true;
+				else if (arg[1] == 'f')
 					settings->flipV = true;
 				else if (arg[1] == 'v')
 					settings->verbose = true;
 				else if (arg[1] == 'p')
 					settings->packColors = true;
+				else if (arg[1] == 'g')
+					settings->needReusableMesh = false;
 				else if ((arg[1] == 'i') && (i + 1 < argc))
 					settings->inType = parseType(argv[++i]);
 				else if ((arg[1] == 'o') && (i + 1 < argc))
@@ -68,8 +70,8 @@ struct FbxConvCommand {
 				else if ((arg[1] == 'w') && (i + 1 < argc))
 					settings->maxVertexBonesCount = atoi(argv[++i]);
 				else if ((arg[1] == 'm') && (i + 1 < argc))
-					settings->maxVertexCount = settings->maxIndexCount = atoi(argv[++i]);*/
-				else if(arg[1] == 'b')
+					settings->maxVertexCount = settings->maxIndexCount = atoi(argv[++i]);
+                else if(arg[1] == 'b')
 					settings->outType = FILETYPE_C3B;
 				else if(arg[1] == 't')
 					settings->outType = FILETYPE_C3J;
@@ -112,14 +114,15 @@ struct FbxConvCommand {
 		printf("-f       : Flip the V texture coordinates.\n");
 		printf("-p       : Pack vertex colors to one float.\n");
 		printf("-m <size>: The maximum amount of vertices or indices a mesh may contain (default: 32k)\n");
-		printf("-b <size>: The maximum amount of bones a nodepart can contain (default: 12)\n");
+		printf("-b <size>: The maximum amount of bones a nodepart can contain (default: 40)\n");
 		printf("-w <size>: The maximum amount of bone weights per vertex (default: 4)\n");
 		printf("-v       : Verbose: print additional progress information\n");
+		printf("-g       : Not merge meshs with same attributes, keep original\n");
 		printf("\n");
 		printf("<input>  : The filename of the file to convert.\n");
 		printf("<output> : The filename of the converted file.\n");
 		printf("\n");
-		printf("<type>   : FBX, C3T (json) or G3D (binary).\n");
+		printf("<type>   : FBX, G3DJ (json) or G3DB (binary).\n");
 	}
 private:
 	void validate() {
@@ -158,7 +161,11 @@ private:
 			return FILETYPE_FBX;
 		else if (stricmp(arg, "g3db")==0)
 			return FILETYPE_G3DB;
-		else if (stricmp(arg, "c3t")==0)
+		else if (stricmp(arg, "g3dj")==0)
+			return FILETYPE_G3DJ;
+        else if (stricmp(arg, "c3b")==0)
+			return FILETYPE_G3DB;
+        else if (stricmp(arg, "c3t")==0)
 			return FILETYPE_G3DJ;
 		if (def < 0)
 			log->error(error = log::eCommandLineUnknownFiletype, arg);
@@ -184,7 +191,7 @@ private:
 	void setExtension(std::string &fn, const int &type) const {
 		switch(type) {
 		case FILETYPE_FBX:	return setExtension(fn, "fbx");
-		case FILETYPE_G3DB:	return setExtension(fn, "g3db");
+		case FILETYPE_G3DB:	return setExtension(fn, "c3b");
 		case FILETYPE_G3DJ:	return setExtension(fn, "c3t");
 		default:			return setExtension(fn, "");
 		}

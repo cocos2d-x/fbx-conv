@@ -106,7 +106,7 @@ namespace readers {
 			usePackedColors(usePackedColors),
 			maxVertexBlendWeightCount(maxVertexBlendWeightCount), 
 			vertexBlendWeightCount(0),
-			forceMaxVertexBlendWeightCount(true),
+			forceMaxVertexBlendWeightCount(forceMaxVertexBlendWeightCount),
 			pointCount(mesh->GetControlPointsCount()),
 			polyCount(mesh->GetPolygonCount()),
 			points(mesh->GetControlPoints()),
@@ -130,7 +130,8 @@ namespace readers {
 			if (skin) {
 				fetchVertexBlendWeights();
 				fetchMeshPartsAndBones();
-			} else
+			}
+			else
 				fetchMeshParts();
 
 			fetchAttributes();
@@ -240,15 +241,13 @@ namespace readers {
 			//data[offset++] = weightIndex < s ? (float)bones.idx(weights[weightIndex].index) : 0.f;
 			data[offset++] = weightIndex < s ? weights[weightIndex].weight : 0.f;
 		}
-
-		inline void getBlendWeightIndex(float * const &data, unsigned int &offset, const unsigned int &weightIndex, const unsigned int &poly, const unsigned int &polyIndex, const unsigned int &point) const {
+        inline void getBlendWeightIndex(float * const &data, unsigned int &offset, const unsigned int &weightIndex, const unsigned int &poly, const unsigned int &polyIndex, const unsigned int &point) const {
 			const std::vector<BlendWeight> &weights = pointBlendWeights[point];
 			const unsigned int s = (unsigned int)weights.size();
 			const BlendBones &bones = partBones[polyPartMap[poly]].bones[polyPartBonesMap[poly]];
 			data[offset++] = weightIndex < s ? (float)bones.idx(weights[weightIndex].index) : 0.f;
 			//data[offset++] = weightIndex < s ? weights[weightIndex].weight : 0.f;
 		}
-
 		inline void getVertex(float * const &data, unsigned int &offset, const unsigned int &poly, const unsigned int &polyIndex, const unsigned int &point, const Matrix3<float> * const &uvTransforms) const {
 			if (attributes.hasPosition())
 				getPosition(data, offset, point);
@@ -386,10 +385,7 @@ namespace readers {
 			for (unsigned int poly = 0; poly < polyCount; poly++) {
 				int mp = -1;
 				for (int i = 0; i < elementMaterialCount && mp < 0; i++)
-				{
 					mp = mesh->GetElementMaterial(i)->GetIndexArray()[poly];
-					std::string name = mesh->GetElementMaterial(i)->GetName();
-				}
 				if (mp < 0 || mp >= meshPartCount)
 					polyPartMap[poly] = -1;
 				else {

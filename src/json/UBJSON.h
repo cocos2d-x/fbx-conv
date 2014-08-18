@@ -46,7 +46,7 @@ namespace json {
 const int one = 1;
 const bool is_bigendian = ( (*(char*)&one) == 0 );
 
-template<size_t n> void swap(char * const &data) {assert(("This shouldnt happen" && false));}
+template<size_t n> void swap(char * const &data) {assert(("This shouldnt happen", false));}
 template<> inline void swap<1>(char * const &data) {}
 template<> inline void swap<2>(char * const &data) {
 	static char tmp;

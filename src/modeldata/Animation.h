@@ -24,14 +24,14 @@
 #include "Node.h"
 #include "NodeAnimation.h"
 #include "../json/BaseJSONWriter.h"
-
+ #include "Reference.h"
 namespace fbxconv {
 namespace modeldata {
 	struct Node;
 
 	struct Animation : public json::ConstSerializable {
 		std::string id;
-		float length;
+        float length;
 		std::vector<NodeAnimation *> nodeAnimations;
 
 		Animation() { length = 0;}
@@ -42,23 +42,21 @@ namespace modeldata {
 				nodeAnimations.push_back(new NodeAnimation(*(*itr)));
 		}
 
-		virtual ~Animation() {
+		~Animation() {
 			for (std::vector<NodeAnimation *>::iterator itr = nodeAnimations.begin(); itr != nodeAnimations.end(); ++itr)
 				if ((*itr)!=0)
 					delete *itr;
 		}
-
-		ObjRef object;
+        ObjRef object;
 		ObjRef* GetObj() 
 		{
 			object.tpyeid = ANIMATIONS_ID;
-			object.id = id;
 			object.fPosition = 0;
+            object.id = id;
 			return &object;
 		}
-
 		virtual void serialize(json::BaseJSONWriter &writer) const;
-		void writeBinary(FILE* file);
+        void writeBinary(FILE* file);
 	};
 } }
 

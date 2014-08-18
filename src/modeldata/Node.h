@@ -24,7 +24,7 @@
 #include <fbxsdk.h>
 #include "NodePart.h"
 #include "../json/BaseJSONWriter.h"
-
+#include <list>
 namespace fbxconv {
 namespace modeldata {
 	/** A node is responsable for destroying its parts and children */
@@ -34,16 +34,12 @@ namespace modeldata {
 			float rotation[4];
 			float scale[3];
 		} transform;
-
-		float transforms[16];
-
+        float transforms[16];
 		std::string id;
 		std::vector<NodePart *> parts;
 		std::vector<Node *> children;
-		std::vector<Node *> links;
 		FbxNode *source;
-		Node* parent;
-
+        bool   _skeleton;
 		Node(const char *id = NULL) : source(0) {
 			memset(&transform, 0, sizeof(transform));
 			transform.scale[0] = transform.scale[1] = transform.scale[2] = 1.f;
@@ -61,7 +57,7 @@ namespace modeldata {
 				children.push_back(new Node(**itr));
 		}
 
-		virtual ~Node() {
+		~Node() {
 			for (std::vector<NodePart *>::iterator itr = parts.begin(); itr != parts.end(); ++itr)
 				delete (*itr);
 			for (std::vector<Node *>::iterator itr = children.begin(); itr != children.end(); ++itr)
@@ -88,19 +84,67 @@ namespace modeldata {
 			return false;
 		}
 
+		size_t getTotalNodeCount() const {
+			size_t result = children.size();
+			for (std::vector<Node*>::const_iterator it = children.begin(); it != children.end(); ++it)
+				result += (*it)->getTotalNodeCount();
+			return result;
+		}
 
-		ObjRef object;
+		size_t getTotalNodePartCount() const {
+			size_t result = parts.size();
+			for (std::vector<Node*>::const_iterator it = children.begin(); it != children.end(); ++it)
+				result += (*it)->getTotalNodePartCount();
+			return result;
+		}
+        ObjRef object;
 		ObjRef* GetObj() 
 		{
-			object.tpyeid = MESHSKIN_ID;
-			object.id = id + "_skin";
+			object.tpyeid = NODE_ID;
 			object.fPosition = 0;
+            object.id = id;
 			return &object;
 		}
 		virtual void serialize(json::BaseJSONWriter &writer) const;
-		void writeBinary(FILE* file);    
-
-
+        void writeBinary(FILE* file);
+        void loadBoneNames(std::list<std::string>& bonenames)
+        {
+            for ( int i = 0; i  <  parts.size() ; i++)
+            {
+                
+                for ( int j = 0; j  <  parts[i]->bones.size() ; j++)
+                {
+                     std::string bonename = parts[i]->bones[j].first->id;
+                    if (!checkIsBone(bonename,bonenames))
+                    {
+                        bonenames.push_back(bonename);
+                    }
+                } 
+            }
+            for (int i = 0; i  <  children.size() ; i++)
+            {
+                children[i]->loadBoneNames(bonenames);
+            }
+        }
+        bool checkIsBone(const std::string& name,std::list<std::string>& bonenames)
+        {
+            std::list<std::string>::iterator iter = std::find(bonenames.begin(), bonenames.end(), name);
+            bool ret = (iter != bonenames.end()) ? true : false;
+            return ret;
+        }
+        void checkIsSkeleton(bool& skeleton,std::list<std::string>& bonenames)
+        {
+           if (checkIsBone(id,bonenames))
+                skeleton = true;
+            for (int i = 0; i  <  children.size() ; i++)
+            {
+                children[i]->checkIsSkeleton(skeleton,bonenames);
+            }
+        }
+        void setSkeleton(bool skeleton)
+        {
+            _skeleton= skeleton;
+        }
 	};
 }
 }

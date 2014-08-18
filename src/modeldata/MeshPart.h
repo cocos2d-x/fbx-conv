@@ -29,7 +29,6 @@
 #include <string>
 #include <fbxsdk.h>
 #include "../json/BaseJSONWriter.h"
-#include "Reference.h"
 
 namespace fbxconv {
 namespace modeldata {
@@ -45,7 +44,7 @@ namespace modeldata {
 			set(copyFrom.id.c_str(), copyFrom.primitiveType, copyFrom.indices);
 		}
 
-		virtual ~MeshPart() {
+		~MeshPart() {
 			clear();
 		}
 
@@ -61,18 +60,8 @@ namespace modeldata {
 			this->indices.clear();
 			this->indices.insert(this->indices.end(), indices.begin(), indices.end());
 		}
-
-
-		ObjRef object;
-		ObjRef* GetObj() 
-		{
-			object.tpyeid = MESHPART_ID;
-			object.id = id;
-			object.fPosition = 0;
-			return &object;
-		}
-
 		virtual void serialize(json::BaseJSONWriter &writer) const;
+        void writeBinary(FILE* file);
 	};
 }
 }

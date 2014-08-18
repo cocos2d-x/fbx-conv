@@ -1,10 +1,9 @@
 #include "CKBFile.h"
 #include "Animation.h"
 #include "Model.h"
-
 namespace fbxconv{
 	using namespace modeldata;
-
+    unsigned char GPB_VERSION[2] = {0, 3};
 	CKBFile::CKBFile(void)
 		:_file(NULL)
 	{
@@ -28,16 +27,6 @@ namespace fbxconv{
 		//version
 		fwrite(GPB_VERSION, 1, sizeof(GPB_VERSION), _file);
 
-		// static or skeletal
-		/*if(_models->animations[0]->length == 0)
-		{
-			write((bool)true, _file);
-		}
-		else
-		{
-			write((bool)false, _file);
-		}*/
-		
 		_refTable.writeBinary(_file);
 
 		if(_models)
@@ -71,41 +60,31 @@ namespace fbxconv{
 		_models = model;
 
 		//Add Mesh
-		Mesh* mesh = model->meshes[0];
-		addToRefTable(mesh->GetObj());
-
-		// Add MeshPart
-		MeshPart* meshpart = mesh->parts[0];
-		addToRefTable(meshpart->GetObj());
+        if(model->meshes.size()>0)
+        {
+            Mesh* mesh = model->meshes[0];
+		    addToRefTable(mesh->GetObj());
+        }
+		//MeshPart* meshpart = mesh->parts[0];
+		//addToRefTable(meshpart->GetObj());
 
 		// Add Material
-		Material* mat = model->materials[0];
-		addToRefTable(mat->GetObj());
-
-		// Add Skin
-		Node* node = model->nodes[0];
-		addToRefTable(node->GetObj());
-		
-		// Add bone part
-
-
-		// Add Animation.
-		//Animation *anims = 
-		auto itr = model->animations.begin(); 
-		for(; itr != model->animations.end(); itr++) 
-		{
-			Animation* anim = *itr;
-			addToRefTable(anim->GetObj());
-
-			/*std::vector<NodeAnimation*>::iterator itr = anim->nodeAnimations.begin();
-			for(; itr != anim->nodeAnimations.end(); itr++)
-			{
-				NodeAnimation* nodeanim = *itr;
-				addToRefTable(nodeanim->GetObj());
-	
-			}*/
-
-		}
+        if(model->materials.size()>0)
+        {
+            Material* mat = model->materials[0];
+            addToRefTable(mat->GetObj());
+        }
+		// Add node
+        if(model->nodes.size()>0)
+        {
+            Node* node = model->nodes[0];
+            addToRefTable(node->GetObj());
+        }
+	    if(model->animations.size()>0)
+        {
+            Animation* anim = model->animations[0];
+            addToRefTable(anim->GetObj());
+        }
 
 	}
 

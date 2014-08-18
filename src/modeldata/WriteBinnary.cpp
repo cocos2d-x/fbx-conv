@@ -10,38 +10,102 @@
 #include "Model.h"
 #include "Reference.h"
 #include "FileIO.h"
-
-
+ #include "Reference.h"
 namespace fbxconv {
 namespace modeldata {
-
+    static const char* getTextureUseString(const Material::Texture::Usage &textureUse) {
+	switch(textureUse){
+	case Material::Texture::Ambient:
+		return "AMBIENT";
+	case Material::Texture::Bump:
+		return "BUMP";
+	case Material::Texture::Diffuse:
+		return "DIFFUSE";
+	case Material::Texture::Emissive:
+		return "EMISSIVE";
+	case Material::Texture::None:
+		return "NONE";
+	case Material::Texture::Normal:
+		return "NORMAL";
+	case Material::Texture::Reflection:
+		return "REFLECTION";
+	case Material::Texture::Shininess:
+		return "SHININESS";
+	case Material::Texture::Specular:
+		return "SPECULAR";
+	case Material::Texture::Transparency:
+		return "TRANSPARENCY";
+	default:
+		return "UNKNOWN";
+	}
+}
+    static const char* getWrapModeUseString(const FbxFileTexture::EWrapMode &textureUse)
+    {
+        switch(textureUse){
+        case FbxFileTexture::EWrapMode::eRepeat:
+            return "REPEAT";
+        case FbxFileTexture::EWrapMode::eClamp:
+            return "CLAMP";
+        default:
+            return "UNKNOWN";
+        }
+    }
 	void Model::writeBinary(FILE* file)
 	{
-		// write mesh
+        std::list<std::string> _bonenames;
+        for (std::vector<Node *>::const_iterator itr = nodes.begin(); itr != nodes.end(); ++itr)
+        {
+            bool skeleton=false;
+            (*itr)->loadBoneNames(_bonenames);
+        }
+        for (std::vector<Node *>::const_iterator itr = nodes.begin(); itr != nodes.end(); ++itr)
+        {
+            bool skeleton=false;
+            (*itr)->checkIsSkeleton(skeleton,_bonenames);
+            (*itr)->setSkeleton(skeleton);
+        }
+		unsigned int size = meshes.size();
+        if(size>0)
+        {
+            meshes[0]->object.fPosition = ftell(file);	
+        }
+		write(size, file);
+        // write mesh
 		for(auto itr = meshes.begin(); itr != meshes.end(); itr++)
 		{
 			(*itr)->writeBinary(file);
 		}
 		
 		// write material
-        if (materials.size() > 0)
-		    materials[0]->object.fPosition = ftell(file);
-
-		unsigned int size = materials.size();
+	    size = materials.size();
+        if(size>0)
+        {
+            materials[0]->object.fPosition = ftell(file);	
+        }
 		write(size, file);
 		for(auto itr = materials.begin(); itr != materials.end(); itr++)
 		{
 			(*itr)->writeBinary(file);
 		}
-
-		// skin
-		for(auto itr = nodes.begin(); itr != nodes.end(); itr++)
-		{
-	//	auto itr = nodes.begin();
-		(*itr)->writeBinary(file);
-		}
+		// node num
+        size = nodes.size();
+        if(size>0)
+        {
+            nodes[0]->object.fPosition = ftell(file);	
+        }
+        write(size, file);
+        for(auto itr = nodes.begin(); itr != nodes.end(); itr++)
+        {
+            (*itr)->writeBinary(file);
+        }
 
 		// animation
+        size = animations.size();
+         if(size>0)
+        {
+            animations[0]->object.fPosition = ftell(file);	
+        }
+		write(size, file);
 		for(auto itr = animations.begin(); itr != animations.end(); itr++)
 		{
 			(*itr)->writeBinary(file);
@@ -50,8 +114,6 @@ namespace modeldata {
 
 	void Mesh::writeBinary(FILE* file)
 	{
-		object.fPosition = ftell(file);
-									
 		// attribute
 		attributes.writeBinary(file);
 		
@@ -72,18 +134,21 @@ namespace modeldata {
 		write(size, file);
 		for(auto itr = parts.begin(); itr != parts.end(); itr++)
 		{
-			// indices size
-			unsigned int size = (*itr)->indices.size();
-			write(size, file);
-			
-			// indices.
-			for(auto itr1 = (*itr)->indices.begin(); itr1 != (*itr)->indices.end(); itr1++)
-				write(*itr1,file);
+            (*itr)->writeBinary(file);
+          
 
 		}
-
 	}
-	
+    void  MeshPart::writeBinary(FILE* file)
+    {
+        write(id, file);
+        // indices size
+        unsigned int size = indices.size();
+        write(size, file);
+        // indices.
+        for(auto itr1 = indices.begin(); itr1 != indices.end(); itr1++)
+            write(*itr1,file);
+    }
 	void Attributes::writeBinary(FILE* file)
 	{
 		
@@ -141,20 +206,20 @@ namespace modeldata {
 			attribs.push_back(attrib);
 		}
 
-		// Has Tangent
-		if(hasTangent())
-		{
-			attrib.usage = 4;
-			size++;
-			attribs.push_back(attrib);
-		}
-		// Has Binormal
-		if(hasBinormal())
-		{
-			attrib.usage = 5;
-			size++;
-			attribs.push_back(attrib);
-		}
+		//// Has Tangent
+		//if(hasTangent())
+		//{
+		//	attrib.usage = 4;
+		//	size++;
+		//	attribs.push_back(attrib);
+		//}
+		//// Has Binormal
+		//if(hasBinormal())
+		//{
+		//	attrib.usage = 5;
+		//	size++;
+		//	attribs.push_back(attrib);
+		//}
 		// Has Blend weight
 		for(int i = 0; i < 8; i++)
 		{
@@ -166,7 +231,7 @@ namespace modeldata {
 					attrib.usage = VERTEX_ATTRIB_BLEND_WEIGHT;
 					attrib.attribSizeBytes = 4;
 					attribs.push_back(attrib);
-
+                    size++;
 					attrib.usage = VERTEX_ATTRIB_BLEND_INDEX;
 					attrib.attribSizeBytes = 4;
 					attribs.push_back(attrib);
@@ -187,71 +252,115 @@ namespace modeldata {
 	
 	void Material::writeBinary(FILE* file)
 	{
-		//object.fPosition = ftell(file);
-		//const std::string matname = textures[0]->path;
-        if (textures.size() > 0)
-            write(textures[0]->path, file);
+		write(id, file);
+        write(diffuse.value, 3, file);
+        write(ambient.value, 3, file);
+        write(emissive.value, 3, file);
+        write(opacity.value,file);
+        write(specular.value, 3, file);
+        write(shininess.value,file);
+        unsigned int size = textures.size();
+        write(size, file);
+        for(auto itr = textures.begin(); itr != textures.end(); itr++)
+        {
+             write((*itr)->id, file);
+             write((*itr)->path, file);
+             write((*itr)->uvTranslation, 2, file);
+             write((*itr)->uvScale, 2, file);
+             std::string  wrapModeU=getWrapModeUseString((*itr)->wrapModeU);
+             std::string  wrapModeV=getWrapModeUseString((*itr)->wrapModeV);
+             std::string  type= getTextureUseString((*itr)->usage);
+             write(type,file);
+             write(wrapModeU,file);
+             write(wrapModeV,file);
+        }
 	}
 	
 	void Node::writeBinary(FILE* file)
 	{
-		object.fPosition = ftell(file);
-		// node part
 		write(id, file);
-		write(transforms, 16, file);
-		//write(parts.size(),file);
+        write(_skeleton, file);
+        // rotation scale translation
+        write(transforms, 16, file);
+		//write(transform.scale, 3, file);
+		//write(transform.translation, 3, file);
+        // node part
+		write(parts.size(),file);
 
-		//for(auto itr = parts.begin(); itr != parts.end(); itr++)
 		if(parts.size()>0)
 		{
-			NodePart* nodepart = parts[0];
-            unsigned int size = nodepart->bones.size();
-			write(size, file);
-			for(auto itr = nodepart->bones.begin(); itr != nodepart->bones.end(); itr++)
-			{
-				// write name
-				write(itr->first->id, file);
-				// write transform
-				float tmp[16];
-				for(int i = 0; i < 4; i++)
-				{
-					for(int j = 0; j < 4; j++)
-					{
-						tmp[i*4 + j] = itr->second.Double44()[i][j];
-					}
-				}
-				write(tmp, 16, file);
-			}
-		}	
-
-
-		// links
-		if(links.size() > 0)
-			write(static_cast<unsigned int>(links.size()), file);
-		else
-			return;
-		for(auto itr = links.begin(); itr != links.end(); itr++)
+            for(int i = 0 ; i < parts.size() ; i++ )
+            {
+                NodePart* nodepart = parts[i];
+                if(nodepart)
+                {
+                    if(nodepart->meshPart)
+                    {
+                        //meshpartid
+                        write(nodepart->meshPart->id, file);
+                    }
+                    else
+                    {
+                         write("null", file);
+                    }
+                    //materialid
+                    if(nodepart->material)
+                    {
+                        write(nodepart->material->id, file);
+                    }
+                    else
+                    {
+                         write("null", file);
+                    }
+                    // bone num
+                    unsigned int size = nodepart->bones.size();
+                    write(size, file);
+                    for(auto itr = nodepart->bones.begin(); itr != nodepart->bones.end(); itr++)
+                    {
+                        // write name
+                        write(itr->first->id, file);
+                        // write transform
+                        float tmp[16];
+                        for(int i = 0; i < 4; i++)
+                        {
+                            for(int j = 0; j < 4; j++)
+                            {
+                                tmp[i*4 + j] = itr->second.Double44()[i][j];
+                            }
+                        }
+                        write(tmp, 16, file);
+                    }
+                    // uvMapping
+                    size = nodepart->uvMapping.size();
+                    write(size, file);
+                    for(auto itr = nodepart->uvMapping.begin(); itr != nodepart->uvMapping.end(); itr++)
+                    {
+                        unsigned int size = itr->size();
+                        write(size, file);
+                        //TextureIndex
+                        for (auto tt = (*itr).begin(); tt != (*itr).end(); ++tt)
+                        {
+                            unsigned int index = nodepart->material->getTextureIndex(*tt);
+                            write(index, file);
+                        }
+                    }
+                }
+            }
+		}
+        // children
+        write(children.size(),file);
+		for(auto itr = children.begin(); itr != children.end(); itr++)
 		{
 			Node* node = *itr;
-			// idq
-			write(node->id, file);
-
-			// parent id
-			if(node->parent)
-				write(node->parent->id, file);
-			else
-				write(std::string(""), file);
-
-			// transform
-			write(node->transforms, 16,file);
+            if(node)
+            {
+                node->writeBinary(file);
+            }
 		}
 	}
-
 	void Animation::writeBinary(FILE* file)
 	{
-		object.fPosition = ftell(file);
-		// for NodeAnimation each keyframe
-		write(id, file);
+	    write(id, file);
 		write(length, file);
 		write(static_cast<unsigned int>(nodeAnimations.size()), file);
 
@@ -267,17 +376,11 @@ namespace modeldata {
 				Keyframe* keyframe = *itr1;
 				// write time
 				write(keyframe->time, file);
-
-				// write
-			//	if(keyframe->hasRotation)
 				write(keyframe->rotation, 4, file);
-			//	if(keyframe->hasScale)
 				write(keyframe->scale, 3, file);
-			//	if(keyframe->hasTranslation);
 				write(keyframe->translation, 3, file);
 			}
 		}
-	}
-
-
-} }
+    }
+} 
+}

@@ -22,7 +22,6 @@
 
 #include "../json/BaseJSONWriter.h"
 #include <map>
-
 #define ATTRIBUTE_UNKNOWN		0
 #define ATTRIBUTE_POSITION		1
 #define ATTRIBUTE_NORMAL		2
@@ -66,7 +65,6 @@ namespace modeldata {
 		"VERTEX_ATTRIB_BLEND_WEIGHT", "VERTEX_ATTRIB_BLEND_INDEX", "BLENDWEIGHT2", "BLENDWEIGHT3", "BLENDWEIGHT4", "BLENDWEIGHT5", "BLENDWEIGHT6", "BLENDWEIGHT7"
 	};
 
-
 	static const unsigned short AttributeTypeV2[]		= {ATTRIBUTE_TYPE_FLOAT, ATTRIBUTE_TYPE_FLOAT};
 	static const unsigned short AttributeTypeV4[]		= {ATTRIBUTE_TYPE_FLOAT, ATTRIBUTE_TYPE_FLOAT, ATTRIBUTE_TYPE_FLOAT, ATTRIBUTE_TYPE_FLOAT};
 	static const unsigned short AttributeTypeV3[]		= {ATTRIBUTE_TYPE_FLOAT, ATTRIBUTE_TYPE_FLOAT, ATTRIBUTE_TYPE_FLOAT};
@@ -98,9 +96,7 @@ namespace modeldata {
 		INIT_VECTOR(unsigned short, AttributeTypeBlend),	// Blendweight6
 		INIT_VECTOR(unsigned short, AttributeTypeBlend)	// Blendweight7
 	};
-
-	//mesh vertex attribute
-	struct MeshVertexAttrib
+     struct MeshVertexAttrib
 	{
 		//attribute size
 		int size;
@@ -113,47 +109,88 @@ namespace modeldata {
 
 		unsigned int usage;
 	};
-
-		
-	
-
 	#define ATTRIBUTE_SIZE(idx) (AttributeTypes[idx].size())
 
 	struct Attributes : public json::ConstSerializable {
 		unsigned long value;
-		std::map<std::string, MeshVertexAttrib> attributemap;
-		Attributes() : value(0) {
+        std::map<std::string, MeshVertexAttrib> attributemap;
+        Attributes() : value(0) 
+        {
+            MeshVertexAttrib v1;
+            v1.name = "VERTEX_ATTRIB_POSITION";
+            v1.size = 3;
+            v1.type = "GL_FLOAT";
+            attributemap["VERTEX_ATTRIB_POSITION"]= v1;
 
-		MeshVertexAttrib v1;
-		v1.name = "VERTEX_ATTRIB_POSITION";
-		v1.size = 3;
-		v1.type = "GL_FLOAT";
-		attributemap["VERTEX_ATTRIB_POSITION"]= v1;
+            v1.name = "VERTEX_ATTRIB_NORMAL";
+            v1.size = 3;
+            v1.type = "GL_FLOAT";
+            attributemap["VERTEX_ATTRIB_NORMAL"]= v1;
 
-		v1.name = "VERTEX_ATTRIB_NORMAL";
-		v1.size = 3;
-		v1.type = "GL_FLOAT";
-		attributemap["VERTEX_ATTRIB_NORMAL"]= v1;
+            v1.name = "VERTEX_ATTRIB_TEX_COORD";
+            v1.size = 2;
+            v1.type = "GL_FLOAT";
+            attributemap["VERTEX_ATTRIB_TEX_COORD"]= v1;
 
-		v1.name = "VERTEX_ATTRIB_TEX_COORD";
-		v1.size = 2;
-		v1.type = "GL_FLOAT";
-		attributemap["VERTEX_ATTRIB_TEX_COORD"]= v1;
+            v1.name = "TEXCOORD1";
+            v1.size = 2;
+            v1.type = "GL_FLOAT";
+            attributemap["TEXCOORD1"]= v1;
 
-		
-		v1.name = "VERTEX_ATTRIB_BLEND_WEIGHT";
-		v1.size = 4;
-		v1.type = "GL_FLOAT";
-		attributemap["VERTEX_ATTRIB_BLEND_WEIGHT"]= v1;
+            v1.name = "TEXCOORD2";
+            v1.size = 2;
+            v1.type = "GL_FLOAT";
+            attributemap["TEXCOORD2"]= v1;
 
-		v1.name = "VERTEX_ATTRIB_BLEND_INDEX";
-		v1.size = 4;
-		v1.type = "GL_FLOAT";
-		attributemap["VERTEX_ATTRIB_BLEND_INDEX"]= v1;
+            v1.name = "TEXCOORD3";
+            v1.size = 2;
+            v1.type = "GL_FLOAT";
+            attributemap["TEXCOORD3"]= v1;
 
-		}
+            v1.name = "TEXCOORD4";
+            v1.size = 2;
+            v1.type = "GL_FLOAT";
+            attributemap["TEXCOORD4"]= v1;
+
+            v1.name = "TEXCOORD5";
+            v1.size = 2;
+            v1.type = "GL_FLOAT";
+            attributemap["TEXCOORD5"]= v1;
+
+            v1.name = "TEXCOORD6";
+            v1.size = 2;
+            v1.type = "GL_FLOAT";
+            attributemap["TEXCOORD6"]= v1;
+
+            v1.name = "TEXCOORD7";
+            v1.size = 2;
+            v1.type = "GL_FLOAT";
+            attributemap["TEXCOORD7"]= v1;
 
 
+            v1.name = "VERTEX_ATTRIB_BLEND_WEIGHT";
+            v1.size = 4;
+            v1.type = "GL_FLOAT";
+            attributemap["VERTEX_ATTRIB_BLEND_WEIGHT"]= v1;
+
+            v1.name = "VERTEX_ATTRIB_BLEND_INDEX";
+            v1.size = 4;
+            v1.type = "GL_FLOAT";
+            attributemap["VERTEX_ATTRIB_BLEND_INDEX"]= v1;
+
+        
+
+           /* v1.name = "TANGENT";
+            v1.size = 3;
+            v1.type = "GL_FLOAT";
+            attributemap["TANGENT"]= v1;   
+
+            v1.name = "BINORMAL";
+            v1.size = 3;
+            v1.type = "GL_FLOAT";
+            attributemap["BINORMAL"]= v1;*/
+
+        }
 
 		Attributes(const unsigned long &v) : value(v) {}
 
@@ -291,7 +328,7 @@ namespace modeldata {
 		}
 
 		virtual void serialize(json::BaseJSONWriter &writer) const;
-		void writeBinary(FILE* file);
+        void writeBinary(FILE* file);
 	};
 } }
 

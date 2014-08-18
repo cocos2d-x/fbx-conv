@@ -96,7 +96,4 @@ void skipUint(FILE* file)
     fseek(file, sizeof(unsigned int), SEEK_CUR);
 }
 
-
-
-
 }

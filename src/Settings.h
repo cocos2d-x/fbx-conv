@@ -30,10 +30,9 @@ namespace fbxconv {
 #define FILETYPE_G3DJ			0x21
 #define FILETYPE_OUT_DEFAULT	FILETYPE_G3DB
 #define FILETYPE_IN_DEFAULT		FILETYPE_FBX
-#define FILETYPE_C3B			0X30
+ #define FILETYPE_C3B			0X30
 #define FILETYPE_C3J			0X31
 #define FILETYPE_ALL			0X32
-
 struct Settings {
 	std::string inFile;
 	int inType;
@@ -54,6 +53,8 @@ struct Settings {
 	int maxVertexCount;
 	/** The maximum allowed amount of indices in one mesh, only used when deciding to merge meshes. */
 	int maxIndexCount;
+    /** Whether to merge same attributes mesh. */
+    bool needReusableMesh;
 };
 
 }

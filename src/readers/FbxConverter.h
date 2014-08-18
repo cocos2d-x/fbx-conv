@@ -62,9 +62,8 @@ namespace readers {
 		// Helper maps/lists, resources in those will not be disposed
 		std::map<FbxGeometry *, FbxMeshInfo *> fbxMeshMap;
 		std::map<FbxSurfaceMaterial *, Material *> materialsMap;
-		std::vector<Material*> materials;
 		std::map<std::string, TextureFileInfo> textureFiles;
-		std::map<FbxMeshInfo *, std::vector<std::vector<MeshPart *> > > meshParts;
+		std::map<FbxMeshInfo *, std::vector<std::vector<MeshPart *> > > meshParts; //[FbxMeshInfo][materialIndex][boneIndex]
 		std::map<const FbxNode *, Node *> nodeMap;
 
 		Settings *settings;
@@ -112,7 +111,7 @@ namespace readers {
 
 			if (importer->Initialize(settings->inFile.c_str(), -1, manager->GetIOSettings())) {
 				importer->GetAxisInfo(&axisSystem, &systemUnits);
-					scene = FbxScene::Create(manager,"__FBX_SCENE__");
+				scene = FbxScene::Create(manager,"__FBX_SCENE__");
 				importer->Import(scene);
 			} else {
 				log->error(fbxconv::log::eSourceLoadFbxSdk, "Unknown");
@@ -173,16 +172,15 @@ namespace readers {
 					uvTransforms[i].translate(0.f, 1.f).scale(1.f, -1.f);
 			}
 
-		//	for (std::map<FbxSurfaceMaterial *, Material *>::iterator it = materialsMap.begin(); it != materialsMap.end(); ++it) 
-			for (auto it = materials.begin(); it != materials.end(); ++it) {
-				model->materials.push_back(*it);
-				for (std::vector<Material::Texture *>::iterator tt = (*it)->textures.begin(); tt != (*it)->textures.end(); ++tt)
+			for (std::map<FbxSurfaceMaterial *, Material *>::iterator it = materialsMap.begin(); it != materialsMap.end(); ++it) {
+				model->materials.push_back(it->second);
+				for (std::vector<Material::Texture *>::iterator tt = it->second->textures.begin(); tt != it->second->textures.end(); ++tt)
 					(*tt)->path = textureFiles[(*tt)->path].path;
 			}
 			addMesh(model);
 			addNode(model);
 			for (std::vector<Node *>::iterator itr = model->nodes.begin(); itr != model->nodes.end(); ++itr)
-				updateNode(model, *itr, *itr, (*itr)->links);
+				updateNode(model, *itr);
 			addAnimations(model, scene);
 			return true;
 		}
@@ -207,24 +205,17 @@ namespace readers {
 				model->nodes.push_back(n);
 			else
 				parent->children.push_back(n);
-			
-			// save parent.
-			n->parent = parent;		
 
 			for (int i = 0; i < node->GetChildCount(); i++)
 				addNode(model, n, node->GetChild(i));
 		}
 
-		void updateNode(Model * const &model, Node * const &node, Node* const& parent,std::vector<Node *>& links) {
-			if(node != parent)
-				node->parent = parent;
-
-
+		void updateNode(Model * const &model, Node * const &node) {
 			FbxAMatrix &m = node->source->EvaluateLocalTransform();
 			set<3>(node->transform.translation, m.GetT().mData);
 			set<4>(node->transform.rotation, m.GetQ().mData);
 			set<3>(node->transform.scale, m.GetS().mData);
-			for(int i= 0; i < 4; i++)
+            for(int i= 0; i < 4; i++)
 			{
 				for(int j = 0; j < 4; j++)
 				node->transforms[i*4 + j] = m.Get(i,j); 
@@ -237,28 +228,31 @@ namespace readers {
 				for (int i = 0; i < matCount && i < parts.size(); i++) {
 					Material *material = materialsMap[node->source->GetMaterial(i)];
 					for (int j = 0; j < parts[i].size(); j++) {
-						NodePart *nodePart = new NodePart();
-						node->parts.push_back(nodePart);
-						nodePart->material = material;
-						nodePart->meshPart = parts[i][j];
-						for (int k = 0; k < nodePart->meshPart->sourceBones.size(); k++) {
-							if (nodeMap.find(nodePart->meshPart->sourceBones[k]->GetLink()) != nodeMap.end()) {
-								std::pair<Node*, FbxAMatrix> p;
-								p.first = nodeMap[nodePart->meshPart->sourceBones[k]->GetLink()];
-								getBindPose(node->source, nodePart->meshPart->sourceBones[k], p.second);
-								nodePart->bones.push_back(p);
-							} else {
-								log->warning(log::wSourceConvertFbxInvalidBone, node->id.c_str(), nodePart->meshPart->sourceBones[k]->GetLink()->GetName());
+						if (parts[i][j]) {
+							NodePart *nodePart = new NodePart();
+							node->parts.push_back(nodePart);
+							nodePart->material = material;
+							nodePart->meshPart = parts[i][j];
+							for (int k = 0; k < nodePart->meshPart->sourceBones.size(); k++) {
+								if (nodeMap.find(nodePart->meshPart->sourceBones[k]->GetLink()) != nodeMap.end()) {
+									std::pair<Node*, FbxAMatrix> p;
+									p.first = nodeMap[nodePart->meshPart->sourceBones[k]->GetLink()];
+									getBindPose(node->source, nodePart->meshPart->sourceBones[k], p.second);
+									nodePart->bones.push_back(p);
+								}
+								else {
+									log->warning(log::wSourceConvertFbxInvalidBone, node->id.c_str(), nodePart->meshPart->sourceBones[k]->GetLink()->GetName());
+								}
 							}
-						}
 
-						nodePart->uvMapping.resize(meshInfo->uvCount);
-						for (unsigned int k = 0; k < meshInfo->uvCount; k++) {
-							for (std::vector<Material::Texture *>::iterator it = material->textures.begin(); it != material->textures.end(); ++it) {
-								FbxFileTexture *texture = (*it)->source;
-								TextureFileInfo &info = textureFiles[texture->GetFileName()];
-								if (meshInfo->uvMapping[k] == texture->UVSet.Get().Buffer()) {
-									nodePart->uvMapping[k].push_back(*it);
+							nodePart->uvMapping.resize(meshInfo->uvCount);
+							for (unsigned int k = 0; k < meshInfo->uvCount; k++) {
+								for (std::vector<Material::Texture *>::iterator it = material->textures.begin(); it != material->textures.end(); ++it) {
+									FbxFileTexture *texture = (*it)->source;
+									TextureFileInfo &info = textureFiles[texture->GetFileName()];
+									if (meshInfo->uvMapping[k] == texture->UVSet.Get().Buffer()) {
+										nodePart->uvMapping[k].push_back(*it);
+									}
 								}
 							}
 						}
@@ -267,15 +261,7 @@ namespace readers {
 			}
 
 			for (std::vector<Node *>::iterator itr = node->children.begin(); itr != node->children.end(); ++itr)
-			{
-				links.push_back(*itr);
-			}
-
-			for (std::vector<Node *>::iterator itr = node->children.begin(); itr != node->children.end(); ++itr)
-			{
-				//parent->links.push_back(*itr);
-				updateNode(model, *itr, node,links);
-			}
+				updateNode(model, *itr);
 		}
 
 		FbxAMatrix convertMatrix(const FbxMatrix& mat)
@@ -312,8 +298,7 @@ namespace readers {
 			FbxAMatrix init;
 			cluster->GetTransformLinkMatrix(init);
 			FbxAMatrix relinit = init.Inverse() * reference;
-			out = relinit;//.Inverse();
-			//out = init;//init.Inverse();
+			out = relinit;
 		}
 
 		// Iterate throught the nodes (from the leaves up) and the meshes it references. This might help that meshparts that are closer together are more likely to be merged
@@ -325,35 +310,38 @@ namespace readers {
 			for (int i = 0; i < childCount; i++)
 				addMesh(model, node->GetChild(i));
 
-			if (fbxMeshMap.find(node->GetGeometry()) != fbxMeshMap.end())
-				addMesh(model, fbxMeshMap[node->GetGeometry()], node);
+			FbxGeometry *geometry = node->GetGeometry();
+			if (geometry) {
+				if (fbxMeshMap.find(geometry) != fbxMeshMap.end())
+					addMesh(model, fbxMeshMap[geometry], node);
+				else
+					log->debug("Geometry(%X) of %s not found in fbxMeshMap[size=%d]", (unsigned long)(geometry), node->GetName(), fbxMeshMap.size());
+			}
+			
 		}
 
 		void addMesh(Model * const &model, FbxMeshInfo * const &meshInfo, FbxNode * const &node) {
 			if (meshParts.find(meshInfo) != meshParts.end())
 				return;
-
+            //liuliang delete  no use attributes
+            meshInfo->attributes.remove(ATTRIBUTE_TANGENT);
+            meshInfo->attributes.remove(ATTRIBUTE_BINORMAL);
+            //liuliang delete  no use attributes
 			Mesh *mesh = findReusableMesh(model, meshInfo->attributes, meshInfo->polyCount * 3);
 			if (mesh == 0) {
 				mesh = new Mesh();
 				model->meshes.push_back(mesh);
 				mesh->attributes = meshInfo->attributes;
 				mesh->vertexSize = mesh->attributes.size();
-				mesh->id = node->GetName();
 			}
-
 			std::vector<std::vector<MeshPart *> > &parts = meshParts[meshInfo];
 			parts.resize(meshInfo->meshPartCount);
-			int idx = 0;
 			for (int i = 0; i < meshInfo->meshPartCount; i++) {
 				const int n = meshInfo->partBones[i].size();
 				const int m = n == 0 ? 1 : n;
 				parts[i].resize(m);
 				for (int j = 0; j < m; j++) {
-					std::stringstream ss;
-					ss << meshInfo->id.c_str() <<  "_part" << (++idx);
 					MeshPart *part = new MeshPart();
-					part->id = ss.str();
 					part->primitiveType = PRIMITIVETYPE_TRIANGLES;
 					parts[i][j] = part;
 					mesh->parts.push_back(part);
@@ -367,10 +355,8 @@ namespace readers {
 			unsigned int pidx = 0;
 			for (unsigned int poly = 0; poly < meshInfo->polyCount; poly++) {
 				unsigned int ps = meshInfo->mesh->GetPolygonSize(poly);
-				unsigned int x = meshInfo->polyPartMap[poly];
-				unsigned int y = meshInfo->polyPartBonesMap[poly];
 				MeshPart * const &part = parts[meshInfo->polyPartMap[poly]][meshInfo->polyPartBonesMap[poly]];
-				Material * const &material = materialsMap[node->GetMaterial(meshInfo->polyPartMap[poly])];
+				//Material * const &material = materialsMap[node->GetMaterial(meshInfo->polyPartMap[poly])];
 
 				for (unsigned int i = 0; i < ps; i++) {
 					const unsigned int v = meshInfo->mesh->GetPolygonVertex(poly, i);
@@ -379,15 +365,36 @@ namespace readers {
 					pidx++;
 				}
 			}
+
+			int idx = 0;
+			for (int i = parts.size() - 1; i >= 0; --i) {
+				for (int j = parts[i].size() - 1; j >= 0; --j) {
+					MeshPart *part = parts[i][j];
+					if (!part->indices.size()) {
+						parts[i][j] = 0;
+						mesh->parts.erase(std::remove(mesh->parts.begin(), mesh->parts.end(), part), mesh->parts.end());
+						log->warning(log::wSourceConvertFbxEmptyMeshpart, node->GetName(), node->GetMaterial(i)->GetName());
+						delete part;
+					}
+					else {
+						std::stringstream ss;
+						ss << meshInfo->id.c_str() << "_part" << (++idx);
+						part->id = ss.str();
+					}
+				}
+			}
+
 			delete[] vertex;
 		}
 
 		Mesh *findReusableMesh(Model * const &model, const Attributes &attributes, const unsigned int &vertexCount) {
-			for (std::vector<Mesh *>::iterator itr = model->meshes.begin(); itr != model->meshes.end(); ++itr)
-				if ((*itr)->attributes == attributes && 
-					((*itr)->vertices.size() / (*itr)->vertexSize) + vertexCount <= settings->maxVertexCount && 
-					(*itr)->indexCount() + vertexCount <= settings->maxIndexCount)
-					return (*itr);
+            if (settings->needReusableMesh) {
+                for (std::vector<Mesh *>::iterator itr = model->meshes.begin(); itr != model->meshes.end(); ++itr)
+                    if ((*itr)->attributes == attributes && 
+                        ((*itr)->vertices.size() / (*itr)->vertexSize) + vertexCount <= settings->maxVertexCount && 
+                        (*itr)->indexCount() + vertexCount <= settings->maxIndexCount)
+                        return (*itr);
+            }
 			return 0;
 		}
 
@@ -452,40 +459,46 @@ namespace readers {
 		}
 
 		void prefetchMeshes() {
+			{
+				int cnt = scene->GetGeometryCount();
+				FbxGeometryConverter converter(manager);
+				std::vector<FbxGeometry *> triangulate;
+				for (int i = 0; i < scene->GetGeometryCount(); ++i) {
+					FbxGeometry * geometry = scene->GetGeometry(i);
+					if (!geometry->Is<FbxMesh>() || !((FbxMesh*)geometry)->IsTriangleMesh())
+						triangulate.push_back(geometry);
+				}
+				for (std::vector<FbxGeometry *>::iterator it = triangulate.begin(); it != triangulate.end(); ++it)
+				{
+					log->status(log::sSourceConvertFbxTriangulate, getGeometryName(*it), (*it)->GetClassId().GetName());
+					FbxNodeAttribute * const attr = converter.Triangulate(*it, true);
+				}
+			}
 			int cnt = scene->GetGeometryCount();
-			FbxGeometryConverter converter(manager);
-			for (int i = 0; i < cnt; i++) {
-				FbxGeometry * const geometry = scene->GetGeometry(i);
-				//std::string name = geometry->GetElementMaterial(0)->GetName();
+			for (int i = 0; i < cnt; ++i) {
+				FbxGeometry * geometry = scene->GetGeometry(i);
 				if (fbxMeshMap.find(geometry) == fbxMeshMap.end()) {
-					FbxMesh *mesh;
-					if (geometry->Is<FbxMesh>() && ((FbxMesh*)geometry)->IsTriangleMesh())
-						mesh = (FbxMesh*)geometry;
-					else {
-						log->status(log::sSourceConvertFbxTriangulate, getGeometryName(geometry), geometry->GetClassId().GetName());
-						//printf("Triangulating %s geometry\n", geometry->GetClassId().GetName());
-						FbxNodeAttribute * const attr = converter.Triangulate(geometry, false);
-						if (attr->Is<FbxMesh>())
-							mesh = (FbxMesh*)attr;
-						else {
-							log->warning(log::wSourceConvertFbxCantTriangulate, geometry->GetClassId().GetName());
-							continue;
-						}
+					if (!geometry->Is<FbxMesh>()) {
+						log->warning(log::wSourceConvertFbxCantTriangulate, geometry->GetClassId().GetName());
+						continue;
 					}
+					FbxMesh *mesh = (FbxMesh*)geometry;
 					int indexCount = (mesh->GetPolygonCount() * 3);
-					log->info(log::iSourceConvertFbxMeshInfo, getGeometryName(geometry), mesh->GetPolygonCount(), indexCount, mesh->GetControlPointsCount());
+					log->verbose(log::iSourceConvertFbxMeshInfo, getGeometryName(mesh), mesh->GetPolygonCount(), indexCount, mesh->GetControlPointsCount());
 					if (indexCount > settings->maxIndexCount)
 						log->warning(log::wSourceConvertFbxExceedsIndices, indexCount, settings->maxIndexCount);
+					if (mesh->GetElementMaterialCount() <= 0) {
+						log->error(log::wSourceConvertFbxNoMaterial, getGeometryName(mesh));
+						continue;
+					}
 					FbxMeshInfo * const info = new FbxMeshInfo(log, mesh, settings->packColors, settings->maxVertexBonesCount, settings->forceMaxVertexBoneCount, settings->maxNodePartBonesCount);
 					meshInfos.push_back(info);
-					fbxMeshMap[geometry] = info;
+					fbxMeshMap[mesh] = info;
 					if (info->bonesOverflow)
 						log->warning(log::wSourceConvertFbxExceedsBones);
-				/*	if (info->elementMaterialCount <= 0) {
-						log->error(log::eSourceConvertFbxNoMaterial, getGeometryName(geometry));
-						scene = 0;
-						break;
-					}*/
+				}
+				else {
+					log->warning(log::wSourceConvertFbxDuplicateMesh, getGeometryName(geometry));
 				}
 			}
 		}
@@ -495,11 +508,7 @@ namespace readers {
 			for (int i = 0; i < cnt; i++) {
 				FbxSurfaceMaterial * const &material = scene->GetMaterial(i);
 				if (materialsMap.find(material) == materialsMap.end())
-				{
-					Material* mat = createMaterial(material);
-					materialsMap[material] = mat;
-					materials.push_back(mat);
-				}
+					materialsMap[material] = createMaterial(material);
 			}
 		}
 
@@ -509,41 +518,52 @@ namespace readers {
 			result->id = material->GetName();
 
 			if ((!material->Is<FbxSurfaceLambert>()) || GetImplementation(material, FBXSDK_IMPLEMENTATION_HLSL) || GetImplementation(material, FBXSDK_IMPLEMENTATION_CGFX)) {
-				printf("Skipping unsupported material: %s, replacing it by a red diffuse color, because:\n", result->id.c_str());
 				if (!material->Is<FbxSurfaceLambert>())
-					printf("- Material must extend FbxSurfaceLambert\n");
+					log->warning(log::wSourceConvertFbxMaterialUnknown, result->id.c_str());
 				if (GetImplementation(material, FBXSDK_IMPLEMENTATION_HLSL))
-					printf("- HLSL shading implementation not supported");
+					log->warning(log::wSourceConvertFbxMaterialHLSL, result->id.c_str());
 				if (GetImplementation(material, FBXSDK_IMPLEMENTATION_CGFX))
-					printf("- CgFX shading implementation not supported");
-				result->diffuse[0] = 1.f;
-				result->diffuse[1] = 0.f;
-				result->diffuse[2] = 0.f;
+					log->warning(log::wSourceConvertFbxMaterialCgFX, result->id.c_str());
+				result->diffuse.set(1.f, 0.f, 0.f);
 				return result;
 			}
 
 			FbxSurfaceLambert * const &lambert = (FbxSurfaceLambert *)material;
-			set<3>(result->ambient, lambert->Ambient.Get().mData);
-			set<3>(result->diffuse, lambert->Diffuse.Get().mData);
-			set<3>(result->emissive, lambert->Emissive.Get().mData);
+			if (lambert->Ambient.IsValid())
+				result->ambient.set(lambert->Ambient.Get().mData);
+			if (lambert->Diffuse.IsValid())
+				result->diffuse.set(lambert->Diffuse.Get().mData);
+			if (lambert->Emissive.IsValid())
+				result->emissive.set(lambert->Emissive.Get().mData);
 
 			addTextures(result->textures, lambert->Ambient, Material::Texture::Ambient);
 			addTextures(result->textures, lambert->Diffuse, Material::Texture::Diffuse);
 			addTextures(result->textures, lambert->Emissive, Material::Texture::Emissive);
 			addTextures(result->textures, lambert->Bump, Material::Texture::Bump);
 			addTextures(result->textures, lambert->NormalMap, Material::Texture::Normal);
-			FbxDouble factor = lambert->TransparencyFactor.Get();
-			FbxDouble3 color = lambert->TransparentColor.Get();
-			FbxDouble trans = (color[0] * factor + color[1] * factor + color[2] * factor) / 3.0;
-			result->opacity = 1.f - (float)trans;
+
+			if (lambert->TransparencyFactor.IsValid() && lambert->TransparentColor.IsValid()) {
+				FbxDouble factor = 1.f - lambert->TransparencyFactor.Get();
+				FbxDouble3 color = lambert->TransparentColor.Get();
+				FbxDouble trans = (color[0] * factor + color[1] * factor + color[2] * factor) / 3.0;
+				result->opacity.set((float)trans);
+			}
+			else if (lambert->TransparencyFactor.IsValid())
+				result->opacity.set(1.f - lambert->TransparencyFactor.Get());
+			else if (lambert->TransparentColor.IsValid()) {
+				FbxDouble3 color = lambert->TransparentColor.Get();
+				result->opacity.set((color[0] + color[1] + color[2]) / 3.0);
+			}
 
 			if (!material->Is<FbxSurfacePhong>())
 				return result;
 
 			FbxSurfacePhong * const &phong = (FbxSurfacePhong *)material;
 
-			set<3>(result->specular, phong->Specular.Get().mData);
-			result->shininess = (float)phong->Shininess.Get();
+			if (phong->Specular.IsValid())
+				result->specular.set(phong->Specular.Get().mData);
+			if (phong->Shininess.IsValid())
+				result->shininess.set((float)phong->Shininess.Get());
 
 			addTextures(result->textures, phong->Specular, Material::Texture::Specular);
 			addTextures(result->textures, phong->Reflection, Material::Texture::Reflection);
@@ -566,6 +586,8 @@ namespace readers {
 			set<2>(result->uvTranslation, texture->GetUVTranslation().mData);
 			set<2>(result->uvScale, texture->GetUVScaling().mData);
 			result->usage = usage;
+            result->wrapModeU = texture->GetWrapModeU();
+            result->wrapModeV = texture->GetWrapModeV();
 			if (textureFiles.find(result->path) == textureFiles.end())
 				textureFiles[result->path].path = result->path;
 			textureFiles[result->path].textures.push_back(result);
@@ -650,11 +672,9 @@ namespace readers {
 				nodeAnim->scale = (*itr).second.scale;
 				const float stepSize = (*itr).second.framerate <= 0.f ? (*itr).second.stop - (*itr).second.start : 1000.f / (*itr).second.framerate;
 				const float last = (*itr).second.stop + stepSize * 0.5f;
-				
 				FbxTime fbxTime;
-				float time;
 				// Calculate all keyframes upfront
-				for (time = (*itr).second.start; time <= last; time += stepSize) {
+				for (float time = (*itr).second.start; time <= last; time += stepSize) {
 					time = std::min(time, (*itr).second.stop);
 					fbxTime.SetMilliSeconds((FbxLongLong)time);
 					Keyframe *kf = new Keyframe();
@@ -675,13 +695,8 @@ namespace readers {
 					kf->scale[2] = (float)v.mData[2];
 					frames.push_back(kf);
 				}
-				
-                if (frames.size() > 0)
-                {
-                    animation->length = frames[frames.size()-1]->time;
-                    animation->length /= 1000;
-                }
-				
+                animation->length = frames[frames.size()-1]->time;
+				animation->length /= 1000;
 				// Only add keyframes really needed
 				addKeyframes(nodeAnim, frames);
 				if (nodeAnim->rotate || nodeAnim->scale || nodeAnim->translate)
@@ -726,7 +741,7 @@ namespace readers {
 			if (!keyframes.empty()) {
 				anim->keyframes.push_back(keyframes[0]);
 				const int last = (int)keyframes.size()-1;
-				float max = keyframes[last]->time;
+                float max = keyframes[last]->time;
 				Keyframe *k1 = keyframes[0], *k2, *k3;
 				for (int i = 1; i < last; i++) {
 					k2 = keyframes[i];
@@ -735,19 +750,17 @@ namespace readers {
 					if ((translate && !isLerp(k1->translation, k1->time, k2->translation, k2->time, k3->translation, k3->time, 3)) ||
 						(rotate && !isLerp(k1->rotation, k1->time, k2->rotation, k2->time, k3->rotation, k3->time, 3)) || // FIXME use slerp for quaternions
 						(scale && !isLerp(k1->scale, k1->time, k2->scale, k2->time, k3->scale, k3->time, 3))) {
-
-							k2->time /= max;
+                            k2->time /= max;
 							anim->keyframes.push_back(k2);
 							k1 = k2;
 					} else
 						delete k2;
 				}
 				if (last > 0)
-				{	
-					keyframes[last]->time = 1;
+                {
+                    keyframes[last]->time = 1;
 					anim->keyframes.push_back(keyframes[last]);
-				}
-
+                }
 			}
 		}
 

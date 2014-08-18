@@ -7,10 +7,6 @@
 
 namespace fbxconv {
 
-const unsigned char GPB_VERSION[2] = {0, 2};
-
-
-
 class CKBFile
 {
 public:

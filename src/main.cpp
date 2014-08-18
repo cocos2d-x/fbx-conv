@@ -37,9 +37,6 @@
 using namespace fbxconv;
 using namespace fbxconv::modeldata;
 using namespace fbxconv::readers;
-
-
-
 int process(int argc, const char** argv) {
 	log::Log log(new log::DefaultMessages(), -1);
 	FbxConv conv(&log);

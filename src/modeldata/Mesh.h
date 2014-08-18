@@ -25,7 +25,6 @@
 #include "Attributes.h"
 #include "../json/BaseJSONWriter.h"
 #include "Reference.h"
-
 namespace fbxconv {
 namespace modeldata {
 	/** A mesh is responsable for freeing all parts and vertices it contains. */
@@ -34,15 +33,13 @@ namespace modeldata {
 		Attributes attributes;
 		/** the size (in number of floats) of each vertex */
 		unsigned int vertexSize;
-		/** the number of vertices this mesh contains */
+		/** the vertices that this mesh contains */
 		std::vector<float> vertices;
 		/** hash lookup table for faster duplicate vertex checking */
 		std::vector<unsigned int> hashes;
 		/** the indexed parts of this mesh */
 		std::vector<MeshPart *> parts;
-
-		std::string id;
-
+        std::string id;
 		/** ctor */
 		Mesh() : attributes(0), vertexSize(0) {}
 
@@ -55,7 +52,7 @@ namespace modeldata {
 				parts.push_back(new MeshPart(**itr));
 		}
 
-		virtual ~Mesh() {
+		~Mesh() {
 			clear();
 		}
 
@@ -99,18 +96,16 @@ namespace modeldata {
 					return false;
 			return true;
 		}
-	
-		ObjRef object;
+        ObjRef object;
 		ObjRef* GetObj() 
 		{
 			object.tpyeid = MESH_ID;
-			object.id = id;
 			object.fPosition = 0;
+            object.id = id+"mesh";
 			return &object;
 		}
-
 		virtual void serialize(json::BaseJSONWriter &writer) const;
-		void writeBinary(FILE* file);
+        void writeBinary(FILE* file);
 	};
 }
 }
