@@ -99,7 +99,7 @@ namespace modeldata {
      struct MeshVertexAttrib
 	{
 		//attribute size
-		int size;
+		unsigned int size;
 		//GL_FLOAT
 		std::string type;
 		//VERTEX_ATTRIB_POSITION,VERTEX_ATTRIB_COLOR,VERTEX_ATTRIB_TEX_COORD,VERTEX_ATTRIB_NORMAL, VERTEX_ATTRIB_BLEND_WEIGHT, VERTEX_ATTRIB_BLEND_INDEX, GLProgram for detail
@@ -107,7 +107,7 @@ namespace modeldata {
 		//size in bytes
 		unsigned int attribSizeBytes;
 
-		unsigned int usage;
+		//unsigned int usage;
 	};
 	#define ATTRIBUTE_SIZE(idx) (AttributeTypes[idx].size())
 

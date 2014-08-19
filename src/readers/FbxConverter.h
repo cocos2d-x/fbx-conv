@@ -326,6 +326,7 @@ namespace readers {
             //liuliang delete  no use attributes
             meshInfo->attributes.remove(ATTRIBUTE_TANGENT);
             meshInfo->attributes.remove(ATTRIBUTE_BINORMAL);
+      
             //liuliang delete  no use attributes
 			Mesh *mesh = findReusableMesh(model, meshInfo->attributes, meshInfo->polyCount * 3);
 			if (mesh == 0) {
