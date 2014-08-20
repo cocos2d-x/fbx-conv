@@ -704,15 +704,10 @@ namespace readers {
 					kf->scale[2] = (float)v.mData[2];
 					frames.push_back(kf);
 				}
-                if(frames.size()>0)
-                {
-                    animation->length = frames[frames.size()-1]->time;
-				    animation->length /= 1000;
-                }
-                else
-                {
-                    animation->length=0;
-                }
+               
+                animation->length = frames[frames.size()-1]->time;
+			    animation->length /= 1000;
+                
 				// Only add keyframes really needed
 				addKeyframes(nodeAnim, frames);
 				if (nodeAnim->rotate || nodeAnim->scale || nodeAnim->translate)
