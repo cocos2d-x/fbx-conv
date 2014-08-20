@@ -61,7 +61,7 @@ namespace fbxconv {
 namespace modeldata {
 	static const char * AttributeNames[] = {
 		"UNKNOWN", "VERTEX_ATTRIB_POSITION", "VERTEX_ATTRIB_NORMAL", "COLOR", "COLORPACKED", "TANGENT", "BINORMAL",
-		"VERTEX_ATTRIB_TEX_COORD", "TEXCOORD1", "TEXCOORD2", "TEXCOORD3", "TEXCOORD4", "TEXCOORD5", "TEXCOORD6", "TEXCOORD7",
+		"VERTEX_ATTRIB_TEX_COORD", "VERTEX_ATTRIB_TEX_COORD1", "VERTEX_ATTRIB_TEX_COORD2", "VERTEX_ATTRIB_TEX_COORD3", "VERTEX_ATTRIB_TEX_COORD4", "VERTEX_ATTRIB_TEX_COORD5", "VERTEX_ATTRIB_TEX_COORD6", "VERTEX_ATTRIB_TEX_COORD7",
 		"VERTEX_ATTRIB_BLEND_WEIGHT", "VERTEX_ATTRIB_BLEND_INDEX", "BLENDWEIGHT2", "BLENDWEIGHT3", "BLENDWEIGHT4", "BLENDWEIGHT5", "BLENDWEIGHT6", "BLENDWEIGHT7"
 	};
 
@@ -105,7 +105,7 @@ namespace modeldata {
 		//VERTEX_ATTRIB_POSITION,VERTEX_ATTRIB_COLOR,VERTEX_ATTRIB_TEX_COORD,VERTEX_ATTRIB_NORMAL, VERTEX_ATTRIB_BLEND_WEIGHT, VERTEX_ATTRIB_BLEND_INDEX, GLProgram for detail
 		std::string name;
 		//size in bytes
-		unsigned int attribSizeBytes;
+		//unsigned int attribSizeBytes;
 
 		//unsigned int usage;
 	};
@@ -132,40 +132,40 @@ namespace modeldata {
             v1.type = "GL_FLOAT";
             attributemap["VERTEX_ATTRIB_TEX_COORD"]= v1;
 
-            v1.name = "TEXCOORD1";
+            v1.name = "VERTEX_ATTRIB_TEX_COORD1";
             v1.size = 2;
             v1.type = "GL_FLOAT";
-            attributemap["TEXCOORD1"]= v1;
+            attributemap["VERTEX_ATTRIB_TEX_COORD1"]= v1;
 
-            v1.name = "TEXCOORD2";
+            v1.name = "VERTEX_ATTRIB_TEX_COORD2";
             v1.size = 2;
             v1.type = "GL_FLOAT";
-            attributemap["TEXCOORD2"]= v1;
+            attributemap["VERTEX_ATTRIB_TEX_COORD2"]= v1;
 
-            v1.name = "TEXCOORD3";
+            v1.name = "VERTEX_ATTRIB_TEX_COORD3";
             v1.size = 2;
             v1.type = "GL_FLOAT";
-            attributemap["TEXCOORD3"]= v1;
+            attributemap["VERTEX_ATTRIB_TEX_COORD3"]= v1;
 
-            v1.name = "TEXCOORD4";
+            v1.name = "VERTEX_ATTRIB_TEX_COORD4";
             v1.size = 2;
             v1.type = "GL_FLOAT";
-            attributemap["TEXCOORD4"]= v1;
+            attributemap["VERTEX_ATTRIB_TEX_COORD4"]= v1;
 
-            v1.name = "TEXCOORD5";
+            v1.name = "VERTEX_ATTRIB_TEX_COORD5";
             v1.size = 2;
             v1.type = "GL_FLOAT";
-            attributemap["TEXCOORD5"]= v1;
+            attributemap["VERTEX_ATTRIB_TEX_COORD5"]= v1;
 
-            v1.name = "TEXCOORD6";
+            v1.name = "VERTEX_ATTRIB_TEX_COORD6";
             v1.size = 2;
             v1.type = "GL_FLOAT";
-            attributemap["TEXCOORD6"]= v1;
+            attributemap["VERTEX_ATTRIB_TEX_COORD6"]= v1;
 
-            v1.name = "TEXCOORD7";
+            v1.name = "VERTEX_ATTRIB_TEX_COORD7";
             v1.size = 2;
             v1.type = "GL_FLOAT";
-            attributemap["TEXCOORD7"]= v1;
+            attributemap["VERTEX_ATTRIB_TEX_COORD7"]= v1;
 
 
             v1.name = "VERTEX_ATTRIB_BLEND_WEIGHT";

@@ -122,7 +122,7 @@ struct FbxConvCommand {
 		printf("<input>  : The filename of the file to convert.\n");
 		printf("<output> : The filename of the converted file.\n");
 		printf("\n");
-		printf("<type>   : FBX, G3DJ (json) or G3DB (binary).\n");
+		printf("<type>   : FBX, c3t (json) or c3b (binary).\n");
 	}
 private:
 	void validate() {

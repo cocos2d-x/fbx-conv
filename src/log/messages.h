@@ -30,7 +30,7 @@ LOG_START_MESSAGES(DefaultMessages)
 LOG_SET_MSG(iNoError,							"No error")
 
 LOG_SET_MSG(iVersion,							"%d.%02d.%s x%d (%s)")
-LOG_SET_MSG(iNameAndVersion,					"FBX to G3Dx converter, version %d.%02d.%s x%d (%s)")
+LOG_SET_MSG(iNameAndVersion,					"FBX to c3x converter, version %d.%02d.%s x%d (%s)")
 
 LOG_SET_MSG(eCommandLineUnknownOption,			"Unknown command line option: %s")
 LOG_SET_MSG(eCommandLineUnknownArgument,		"Unknown command line argument: %s")
@@ -68,8 +68,8 @@ LOG_SET_MSG(eSourceConvert,						"Error converting source file")
 LOG_SET_MSG(sSourceClose,						"Closing source file")
 LOG_SET_MSG(eSourceClose,						"Error closing source file")
 
-LOG_SET_MSG(sExportToG3DB,						"Exporting to G3DB file: %s")
-LOG_SET_MSG(sExportToG3DJ,						"Exporting to G3DJ file: %s")
+LOG_SET_MSG(sExportToG3DB,						"Exporting to c3b file: %s")
+LOG_SET_MSG(sExportToG3DJ,						"Exporting to c3t file: %s")
 LOG_SET_MSG(sExportClose,						"Closing exported file")
 LOG_SET_MSG(eExportFiletypeUnknown,				"Unknown target filetype")
 
