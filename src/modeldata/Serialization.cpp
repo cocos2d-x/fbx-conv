@@ -47,9 +47,9 @@ static const char* getPrimitiveTypeString(const int &primitiveTypeId) {
 static const char* getWrapModeUseString(const FbxFileTexture::EWrapMode &textureUse)
 {
     switch(textureUse){
-	case FbxFileTexture::EWrapMode::eRepeat:
+	case FbxFileTexture::eRepeat:
 		return "REPEAT";
-	case FbxFileTexture::EWrapMode::eClamp:
+	case FbxFileTexture::eClamp:
 		return "CLAMP";
 	default:
 		return "UNKNOWN";
@@ -130,12 +130,15 @@ void Attributes::serialize(json::BaseJSONWriter &writer) const {
 		MeshVertexAttrib v;
 		std::string key = name(i);
 		v = attributemap.find(key)->second;
+       
 		writer << "size" << v.size;
 		writer << "type" << v.type;
 		writer << "attribute" << v.name;
 		writer << json::end;
-		if(i >=4)
-			break;
+        if(key == "VERTEX_ATTRIB_BLEND_INDEX")
+        {
+            break;
+        }
 	}
 	writer.end();
 }

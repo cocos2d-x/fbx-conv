@@ -42,9 +42,9 @@ namespace modeldata {
     static const char* getWrapModeUseString(const FbxFileTexture::EWrapMode &textureUse)
     {
         switch(textureUse){
-        case FbxFileTexture::EWrapMode::eRepeat:
+        case FbxFileTexture::eRepeat:
             return "REPEAT";
-        case FbxFileTexture::EWrapMode::eClamp:
+        case FbxFileTexture::eClamp:
             return "CLAMP";
         default:
             return "UNKNOWN";
@@ -151,103 +151,27 @@ namespace modeldata {
     }
 	void Attributes::writeBinary(FILE* file)
 	{
-		
-		 enum
-		{
-        VERTEX_ATTRIB_POSITION,
-        VERTEX_ATTRIB_COLOR,
-        VERTEX_ATTRIB_TEX_COORD,
-        VERTEX_ATTRIB_NORMAL,
-        VERTEX_ATTRIB_BLEND_WEIGHT,
-        VERTEX_ATTRIB_BLEND_INDEX,
 
-        VERTEX_ATTRIB_MAX,
-
-        // backward compatibility
-        VERTEX_ATTRIB_TEX_COORDS = VERTEX_ATTRIB_TEX_COORD,
-		};
-
-
-		unsigned int size = 0;
 		std::vector<MeshVertexAttrib> attribs;
 		MeshVertexAttrib attrib;
-		// Has Position
-		if(hasPosition())
-		{
-			size++;
-			attrib.usage = VERTEX_ATTRIB_POSITION;
-			attrib.attribSizeBytes = 3;
-			attribs.push_back(attrib);
-		}
-
-		// Has Color
-		if(hasColor())
-		{
-			size++;
-			attrib.usage = VERTEX_ATTRIB_COLOR;
-			attrib.attribSizeBytes = 4;
-			attribs.push_back(attrib);
-		}
-
-		// Has Normal
-		if(hasNormal())
-		{
-			size++;
-			attrib.usage = VERTEX_ATTRIB_NORMAL;
-			attrib.attribSizeBytes = 3;
-			attribs.push_back(attrib);
-		}
-
-		if(hasUV(0))
-		{
-			size++;
-			attrib.usage = VERTEX_ATTRIB_TEX_COORD;
-			attrib.attribSizeBytes = 2;
-			attribs.push_back(attrib);
-		}
-
-		//// Has Tangent
-		//if(hasTangent())
-		//{
-		//	attrib.usage = 4;
-		//	size++;
-		//	attribs.push_back(attrib);
-		//}
-		//// Has Binormal
-		//if(hasBinormal())
-		//{
-		//	attrib.usage = 5;
-		//	size++;
-		//	attribs.push_back(attrib);
-		//}
-		// Has Blend weight
-		for(int i = 0; i < 8; i++)
-		{
-			if(!hasBlendWeight(i))
-			{
-				if(i>0)
-				{
-					size++;
-					attrib.usage = VERTEX_ATTRIB_BLEND_WEIGHT;
-					attrib.attribSizeBytes = 4;
-					attribs.push_back(attrib);
-                    size++;
-					attrib.usage = VERTEX_ATTRIB_BLEND_INDEX;
-					attrib.attribSizeBytes = 4;
-					attribs.push_back(attrib);
-				}
-				break;
-			}
-		}
-
-        size = attribs.size();
-		write(size, file);
-		for(int i = 0; i <attribs.size(); i++)
-		{
-			write(attribs[i].usage, file);
-			write(attribs[i].attribSizeBytes, file);	
-		}
-
+        for (unsigned int i = 0; i < length(); i++)
+        {
+            std::string key = name(i);
+            attrib = attributemap.find(key)->second;
+            attribs.push_back(attrib);
+            if(key == "VERTEX_ATTRIB_BLEND_INDEX")
+            {
+                break;
+            }
+        }
+		unsigned int size = attribs.size();
+        write(size, file);
+        for( int i = 0 ; i < size ; i++ )
+        {
+            write(attribs[i].size, file);
+            write(attribs[i].type, file);
+            write(attribs[i].name, file);
+        }
 	}
 	
 	void Material::writeBinary(FILE* file)
@@ -285,8 +209,8 @@ namespace modeldata {
 		//write(transform.scale, 3, file);
 		//write(transform.translation, 3, file);
         // node part
-		write(parts.size(),file);
-
+        unsigned int partsSize = parts.size();
+		write(partsSize,file);
 		if(parts.size()>0)
 		{
             for(int i = 0 ; i < parts.size() ; i++ )
@@ -348,7 +272,8 @@ namespace modeldata {
             }
 		}
         // children
-        write(children.size(),file);
+        unsigned int childrenSize = children.size();
+        write(childrenSize,file);
 		for(auto itr = children.begin(); itr != children.end(); itr++)
 		{
 			Node* node = *itr;

@@ -193,11 +193,19 @@ namespace readers {
 					addNode(model, parent, root->GetChild(i));
 				return;
 			}
+            int i= 0;
+            while(model->getNode(node->GetName()))
+            {
+                 i++;
+                 char nodeName[256];
+                 sprintf(nodeName,"%s%d",node->GetName(),i);
+                 node->SetName(nodeName);
+            }
+			/*if (model->getNode(node->GetName())) {
 
-			if (model->getNode(node->GetName())) {
 				log->warning(log::wSourceConvertFbxDuplicateNodeId, node->GetName());
 				return;
-			}
+			}*/
 			Node *n = new Node(node->GetName());
 			n->source = node;
 			nodeMap[node] = n;
@@ -326,6 +334,7 @@ namespace readers {
             //liuliang delete  no use attributes
             meshInfo->attributes.remove(ATTRIBUTE_TANGENT);
             meshInfo->attributes.remove(ATTRIBUTE_BINORMAL);
+      
             //liuliang delete  no use attributes
 			Mesh *mesh = findReusableMesh(model, meshInfo->attributes, meshInfo->polyCount * 3);
 			if (mesh == 0) {
@@ -695,8 +704,15 @@ namespace readers {
 					kf->scale[2] = (float)v.mData[2];
 					frames.push_back(kf);
 				}
-                animation->length = frames[frames.size()-1]->time;
-				animation->length /= 1000;
+                if(frames.size()>0)
+                {
+                    animation->length = frames[frames.size()-1]->time;
+				    animation->length /= 1000;
+                }
+                else
+                {
+                    animation->length=0;
+                }
 				// Only add keyframes really needed
 				addKeyframes(nodeAnim, frames);
 				if (nodeAnim->rotate || nodeAnim->scale || nodeAnim->translate)
