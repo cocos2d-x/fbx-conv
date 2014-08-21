@@ -142,7 +142,7 @@ namespace modeldata {
 		{
 			object.tpyeid = MATERIAL_ID;
 			object.fPosition = 0;
-            object.id = id;
+            object.id = id+"material";
 			return &object;
 		}
 		virtual void serialize(json::BaseJSONWriter &writer) const;
