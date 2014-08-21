@@ -60,7 +60,7 @@
 namespace fbxconv {
 namespace modeldata {
 	static const char * AttributeNames[] = {
-		"UNKNOWN", "VERTEX_ATTRIB_POSITION", "VERTEX_ATTRIB_NORMAL", "COLOR", "COLORPACKED", "TANGENT", "BINORMAL",
+		"UNKNOWN", "VERTEX_ATTRIB_POSITION", "VERTEX_ATTRIB_NORMAL", "VERTEX_ATTRIB_COLOR", "COLORPACKED", "TANGENT", "BINORMAL",
 		"VERTEX_ATTRIB_TEX_COORD", "VERTEX_ATTRIB_TEX_COORD1", "VERTEX_ATTRIB_TEX_COORD2", "VERTEX_ATTRIB_TEX_COORD3", "VERTEX_ATTRIB_TEX_COORD4", "VERTEX_ATTRIB_TEX_COORD5", "VERTEX_ATTRIB_TEX_COORD6", "VERTEX_ATTRIB_TEX_COORD7",
 		"VERTEX_ATTRIB_BLEND_WEIGHT", "VERTEX_ATTRIB_BLEND_INDEX", "BLENDWEIGHT2", "BLENDWEIGHT3", "BLENDWEIGHT4", "BLENDWEIGHT5", "BLENDWEIGHT6", "BLENDWEIGHT7"
 	};
@@ -178,10 +178,10 @@ namespace modeldata {
             v1.type = "GL_FLOAT";
             attributemap["VERTEX_ATTRIB_BLEND_INDEX"]= v1;
 
-            v1.name = "COLOR";
+            v1.name = "VERTEX_ATTRIB_COLOR";
             v1.size = 4;
             v1.type = "GL_FLOAT";
-            attributemap["COLOR"]= v1;
+            attributemap["VERTEX_ATTRIB_COLOR"]= v1;
 
 
            /* v1.name = "TANGENT";
