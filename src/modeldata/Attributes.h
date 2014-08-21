@@ -178,7 +178,11 @@ namespace modeldata {
             v1.type = "GL_FLOAT";
             attributemap["VERTEX_ATTRIB_BLEND_INDEX"]= v1;
 
-        
+            v1.name = "COLOR";
+            v1.size = 4;
+            v1.type = "GL_FLOAT";
+            attributemap["COLOR"]= v1;
+
 
            /* v1.name = "TANGENT";
             v1.size = 3;
