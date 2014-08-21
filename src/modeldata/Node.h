@@ -45,6 +45,7 @@ namespace modeldata {
 			transform.scale[0] = transform.scale[1] = transform.scale[2] = 1.f;
 			if (id != NULL)
 				this->id = id;
+            _skeleton=false;
 		}
 
 		Node(const Node &copyFrom) {
@@ -55,6 +56,7 @@ namespace modeldata {
 				parts.push_back(new NodePart(**itr));
 			for (std::vector<Node *>::const_iterator itr = copyFrom.children.begin(); itr != copyFrom.children.end(); ++itr)
 				children.push_back(new Node(**itr));
+             _skeleton=copyFrom._skeleton;
 		}
 
 		~Node() {
