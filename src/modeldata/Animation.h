@@ -52,7 +52,7 @@ namespace modeldata {
 		{
 			object.tpyeid = ANIMATIONS_ID;
 			object.fPosition = 0;
-            object.id = id;
+            object.id = id+"animation";
 			return &object;
 		}
 		virtual void serialize(json::BaseJSONWriter &writer) const;
