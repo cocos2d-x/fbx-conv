@@ -55,7 +55,6 @@ namespace modeldata {
         std::list<std::string> _bonenames;
         for (std::vector<Node *>::const_iterator itr = nodes.begin(); itr != nodes.end(); ++itr)
         {
-            bool skeleton=false;
             (*itr)->loadBoneNames(_bonenames);
         }
         for (std::vector<Node *>::const_iterator itr = nodes.begin(); itr != nodes.end(); ++itr)

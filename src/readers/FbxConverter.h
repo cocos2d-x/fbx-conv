@@ -706,8 +706,11 @@ namespace readers {
 				}
                
                 //animation->length = frames[frames.size()-1]->time;
-                float time = frames[frames.size()-1]->time / 1000;
-                animation->length = animation->length < time ? time : animation->length;
+                if(frames.size() > 0)
+                {
+                    float time = frames[frames.size()-1]->time / 1000;
+                    animation->length = animation->length < time ? time : animation->length;
+                }
 
 			    //animation->length /= 1000;
                 
