@@ -46,7 +46,7 @@ struct FbxConvCommand {
 		settings->outType = FILETYPE_C3B;
 		settings->inType = FILETYPE_AUTO;
         settings->needReusableMesh = true;
-
+        settings->forceMaxVertexBoneCount = true;
 		for (int i = 1; i < argc; i++) {
 			const char *arg = argv[i];
 			const int len = (int)strlen(arg);
