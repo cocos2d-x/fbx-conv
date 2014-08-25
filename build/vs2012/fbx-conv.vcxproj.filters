@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{50804E0A-F27D-4A45-85B0-19C85A29C407}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\json">
+      <UniqueIdentifier>{92EAFDCC-A0CF-C34D-85AD-A6C2BB9CB008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\log">
+      <UniqueIdentifier>{965827AA-3D59-0B4C-A0F5-89971437A548}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\modeldata">
+      <UniqueIdentifier>{CA621585-48B0-D942-B41C-B57F2FDB4C6E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\readers">
+      <UniqueIdentifier>{6850282C-8EB7-BE41-8139-CB501FCFD3FF}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\FbxConv.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\FbxConvCommand.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Settings.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\json\BaseJSONWriter.h">
+      <Filter>src\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\json\JSONWriter.h">
+      <Filter>src\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\json\UBJSON.h">
+      <Filter>src\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\json\UBJSONWriter.h">
+      <Filter>src\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\log\codes.h">
+      <Filter>src\log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\log\log.h">
+      <Filter>src\log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\log\messages.h">
+      <Filter>src\log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\modeldata\Animation.h">
+      <Filter>src\modeldata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\modeldata\Attributes.h">
+      <Filter>src\modeldata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\modeldata\Keyframe.h">
+      <Filter>src\modeldata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\modeldata\Material.h">
+      <Filter>src\modeldata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\modeldata\Mesh.h">
+      <Filter>src\modeldata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\modeldata\MeshPart.h">
+      <Filter>src\modeldata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\modeldata\Model.h">
+      <Filter>src\modeldata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\modeldata\Node.h">
+      <Filter>src\modeldata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\modeldata\NodeAnimation.h">
+      <Filter>src\modeldata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\modeldata\NodePart.h">
+      <Filter>src\modeldata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\readers\FbxConverter.h">
+      <Filter>src\readers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\readers\FbxMeshInfo.h">
+      <Filter>src\readers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\readers\matrix3.h">
+      <Filter>src\readers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\readers\Reader.h">
+      <Filter>src\readers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\readers\util.h">
+      <Filter>src\readers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\modeldata\CKBFile.h">
+      <Filter>src\modeldata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\modeldata\FileIO.h">
+      <Filter>src\modeldata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\modeldata\Reference.h">
+      <Filter>src\modeldata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\modeldata\ReferenceTable.h">
+      <Filter>src\modeldata</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\modeldata\Serialization.cpp">
+      <Filter>src\modeldata</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\modeldata\CKBFile.cpp">
+      <Filter>src\modeldata</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\modeldata\FileIO.cpp">
+      <Filter>src\modeldata</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\modeldata\Reference.cpp">
+      <Filter>src\modeldata</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\modeldata\ReferenceTable.cpp">
+      <Filter>src\modeldata</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\modeldata\WriteBinnary.cpp">
+      <Filter>src\modeldata</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
