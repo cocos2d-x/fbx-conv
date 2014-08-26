@@ -132,7 +132,6 @@ protected:
 private:
 	std::stack<Block> blocks;
 	Block block;
-
 	void nextValue(const bool &ispair, const bool &isblock) {
 		assert(("Can only write key-value pairs within an object", !((ispair && (block.type != Block::OBJECT)) || (!ispair && (block.type == Block::OBJECT)))));
 		assert(("Must start with an array or an object", isblock || block.type != Block::ROOT));
@@ -312,7 +311,8 @@ private:
 	}
 public:
 	unsigned int defaultDataLineSize;
-
+    bool exportModel;
+    bool exportAnimation;
 	BaseJSONWriter() : block(Block::ROOT), defaultDataLineSize(32) {}
 
 	virtual ~BaseJSONWriter() {

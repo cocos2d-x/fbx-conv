@@ -15,7 +15,7 @@ namespace fbxconv{
 
 	}
 
-	bool CKBFile::saveBinary(const std::string& filepath)
+	bool CKBFile::saveBinary(const std::string& filepath,bool exportModel,bool exportAnimation)
 	{
 		_file = fopen(filepath.c_str(), "w+b");
 
@@ -31,7 +31,7 @@ namespace fbxconv{
 
 		if(_models)
 		{
-			_models->writeBinary(_file);
+			_models->writeBinary(_file,exportModel,exportAnimation);
 		}
 		
 		_refTable.updateOffset(_file);

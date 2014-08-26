@@ -50,65 +50,71 @@ namespace modeldata {
             return "UNKNOWN";
         }
     }
-	void Model::writeBinary(FILE* file)
+	void Model::writeBinary(FILE* file,bool exportModel,bool exportAnimation)
 	{
-        std::list<std::string> _bonenames;
-        for (std::vector<Node *>::const_iterator itr = nodes.begin(); itr != nodes.end(); ++itr)
+         unsigned int size=0;
+        if(exportModel)
         {
-            (*itr)->loadBoneNames(_bonenames);
-        }
-        for (std::vector<Node *>::const_iterator itr = nodes.begin(); itr != nodes.end(); ++itr)
-        {
-            bool skeleton=false;
-            (*itr)->checkIsSkeleton(skeleton,_bonenames);
-            (*itr)->setSkeleton(skeleton);
-        }
-		unsigned int size = meshes.size();
-        if(size>0)
-        {
-            meshes[0]->object.fPosition = ftell(file);	
-        }
-		write(size, file);
-        // write mesh
-		for(auto itr = meshes.begin(); itr != meshes.end(); itr++)
-		{
-			(*itr)->writeBinary(file);
-		}
-		
-		// write material
-	    size = materials.size();
-        if(size>0)
-        {
-            materials[0]->object.fPosition = ftell(file);	
-        }
-		write(size, file);
-		for(auto itr = materials.begin(); itr != materials.end(); itr++)
-		{
-			(*itr)->writeBinary(file);
-		}
-		// node num
-        size = nodes.size();
-        if(size>0)
-        {
-            nodes[0]->object.fPosition = ftell(file);	
-        }
-        write(size, file);
-        for(auto itr = nodes.begin(); itr != nodes.end(); itr++)
-        {
-            (*itr)->writeBinary(file);
-        }
+            std::list<std::string> _bonenames;
+            for (std::vector<Node *>::const_iterator itr = nodes.begin(); itr != nodes.end(); ++itr)
+            {
+                (*itr)->loadBoneNames(_bonenames);
+            }
+            for (std::vector<Node *>::const_iterator itr = nodes.begin(); itr != nodes.end(); ++itr)
+            {
+                bool skeleton=false;
+                (*itr)->checkIsSkeleton(skeleton,_bonenames);
+                (*itr)->setSkeleton(skeleton);
+            }
+            size = meshes.size();
+            if(size>0)
+            {
+                meshes[0]->object.fPosition = ftell(file);	
+            }
+            write(size, file);
+            // write mesh
+            for(auto itr = meshes.begin(); itr != meshes.end(); itr++)
+            {
+                (*itr)->writeBinary(file);
+            }
 
-		// animation
-        size = animations.size();
-         if(size>0)
-        {
-            animations[0]->object.fPosition = ftell(file);	
+            // write material
+            size = materials.size();
+            if(size>0)
+            {
+                materials[0]->object.fPosition = ftell(file);	
+            }
+            write(size, file);
+            for(auto itr = materials.begin(); itr != materials.end(); itr++)
+            {
+                (*itr)->writeBinary(file);
+            }
+            // node num
+            size = nodes.size();
+            if(size>0)
+            {
+                nodes[0]->object.fPosition = ftell(file);	
+            }
+            write(size, file);
+            for(auto itr = nodes.begin(); itr != nodes.end(); itr++)
+            {
+                (*itr)->writeBinary(file);
+            }
         }
-		write(size, file);
-		for(auto itr = animations.begin(); itr != animations.end(); itr++)
-		{
-			(*itr)->writeBinary(file);
-		}
+        if(exportAnimation)
+        {
+            // animation
+            size = animations.size();
+            if(size>0)
+            {
+                animations[0]->object.fPosition = ftell(file);	
+            }
+            write(size, file);
+            for(auto itr = animations.begin(); itr != animations.end(); itr++)
+            {
+                (*itr)->writeBinary(file);
+            }
+        }
 	}
 
 	void Mesh::writeBinary(FILE* file)

@@ -16,7 +16,7 @@ public:
 	~CKBFile(void);
 
 	// Destruct.
-	bool saveBinary(const std::string& filepath);
+	bool saveBinary(const std::string& filepath,bool exportModel,bool exportAnimation);
 
 	void addToRefTable(ObjRef* obj);
 

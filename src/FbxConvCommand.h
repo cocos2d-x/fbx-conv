@@ -47,6 +47,8 @@ struct FbxConvCommand {
 		settings->inType = FILETYPE_AUTO;
         settings->needReusableMesh = true;
         settings->forceMaxVertexBoneCount = true;
+        settings->exportAnimation  = true;
+        settings->exportModel      = true;
 		for (int i = 1; i < argc; i++) {
 			const char *arg = argv[i];
 			const int len = (int)strlen(arg);
@@ -77,6 +79,14 @@ struct FbxConvCommand {
 					settings->outType = FILETYPE_C3J;
 				else if(arg[1] == 'a')
 					settings->outType = FILETYPE_ALL;
+                else if(arg[1] == '1')
+                {
+					settings->exportAnimation = false;
+                }
+                 else if(arg[1] == '2')
+                {
+					settings->exportModel = false;
+                }
 				else
 					log->error(error = log::eCommandLineUnknownOption, arg);
 			}
@@ -123,6 +133,8 @@ struct FbxConvCommand {
 		printf("<output> : The filename of the converted file.\n");
 		printf("\n");
 		printf("<type>   : FBX, c3t (json) or c3b (binary).\n");
+        printf("-1       : Export the model data, do not export animation data\n");
+		printf("-2       : Export animation data, do not export model data\n");
 	}
 private:
 	void validate() {
