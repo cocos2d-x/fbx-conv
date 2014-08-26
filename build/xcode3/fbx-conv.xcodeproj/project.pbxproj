@@ -1,0 +1,374 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1DDF324B01AE564164196491 /* Serialization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27CA65CF7E9505AA72CD1738 /* Serialization.cpp */; };
+		323A3E5220121AD1298437AA /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58AD6B5411C261E723540729 /* CoreFoundation.framework */; };
+		5E79E31319AB384100C6E369 /* CKBFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E79E30F19AB384100C6E369 /* CKBFile.cpp */; };
+		5E79E31419AB384100C6E369 /* FileIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E79E31119AB384100C6E369 /* FileIO.cpp */; };
+		5E79E31A19AB38AD00C6E369 /* Reference.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E79E31519AB38AD00C6E369 /* Reference.cpp */; };
+		5E79E31B19AB38AD00C6E369 /* ReferenceTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E79E31719AB38AD00C6E369 /* ReferenceTable.cpp */; };
+		5E79E31C19AB38AD00C6E369 /* WriteBinnary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E79E31919AB38AD00C6E369 /* WriteBinnary.cpp */; };
+		7D6F28F8705B07DF6AA435C7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D1D0D32679E6B9471031F7B /* main.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		01E16A4E5C8B584115C20B0A /* codes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = codes.h; sourceTree = "<group>"; };
+		0A8667BC7FA552C055BE5575 /* Mesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mesh.h; sourceTree = "<group>"; };
+		15956995684A6BD65A9F12EE /* BaseJSONWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseJSONWriter.h; sourceTree = "<group>"; };
+		1E3814F2200A0CD655FC2F93 /* messages.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = messages.h; sourceTree = "<group>"; };
+		1E854F632CFF46ED02615E1C /* UBJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UBJSON.h; sourceTree = "<group>"; };
+		22802F377DC320426E140A60 /* MeshPart.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MeshPart.h; sourceTree = "<group>"; };
+		27CA65CF7E9505AA72CD1738 /* Serialization.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Serialization.cpp; sourceTree = "<group>"; };
+		2E191FC95276528F48171D8F /* Attributes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Attributes.h; sourceTree = "<group>"; };
+		2E4776D0118158223B3A1BDE /* FbxConvCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FbxConvCommand.h; sourceTree = "<group>"; };
+		3CD77245222E0CDC631239D0 /* Settings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Settings.h; sourceTree = "<group>"; };
+		3F6D26777151231338E006AB /* UBJSONWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UBJSONWriter.h; sourceTree = "<group>"; };
+		46814DAB52FE231359315CB4 /* FbxConv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FbxConv.h; sourceTree = "<group>"; };
+		4BB021B44C8C2F970C7B0439 /* FbxMeshInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FbxMeshInfo.h; sourceTree = "<group>"; };
+		4D861A717F1A25584AF27A6C /* Model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
+		4FF842EE19EB365528A912D1 /* Material.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Material.h; sourceTree = "<group>"; };
+		5240769010366882668C783E /* Keyframe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Keyframe.h; sourceTree = "<group>"; };
+		53DB5CA7586B0B691A854FF1 /* Node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Node.h; sourceTree = "<group>"; };
+		554C0E847FCC5F155C0F6DB3 /* log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = log.h; sourceTree = "<group>"; };
+		58AD6B5411C261E723540729 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		5D7E7B9D19B61A5A452B16F8 /* Animation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Animation.h; sourceTree = "<group>"; };
+		5E79E30F19AB384100C6E369 /* CKBFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CKBFile.cpp; sourceTree = "<group>"; };
+		5E79E31019AB384100C6E369 /* CKBFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBFile.h; sourceTree = "<group>"; };
+		5E79E31119AB384100C6E369 /* FileIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileIO.cpp; sourceTree = "<group>"; };
+		5E79E31219AB384100C6E369 /* FileIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileIO.h; sourceTree = "<group>"; };
+		5E79E31519AB38AD00C6E369 /* Reference.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Reference.cpp; sourceTree = "<group>"; };
+		5E79E31619AB38AD00C6E369 /* Reference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reference.h; sourceTree = "<group>"; };
+		5E79E31719AB38AD00C6E369 /* ReferenceTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReferenceTable.cpp; sourceTree = "<group>"; };
+		5E79E31819AB38AD00C6E369 /* ReferenceTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReferenceTable.h; sourceTree = "<group>"; };
+		5E79E31919AB38AD00C6E369 /* WriteBinnary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WriteBinnary.cpp; sourceTree = "<group>"; };
+		604A1BD13F0E7067196A39F4 /* Reader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Reader.h; sourceTree = "<group>"; };
+		69706B1763F0536253A723BA /* JSONWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSONWriter.h; sourceTree = "<group>"; };
+		6A90237F747E0BC812497A1E /* FbxConverter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FbxConverter.h; sourceTree = "<group>"; };
+		6C2108661E9A19AE2EEC0CCB /* matrix3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = matrix3.h; sourceTree = "<group>"; };
+		6D1D0D32679E6B9471031F7B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		734B4175724B31F42E021570 /* fbx-conv */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "fbx-conv"; sourceTree = BUILT_PRODUCTS_DIR; };
+		73FF018E11A44B4001B73515 /* NodeAnimation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NodeAnimation.h; sourceTree = "<group>"; };
+		75F0045E71824B3F2C072A3D /* util.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
+		76E13B8B501A6EE460B85D92 /* NodePart.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NodePart.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1A0B70772E8663610F4E533F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				323A3E5220121AD1298437AA /* CoreFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		02E67A950005504A5ACB5795 /* log */ = {
+			isa = PBXGroup;
+			children = (
+				01E16A4E5C8B584115C20B0A /* codes.h */,
+				554C0E847FCC5F155C0F6DB3 /* log.h */,
+				1E3814F2200A0CD655FC2F93 /* messages.h */,
+			);
+			path = log;
+			sourceTree = "<group>";
+		};
+		17EC3CDF723A42D538EE3B8D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				734B4175724B31F42E021570 /* fbx-conv */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1D1F69BF30A8189E65AE04CB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				58AD6B5411C261E723540729 /* CoreFoundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		390B26884F570D043CCA2920 /* json */ = {
+			isa = PBXGroup;
+			children = (
+				15956995684A6BD65A9F12EE /* BaseJSONWriter.h */,
+				69706B1763F0536253A723BA /* JSONWriter.h */,
+				1E854F632CFF46ED02615E1C /* UBJSON.h */,
+				3F6D26777151231338E006AB /* UBJSONWriter.h */,
+			);
+			path = json;
+			sourceTree = "<group>";
+		};
+		434B235409E7457D2AC9046E /* fbx-conv */ = {
+			isa = PBXGroup;
+			children = (
+				768E6AD41F1C759131CE0A70 /* src */,
+				1D1F69BF30A8189E65AE04CB /* Frameworks */,
+				17EC3CDF723A42D538EE3B8D /* Products */,
+			);
+			name = "fbx-conv";
+			sourceTree = "<group>";
+		};
+		52DD5F4675581E4B7CBC24A1 /* modeldata */ = {
+			isa = PBXGroup;
+			children = (
+				5E79E31519AB38AD00C6E369 /* Reference.cpp */,
+				5E79E31619AB38AD00C6E369 /* Reference.h */,
+				5E79E31719AB38AD00C6E369 /* ReferenceTable.cpp */,
+				5E79E31819AB38AD00C6E369 /* ReferenceTable.h */,
+				5E79E31919AB38AD00C6E369 /* WriteBinnary.cpp */,
+				5E79E30F19AB384100C6E369 /* CKBFile.cpp */,
+				5E79E31019AB384100C6E369 /* CKBFile.h */,
+				5E79E31119AB384100C6E369 /* FileIO.cpp */,
+				5E79E31219AB384100C6E369 /* FileIO.h */,
+				5D7E7B9D19B61A5A452B16F8 /* Animation.h */,
+				2E191FC95276528F48171D8F /* Attributes.h */,
+				5240769010366882668C783E /* Keyframe.h */,
+				4FF842EE19EB365528A912D1 /* Material.h */,
+				0A8667BC7FA552C055BE5575 /* Mesh.h */,
+				22802F377DC320426E140A60 /* MeshPart.h */,
+				4D861A717F1A25584AF27A6C /* Model.h */,
+				53DB5CA7586B0B691A854FF1 /* Node.h */,
+				73FF018E11A44B4001B73515 /* NodeAnimation.h */,
+				76E13B8B501A6EE460B85D92 /* NodePart.h */,
+				27CA65CF7E9505AA72CD1738 /* Serialization.cpp */,
+			);
+			path = modeldata;
+			sourceTree = "<group>";
+		};
+		6CC44A2D0138342F2A3528BC /* readers */ = {
+			isa = PBXGroup;
+			children = (
+				6A90237F747E0BC812497A1E /* FbxConverter.h */,
+				4BB021B44C8C2F970C7B0439 /* FbxMeshInfo.h */,
+				604A1BD13F0E7067196A39F4 /* Reader.h */,
+				6C2108661E9A19AE2EEC0CCB /* matrix3.h */,
+				75F0045E71824B3F2C072A3D /* util.h */,
+			);
+			path = readers;
+			sourceTree = "<group>";
+		};
+		768E6AD41F1C759131CE0A70 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				46814DAB52FE231359315CB4 /* FbxConv.h */,
+				2E4776D0118158223B3A1BDE /* FbxConvCommand.h */,
+				3CD77245222E0CDC631239D0 /* Settings.h */,
+				390B26884F570D043CCA2920 /* json */,
+				02E67A950005504A5ACB5795 /* log */,
+				6D1D0D32679E6B9471031F7B /* main.cpp */,
+				52DD5F4675581E4B7CBC24A1 /* modeldata */,
+				6CC44A2D0138342F2A3528BC /* readers */,
+			);
+			name = src;
+			path = ../../src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		10075E363BDD436A76E34986 /* fbx-conv */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4ECB28D133DA60956CE12C1F /* Build configuration list for PBXNativeTarget "fbx-conv" */;
+			buildPhases = (
+				5656316C6AC26DBB2DC63B25 /* Resources */,
+				2F4B7CAF02C2383F387914A9 /* Sources */,
+				1A0B70772E8663610F4E533F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "fbx-conv";
+			productInstallPath = "$(HOME)/bin";
+			productName = "fbx-conv";
+			productReference = 734B4175724B31F42E021570 /* fbx-conv */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+			};
+			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "fbx-conv" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 434B235409E7457D2AC9046E /* fbx-conv */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				10075E363BDD436A76E34986 /* fbx-conv */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5656316C6AC26DBB2DC63B25 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2F4B7CAF02C2383F387914A9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D6F28F8705B07DF6AA435C7 /* main.cpp in Sources */,
+				1DDF324B01AE564164196491 /* Serialization.cpp in Sources */,
+				5E79E31B19AB38AD00C6E369 /* ReferenceTable.cpp in Sources */,
+				5E79E31319AB384100C6E369 /* CKBFile.cpp in Sources */,
+				5E79E31C19AB38AD00C6E369 /* WriteBinnary.cpp in Sources */,
+				5E79E31A19AB38AD00C6E369 /* Reference.cpp in Sources */,
+				5E79E31419AB384100C6E369 /* FileIO.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3CFE67821E916A7132BB36E4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../..;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "fbx-conv";
+			};
+			name = Debug;
+		};
+		3E1C5CA775E477260ED20E43 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					FBXSDK_NEW_API,
+					DEBUG,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/Applications/Autodesk/FBXSDK/2014.2.1/include,
+					../../libs/libpng/include,
+					../../libs/zlib/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/Applications/Autodesk/FBXSDK/2014.2.1/lib/gcc4/ub,
+					../../libs/libpng/lib/macosx,
+					../../libs/zlib/lib/macosx,
+					/Applications/Autodesk/FBXSDK/2014.2.1/lib/gcc4/ub/debug,
+				);
+				OBJROOT = obj/Debug;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "-Wall";
+				OTHER_LDFLAGS = (
+					"-lpng",
+					"-lz",
+					"-lfbxsdk",
+				);
+				PREBINDING = NO;
+				SYMROOT = ../..;
+			};
+			name = Debug;
+		};
+		47A958F1502A7D294C68415E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					FBXSDK_NEW_API,
+					NDEBUG,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/Applications/Autodesk/FBXSDK/2014.2.1/include,
+					../../libs/libpng/include,
+					../../libs/zlib/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/Applications/Autodesk/FBXSDK/2014.2.1/lib/gcc4/ub,
+					../../libs/libpng/lib/macosx,
+					../../libs/zlib/lib/macosx,
+					/Applications/Autodesk/FBXSDK/2014.2.1/lib/gcc4/ub/release,
+				);
+				OBJROOT = obj/Release;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "-Wall";
+				OTHER_LDFLAGS = (
+					"-lpng",
+					"-lz",
+					"-lfbxsdk",
+				);
+				PREBINDING = NO;
+				SYMROOT = ../..;
+			};
+			name = Release;
+		};
+		758C654C186064D974F30A33 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../..;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "fbx-conv";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "fbx-conv" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3E1C5CA775E477260ED20E43 /* Debug */,
+				47A958F1502A7D294C68415E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		4ECB28D133DA60956CE12C1F /* Build configuration list for PBXNativeTarget "fbx-conv" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CFE67821E916A7132BB36E4 /* Debug */,
+				758C654C186064D974F30A33 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
