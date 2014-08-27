@@ -300,9 +300,18 @@ namespace modeldata {
 				Keyframe* keyframe = *itr1;
 				// write time
 				write(keyframe->time, file);
-				write(keyframe->rotation, 4, file);
-				write(keyframe->scale, 3, file);
-				write(keyframe->translation, 3, file);
+                
+                write(keyframe->hasRotation, file);
+                if (keyframe->hasRotation)
+                    write(keyframe->rotation, 4, file);
+                
+                write(keyframe->hasScale, file);
+                if (keyframe->hasScale)
+                    write(keyframe->scale, 3, file);
+                
+                write(keyframe->hasScale, file);
+                if (keyframe->hasTranslation)
+                    write(keyframe->translation, 3, file);
 			}
 		}
     }

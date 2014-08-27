@@ -715,7 +715,8 @@ namespace readers {
 			    //animation->length /= 1000;
                 
 				// Only add keyframes really needed
-				addKeyframes(nodeAnim, frames);
+				//addKeyframes(nodeAnim, frames);
+                addKeyframesCompress(nodeAnim, frames);
 				if (nodeAnim->rotate || nodeAnim->scale || nodeAnim->translate)
 					animation->nodeAnimations.push_back(nodeAnim);
 				else
@@ -780,6 +781,73 @@ namespace readers {
                 }
 			}
 		}
+        
+        void addKeyframesCompress(NodeAnimation *const &anim, std::vector<Keyframe *> &keyframes)
+        {
+            if (!keyframes.empty()) {
+                anim->keyframes.push_back(keyframes[0]);
+                
+                // translation frame
+				const int last = (int)keyframes.size()-1;
+				Keyframe *k1 = keyframes[0], *k2, *k3;
+				for (int i = 1; i < last; i++) {
+					k2 = keyframes[i];
+					k3 = keyframes[i+1];
+					// Check if the middle keyframe can be calculated by information, if so dont add it
+					if (!isLerp(k1->translation, k1->time, k2->translation, k2->time, k3->translation, k3->time, 3)) {
+                        k2->hasTranslation = true;
+                        k1 = k2;
+					}
+                    else{
+                        k2->hasTranslation = false;
+                    }
+				}
+                
+                // rotation frame
+				k1 = keyframes[0];
+				for (int i = 1; i < last; i++) {
+					k2 = keyframes[i];
+					k3 = keyframes[i+1];
+					// Check if the middle keyframe can be calculated by information, if so dont add it
+					if (!isLerp(k1->rotation, k1->time, k2->rotation, k2->time, k3->rotation, k3->time, 3)) {// FIXME use slerp for quaternions
+                        k2->hasRotation = true;
+                        k1 = k2;
+					}
+                    else{
+                        k2->hasRotation = false;
+                    }
+				}
+                
+                // scale frame
+				k1 = keyframes[0];
+				for (int i = 1; i < last; i++) {
+					k2 = keyframes[i];
+					k3 = keyframes[i+1];
+					// Check if the middle keyframe can be calculated by information, if so dont add it
+					if (!isLerp(k1->scale, k1->time, k2->scale, k2->time, k3->scale, k3->time, 3)) {
+                        k2->hasScale = true;
+                        k1 = k2;
+					} else{
+						k2->hasScale = false;
+                    }
+				}
+                
+                // check, if keyframe has translation or scale or rotation then push it to anim's key frames
+                for (int i = 1; i < last; i++) {
+					k2 = keyframes[i];
+                    if(k2->hasTranslation || k2->hasScale || k2->hasRotation)
+                        anim->keyframes.push_back(k2);
+                    else
+                        delete k2;
+				}
+                
+				if (last > 0)
+                {
+                    keyframes[last]->time = 1;
+					anim->keyframes.push_back(keyframes[last]);
+                }
+			}
+        }
 
 		inline bool cmp(const float &v1, const float &v2, const float &epsilon = 0.000001) {
 			const double d = v1 - v2;
@@ -796,7 +864,7 @@ namespace readers {
 		inline bool isLerp(const float *v1, const float &t1, const float *v2, const float &t2, const float *v3, const float &t3, const int size) {
 			const double d = (t2 - t1) / (t3 - t1);
 			for (int i = 0; i < size; i++)
-				if (!cmp(v2[i], v1[i] + d * (v3[i] - v1[i])))
+				if (!cmp(v2[i], v1[i] + d * (v3[i] - v1[i]),0.001))
 					return false;
 			return true;
 		}

@@ -264,11 +264,11 @@ void NodeAnimation::serialize(json::BaseJSONWriter &writer) const {
 void Keyframe::serialize(json::BaseJSONWriter &writer) const {
 	writer << json::obj;
 	writer << "keytime" = time;
-	//if (hasRotation)
+	if (hasRotation)
 	writer << "rotation" = rotation;
-	//if (hasScale)
+	if (hasScale)
 	writer << "scale" = scale;
-	//if (hasTranslation)
+	if (hasTranslation)
 	writer << "translation" = translation;
 	writer << json::end;
 }
