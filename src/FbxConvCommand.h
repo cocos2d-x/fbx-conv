@@ -47,6 +47,8 @@ struct FbxConvCommand {
 		settings->inType = FILETYPE_AUTO;
         settings->needReusableMesh = true;
         settings->forceMaxVertexBoneCount = true;
+        settings->compressLevel = COMPRESS_LEVEL_DEFAULT;
+            
 		for (int i = 1; i < argc; i++) {
 			const char *arg = argv[i];
 			const int len = (int)strlen(arg);
@@ -71,6 +73,8 @@ struct FbxConvCommand {
 					settings->maxVertexBonesCount = atoi(argv[++i]);
 				else if ((arg[1] == 'm') && (i + 1 < argc))
 					settings->maxVertexCount = settings->maxIndexCount = atoi(argv[++i]);
+                else if((arg[1] == 'c') && (i + 1 < argc))
+                    settings->compressLevel = (COMPRESS_LEVEL)atoi(argv[++i]);
                 else if(arg[1] == 'b')
 					settings->outType = FILETYPE_C3B;
 				else if(arg[1] == 't')
@@ -118,6 +122,7 @@ struct FbxConvCommand {
 		printf("-w <size>: The maximum amount of bone weights per vertex (default: 4)\n");
 		printf("-v       : Verbose: print additional progress information\n");
 		printf("-g       : Not merge meshs with same attributes, keep original\n");
+        printf("-c <size>: The compression level: 0 , 1 (default: 0)\n");
 		printf("\n");
 		printf("<input>  : The filename of the file to convert.\n");
 		printf("<output> : The filename of the converted file.\n");
@@ -152,6 +157,10 @@ private:
 		}
 		if (settings->maxVertexCount < 0 || settings->maxVertexCount > (1<<15)-1) {
 			log->error(error = log::eCommandLineInvalidVertexCount);
+			return;
+		}
+        if (settings->compressLevel < COMPRESS_LEVEL_DEFAULT || settings->compressLevel >= COMPRESS_LEVEL_NUM) {
+			log->error(error = log::eCommandLineUnknownCompressLevel, (COMPRESS_LEVEL_NUM - 1));
 			return;
 		}
 	}
