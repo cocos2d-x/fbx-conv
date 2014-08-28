@@ -67,7 +67,7 @@ struct FbxConvCommand {
 					settings->inType = parseType(argv[++i]);
 				else if ((arg[1] == 'o') && (i + 1 < argc))
 					settings->outType = parseType(argv[++i]);
-				else if ((arg[1] == 'b') && (i + 1 < argc))
+				else if ((arg[1] == 'n') && (i + 1 < argc))
 					settings->maxNodePartBonesCount = atoi(argv[++i]);
 				else if ((arg[1] == 'w') && (i + 1 < argc))
 					settings->maxVertexBonesCount = atoi(argv[++i]);
@@ -114,14 +114,17 @@ struct FbxConvCommand {
 #ifdef ALLOW_INPUT_TYPE
 		printf("-i <type>: Set the type of the input file to <type>\n");
 #endif
-		printf("-o <type>: Set the type of the output file to <type>\n");
+		//printf("-o <type>: Set the type of the output file to <type>\n");
 		printf("-f       : Flip the V texture coordinates.\n");
 		printf("-p       : Pack vertex colors to one float.\n");
 		printf("-m <size>: The maximum amount of vertices or indices a mesh may contain (default: 32k)\n");
-		printf("-b <size>: The maximum amount of bones a nodepart can contain (default: 40)\n");
+		printf("-n <size>: The maximum amount of bones a nodepart can contain (default: 40)\n");
 		printf("-w <size>: The maximum amount of bone weights per vertex (default: 4)\n");
 		printf("-v       : Verbose: print additional progress information\n");
 		printf("-g       : Not merge meshs with same attributes, keep original\n");
+        printf("-a       : export c3b(binary) and c3t(text)\n");
+        printf("-b       : export c3b(binary)\n");
+        printf("-t       : export c3t(text)\n");
         printf("-c <size>: The compression level: 0 , 1 (default: 0)\n");
 		printf("\n");
 		printf("<input>  : The filename of the file to convert.\n");

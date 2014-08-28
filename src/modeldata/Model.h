@@ -31,7 +31,7 @@
 namespace fbxconv {
 namespace modeldata {
 	const short VERSION_HI = 0;
-	const short VERSION_LO = 1;
+	const short VERSION_LO = 4;
 
 	/** A model is responsable for freeing all animations, materials, meshes and nodes it contains */
 	struct Model : public json::ConstSerializable {

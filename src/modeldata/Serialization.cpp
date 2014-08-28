@@ -27,7 +27,9 @@
 
 namespace fbxconv {
 namespace modeldata {
-std::string versions = "0.3";
+    
+//std::string versions = "0.4";
+    
 static const char* getPrimitiveTypeString(const int &primitiveTypeId) {
 	switch(primitiveTypeId){
 	case 0:
@@ -96,7 +98,9 @@ void Model::serialize(json::BaseJSONWriter &writer) const {
         (*itr)->setSkeleton(skeleton);
     }
 	writer.obj(6);
-	writer << "version" = versions;
+    char szVersion[64] = {0};
+    sprintf(szVersion, "%d.%d", VERSION_HI, VERSION_LO);
+	writer << "version" = szVersion;
 	writer << "id" = id;
 	writer << "meshes" = meshes;
 	writer << "materials" = materials;

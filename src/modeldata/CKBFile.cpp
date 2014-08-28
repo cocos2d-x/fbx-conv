@@ -3,7 +3,7 @@
 #include "Model.h"
 namespace fbxconv{
 	using namespace modeldata;
-    unsigned char GPB_VERSION[2] = {0, 3};
+    unsigned char GPB_VERSION[2] = {VERSION_HI, VERSION_LO};
 	CKBFile::CKBFile(void)
 		:_file(NULL)
 	{

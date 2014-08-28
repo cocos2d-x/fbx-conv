@@ -30,7 +30,7 @@ LOG_START_MESSAGES(DefaultMessages)
 LOG_SET_MSG(iNoError,							"No error")
 
 LOG_SET_MSG(iVersion,							"%d.%02d.%s x%d (%s)")
-LOG_SET_MSG(iNameAndVersion,					"FBX to c3x converter, version 0.3")
+LOG_SET_MSG(iNameAndVersion,					"FBX to c3x converter, version %d.%d x%d (%s)")
 
 LOG_SET_MSG(eCommandLineUnknownOption,			"Unknown command line option: %s")
 LOG_SET_MSG(eCommandLineUnknownArgument,		"Unknown command line argument: %s")
