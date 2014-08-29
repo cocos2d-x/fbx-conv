@@ -7,13 +7,13 @@
 
 namespace fbxconv {
 
-class CKBFile
+class C3BFile
 {
 public:
 	// Construct.
-	CKBFile(void);
+	C3BFile(void);
 
-	~CKBFile(void);
+	~C3BFile(void);
 
 	// Destruct.
 	bool saveBinary(const std::string& filepath);

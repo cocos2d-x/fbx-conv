@@ -42,7 +42,7 @@
 #include "json/JSONWriter.h"
 #include "json/UBJSONWriter.h"
 #include "readers/FbxConverter.h"
-#include "modeldata/CKBFile.h"
+#include "modeldata/C3BFile.h"
 namespace fbxconv {
 
 void simpleTextureCallback(std::map<std::string, readers::TextureFileInfo> &textures) {
@@ -165,7 +165,7 @@ class FbxConv {
 				std::string out = settings->outFile;
 				int o = out.find_first_of(".");
 				out = out.substr(0, o+1) + "c3b";
-				CKBFile file;
+				C3BFile file;
 				file.AddModel(model);
 				file.saveBinary(out);
 				log->status(log::sExportToG3DB, out.c_str());

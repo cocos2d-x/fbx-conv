@@ -9,11 +9,11 @@
 /* Begin PBXBuildFile section */
 		1DDF324B01AE564164196491 /* Serialization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27CA65CF7E9505AA72CD1738 /* Serialization.cpp */; };
 		323A3E5220121AD1298437AA /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58AD6B5411C261E723540729 /* CoreFoundation.framework */; };
-		5E79E31319AB384100C6E369 /* CKBFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E79E30F19AB384100C6E369 /* CKBFile.cpp */; };
 		5E79E31419AB384100C6E369 /* FileIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E79E31119AB384100C6E369 /* FileIO.cpp */; };
 		5E79E31A19AB38AD00C6E369 /* Reference.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E79E31519AB38AD00C6E369 /* Reference.cpp */; };
 		5E79E31B19AB38AD00C6E369 /* ReferenceTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E79E31719AB38AD00C6E369 /* ReferenceTable.cpp */; };
 		5E79E31C19AB38AD00C6E369 /* WriteBinnary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E79E31919AB38AD00C6E369 /* WriteBinnary.cpp */; };
+		5E79E33A19B0164400C6E369 /* C3BFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E79E33819B0164400C6E369 /* C3BFile.cpp */; };
 		7D6F28F8705B07DF6AA435C7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D1D0D32679E6B9471031F7B /* main.cpp */; };
 /* End PBXBuildFile section */
 
@@ -38,8 +38,6 @@
 		554C0E847FCC5F155C0F6DB3 /* log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = log.h; sourceTree = "<group>"; };
 		58AD6B5411C261E723540729 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		5D7E7B9D19B61A5A452B16F8 /* Animation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Animation.h; sourceTree = "<group>"; };
-		5E79E30F19AB384100C6E369 /* CKBFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CKBFile.cpp; sourceTree = "<group>"; };
-		5E79E31019AB384100C6E369 /* CKBFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CKBFile.h; sourceTree = "<group>"; };
 		5E79E31119AB384100C6E369 /* FileIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileIO.cpp; sourceTree = "<group>"; };
 		5E79E31219AB384100C6E369 /* FileIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileIO.h; sourceTree = "<group>"; };
 		5E79E31519AB38AD00C6E369 /* Reference.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Reference.cpp; sourceTree = "<group>"; };
@@ -47,6 +45,8 @@
 		5E79E31719AB38AD00C6E369 /* ReferenceTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReferenceTable.cpp; sourceTree = "<group>"; };
 		5E79E31819AB38AD00C6E369 /* ReferenceTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReferenceTable.h; sourceTree = "<group>"; };
 		5E79E31919AB38AD00C6E369 /* WriteBinnary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WriteBinnary.cpp; sourceTree = "<group>"; };
+		5E79E33819B0164400C6E369 /* C3BFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = C3BFile.cpp; sourceTree = "<group>"; };
+		5E79E33919B0164400C6E369 /* C3BFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = C3BFile.h; sourceTree = "<group>"; };
 		604A1BD13F0E7067196A39F4 /* Reader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Reader.h; sourceTree = "<group>"; };
 		69706B1763F0536253A723BA /* JSONWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSONWriter.h; sourceTree = "<group>"; };
 		6A90237F747E0BC812497A1E /* FbxConverter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FbxConverter.h; sourceTree = "<group>"; };
@@ -120,13 +120,13 @@
 		52DD5F4675581E4B7CBC24A1 /* modeldata */ = {
 			isa = PBXGroup;
 			children = (
+				5E79E33819B0164400C6E369 /* C3BFile.cpp */,
+				5E79E33919B0164400C6E369 /* C3BFile.h */,
 				5E79E31519AB38AD00C6E369 /* Reference.cpp */,
 				5E79E31619AB38AD00C6E369 /* Reference.h */,
 				5E79E31719AB38AD00C6E369 /* ReferenceTable.cpp */,
 				5E79E31819AB38AD00C6E369 /* ReferenceTable.h */,
 				5E79E31919AB38AD00C6E369 /* WriteBinnary.cpp */,
-				5E79E30F19AB384100C6E369 /* CKBFile.cpp */,
-				5E79E31019AB384100C6E369 /* CKBFile.h */,
 				5E79E31119AB384100C6E369 /* FileIO.cpp */,
 				5E79E31219AB384100C6E369 /* FileIO.h */,
 				5D7E7B9D19B61A5A452B16F8 /* Animation.h */,
@@ -234,9 +234,9 @@
 				7D6F28F8705B07DF6AA435C7 /* main.cpp in Sources */,
 				1DDF324B01AE564164196491 /* Serialization.cpp in Sources */,
 				5E79E31B19AB38AD00C6E369 /* ReferenceTable.cpp in Sources */,
-				5E79E31319AB384100C6E369 /* CKBFile.cpp in Sources */,
 				5E79E31C19AB38AD00C6E369 /* WriteBinnary.cpp in Sources */,
 				5E79E31A19AB38AD00C6E369 /* Reference.cpp in Sources */,
+				5E79E33A19B0164400C6E369 /* C3BFile.cpp in Sources */,
 				5E79E31419AB384100C6E369 /* FileIO.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
