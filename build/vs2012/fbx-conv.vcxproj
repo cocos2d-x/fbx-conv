@@ -115,7 +115,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\FbxConv.h" />
     <ClInclude Include="..\..\src\FbxConvCommand.h" />
-    <ClInclude Include="..\..\src\modeldata\CKBFile.h" />
+    <ClInclude Include="..\..\src\modeldata\C3BFile.h" />
     <ClInclude Include="..\..\src\modeldata\FileIO.h" />
     <ClInclude Include="..\..\src\modeldata\Reference.h" />
     <ClInclude Include="..\..\src\modeldata\ReferenceTable.h" />
@@ -146,7 +146,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\main.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\src\modeldata\CKBFile.cpp" />
+    <ClCompile Include="..\..\src\modeldata\C3BFile.cpp" />
     <ClCompile Include="..\..\src\modeldata\FileIO.cpp" />
     <ClCompile Include="..\..\src\modeldata\Reference.cpp" />
     <ClCompile Include="..\..\src\modeldata\ReferenceTable.cpp" />
