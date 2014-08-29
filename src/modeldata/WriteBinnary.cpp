@@ -298,11 +298,32 @@ namespace modeldata {
 			for(auto itr1 = nodeanim->keyframes.begin(); itr1 != nodeanim->keyframes.end(); itr1++)
 			{
 				Keyframe* keyframe = *itr1;
+                
 				// write time
 				write(keyframe->time, file);
-				write(keyframe->rotation, 4, file);
-				write(keyframe->scale, 3, file);
-				write(keyframe->translation, 3, file);
+                
+                // write transform flag
+                unsigned char transformflag(0);
+                if (keyframe->hasRotation)
+                    transformflag |= 0x01;
+                if (keyframe->hasScale)
+                    transformflag |= (0x01 << 1);
+                if (keyframe->hasTranslation)
+                    transformflag |= (0x01 << 2);
+                
+                write(transformflag, file);
+                
+                // write rotation val
+                if (keyframe->hasRotation)
+                    write(keyframe->rotation, 4, file);
+                
+                // write scale val
+                if (keyframe->hasScale)
+                    write(keyframe->scale, 3, file);
+                
+                // write translation val
+                if (keyframe->hasTranslation)
+                    write(keyframe->translation, 3, file);
 			}
 		}
     }

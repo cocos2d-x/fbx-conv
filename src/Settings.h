@@ -30,9 +30,16 @@ namespace fbxconv {
 #define FILETYPE_G3DJ			0x21
 #define FILETYPE_OUT_DEFAULT	FILETYPE_G3DB
 #define FILETYPE_IN_DEFAULT		FILETYPE_FBX
- #define FILETYPE_C3B			0X30
+#define FILETYPE_C3B			0X30
 #define FILETYPE_C3J			0X31
 #define FILETYPE_ALL			0X32
+    
+enum COMPRESS_LEVEL{
+    COMPRESS_LEVEL_DEFAULT,
+    COMPRESS_LEVEL_1,
+    COMPRESS_LEVEL_NUM
+};
+
 struct Settings {
 	std::string inFile;
 	int inType;
@@ -55,6 +62,8 @@ struct Settings {
 	int maxIndexCount;
     /** Whether to merge same attributes mesh. */
     bool needReusableMesh;
+    /** The level of compression, you may lose some animation detail when useing high compression level*/
+    COMPRESS_LEVEL compressLevel;
 };
 
 }

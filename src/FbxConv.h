@@ -26,9 +26,9 @@
 
 #ifndef BUILD_ID
 #ifdef DEBUG
-#define BUILD_ID "debug version"
+#define BUILD_ID "debug version for v3.3 alpha1"
 #else
-#define BUILD_ID "pre-release"
+#define BUILD_ID "pre-release for v3.3 alpha1"
 #endif
 #endif
 
@@ -42,7 +42,7 @@
 #include "json/JSONWriter.h"
 #include "json/UBJSONWriter.h"
 #include "readers/FbxConverter.h"
-#include "modeldata/CKBFile.h"
+#include "modeldata/C3BFile.h"
 namespace fbxconv {
 
 void simpleTextureCallback(std::map<std::string, readers::TextureFileInfo> &textures) {
@@ -57,7 +57,7 @@ class FbxConv {
 		fbxconv::log::Log *log;
 
 		FbxConv(fbxconv::log::Log *log) : log(log) {
-			log->info(log::iNameAndVersion, modeldata::VERSION_HI, modeldata::VERSION_LO, BUILD_NUMBER, BIT_COUNT, BUILD_ID);
+			log->info(log::iNameAndVersion, modeldata::VERSION_HI, modeldata::VERSION_LO, /*BUILD_NUMBER,*/ BIT_COUNT, BUILD_ID);
 		}
 
 		const char *getVersionString() {
@@ -65,7 +65,7 @@ class FbxConv {
 		}
 
 		const char *getNameAndVersionString() {
-			return log->format(log::iNameAndVersion, modeldata::VERSION_HI, modeldata::VERSION_LO, BUILD_NUMBER, BIT_COUNT, BUILD_ID);
+			return log->format(log::iNameAndVersion, modeldata::VERSION_HI, modeldata::VERSION_LO, /*BUILD_NUMBER,*/ BIT_COUNT, BUILD_ID);
 		}
 
 		bool execute(int const &argc, const char** const &argv) {
@@ -165,7 +165,7 @@ class FbxConv {
 				std::string out = settings->outFile;
 				int o = out.find_first_of(".");
 				out = out.substr(0, o+1) + "c3b";
-				CKBFile file;
+				C3BFile file;
 				file.AddModel(model);
 				file.saveBinary(out);
 				log->status(log::sExportToG3DB, out.c_str());

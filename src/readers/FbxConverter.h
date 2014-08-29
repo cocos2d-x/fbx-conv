@@ -622,6 +622,9 @@ namespace readers {
 			if (animStop <= animStart)
 				animStop = 999999999.0f;
 
+            //
+            static std::map<FbxNode *, std::list<float> > keyframesTimeMap;
+            
 			// Could also use animStack->GetLocalTimeSpan and animStack->BakeLayers, but its not guaranteed to be correct
 			const int layerCount = animStack->GetMemberCount<FbxAnimLayer>();
 			for (int l = 0; l < layerCount; l++) {
@@ -647,14 +650,62 @@ namespace readers {
 							ts.translate = propName == node->LclTranslation.GetName();
 							ts.rotate = propName == node->LclRotation.GetName();
 							ts.scale = propName == node->LclScaling.GetName();
-							if (curve = prop.GetCurve(layer, FBXSDK_CURVENODE_COMPONENT_X))
-								updateAnimTime(curve, ts, animStart, animStop);
-							if (curve = prop.GetCurve(layer, FBXSDK_CURVENODE_COMPONENT_Y))
-								updateAnimTime(curve, ts, animStart, animStop);
-							if (curve = prop.GetCurve(layer, FBXSDK_CURVENODE_COMPONENT_Z))
-								updateAnimTime(curve, ts, animStart, animStop);
+                            
+                            bool find = false;
+                            std::list<float> keyframesTimeList;
+                            std::map<FbxNode *, std::list<float> >::iterator iter = keyframesTimeMap.find(node);
+                            if (iter != keyframesTimeMap.end())
+                                find = true;
+                            
+							if (curve = prop.GetCurve(layer, FBXSDK_CURVENODE_COMPONENT_X)){
+								
+                                updateAnimTime(curve, ts, animStart, animStop);
+                                
+                                if(settings->compressLevel >= COMPRESS_LEVEL_1)
+                                {
+                                    if(find)
+                                        collectKeyFrames(curve, keyframesTimeMap[node]);
+                                    else
+                                        collectKeyFrames(curve, keyframesTimeList);
+                                }
+                            }
+                            
+							if (curve = prop.GetCurve(layer, FBXSDK_CURVENODE_COMPONENT_Y)){
+								
+                                updateAnimTime(curve, ts, animStart, animStop);
+                                
+                                if(settings->compressLevel >= COMPRESS_LEVEL_1)
+                                {
+                                    if(find)
+                                        collectKeyFrames(curve, keyframesTimeMap[node]);
+                                    else
+                                        collectKeyFrames(curve, keyframesTimeList);
+                                }
+                            }
+                            
+							if (curve = prop.GetCurve(layer, FBXSDK_CURVENODE_COMPONENT_Z)){
+								
+                                updateAnimTime(curve, ts, animStart, animStop);
+                                
+                                if(settings->compressLevel >= COMPRESS_LEVEL_1)
+                                {
+                                    if(find)
+                                        collectKeyFrames(curve, keyframesTimeMap[node]);
+                                    else
+                                        collectKeyFrames(curve, keyframesTimeList);
+                                }
+                            }
+                            
 							//if (ts.start < ts.stop)
 								affectedNodes[node] += ts;
+                            
+                            if(settings->compressLevel >= COMPRESS_LEVEL_1)
+                            {
+                                if(!find)
+                                    keyframesTimeMap[node] = keyframesTimeList;
+                                
+                                keyframesTimeMap[node].sort();
+                            }
 						}
 					}
 				}
@@ -679,43 +730,71 @@ namespace readers {
 				nodeAnim->translate = (*itr).second.translate;
 				nodeAnim->rotate = (*itr).second.rotate;
 				nodeAnim->scale = (*itr).second.scale;
-				const float stepSize = (*itr).second.framerate <= 0.f ? (*itr).second.stop - (*itr).second.start : 1000.f / (*itr).second.framerate;
-				const float last = (*itr).second.stop + stepSize * 0.5f;
+				
 				FbxTime fbxTime;
 				// Calculate all keyframes upfront
-				for (float time = (*itr).second.start; time <= last; time += stepSize) {
-					time = std::min(time, (*itr).second.stop);
-					fbxTime.SetMilliSeconds((FbxLongLong)time);
-					Keyframe *kf = new Keyframe();
-					kf->time = (time - animStart);
-					FbxAMatrix *m = &(*itr).first->EvaluateLocalTransform(fbxTime);
-					FbxVector4 v = m->GetT();
-					kf->translation[0] = (float)v.mData[0];
-					kf->translation[1] = (float)v.mData[1];
-					kf->translation[2] = (float)v.mData[2];
-					FbxQuaternion q = m->GetQ();
-					kf->rotation[0] = (float)q.mData[0];
-					kf->rotation[1] = (float)q.mData[1];
-					kf->rotation[2] = (float)q.mData[2];
-					kf->rotation[3] = (float)q.mData[3];
-					v = m->GetS();
-					kf->scale[0] = (float)v.mData[0];
-					kf->scale[1] = (float)v.mData[1];
-					kf->scale[2] = (float)v.mData[2];
-					frames.push_back(kf);
-				}
-               
+                
+                if(settings->compressLevel == COMPRESS_LEVEL_1){
+                    std::list<float> keytimeList = keyframesTimeMap[(*itr).first];
+                    for (const auto& val : keytimeList) {
+                        float time = val;
+                        time = std::min(time, (*itr).second.stop);
+                        fbxTime.SetMilliSeconds((FbxLongLong)time);
+                        Keyframe *kf = new Keyframe();
+                        kf->time = (time - animStart);
+                        FbxAMatrix *m = &(*itr).first->EvaluateLocalTransform(fbxTime);
+                        FbxVector4 v = m->GetT();
+                        kf->translation[0] = (float)v.mData[0];
+                        kf->translation[1] = (float)v.mData[1];
+                        kf->translation[2] = (float)v.mData[2];
+                        FbxQuaternion q = m->GetQ();
+                        kf->rotation[0] = (float)q.mData[0];
+                        kf->rotation[1] = (float)q.mData[1];
+                        kf->rotation[2] = (float)q.mData[2];
+                        kf->rotation[3] = (float)q.mData[3];
+                        v = m->GetS();
+                        kf->scale[0] = (float)v.mData[0];
+                        kf->scale[1] = (float)v.mData[1];
+                        kf->scale[2] = (float)v.mData[2];
+                        frames.push_back(kf);
+                    }
+                }
+                else{
+                    const float stepSize = (*itr).second.framerate <= 0.f ? (*itr).second.stop - (*itr).second.start : 1000.f / (*itr).second.framerate;
+                    const float last = (*itr).second.stop + stepSize * 0.5f;
+                    
+                    for (float time = (*itr).second.start; time <= last; time += stepSize) {
+                        time = std::min(time, (*itr).second.stop);
+                        fbxTime.SetMilliSeconds((FbxLongLong)time);
+                        Keyframe *kf = new Keyframe();
+                        kf->time = (time - animStart);
+                        FbxAMatrix *m = &(*itr).first->EvaluateLocalTransform(fbxTime);
+                        FbxVector4 v = m->GetT();
+                        kf->translation[0] = (float)v.mData[0];
+                        kf->translation[1] = (float)v.mData[1];
+                        kf->translation[2] = (float)v.mData[2];
+                        FbxQuaternion q = m->GetQ();
+                        kf->rotation[0] = (float)q.mData[0];
+                        kf->rotation[1] = (float)q.mData[1];
+                        kf->rotation[2] = (float)q.mData[2];
+                        kf->rotation[3] = (float)q.mData[3];
+                        v = m->GetS();
+                        kf->scale[0] = (float)v.mData[0];
+                        kf->scale[1] = (float)v.mData[1];
+                        kf->scale[2] = (float)v.mData[2];
+                        frames.push_back(kf);
+                    }
+                }
+                
                 //animation->length = frames[frames.size()-1]->time;
                 if(frames.size() > 0)
                 {
                     float time = frames[frames.size()-1]->time / 1000;
                     animation->length = animation->length < time ? time : animation->length;
                 }
-
-			    //animation->length /= 1000;
                 
 				// Only add keyframes really needed
-				addKeyframes(nodeAnim, frames);
+                addKeyframes(nodeAnim, frames);
 				if (nodeAnim->rotate || nodeAnim->scale || nodeAnim->translate)
 					animation->nodeAnimations.push_back(nodeAnim);
 				else
@@ -733,30 +812,81 @@ namespace readers {
 			// Could check the number and type of keys (ie curve->KeyGetInterpolation) to lower the framerate
 			ts.framerate = std::max(ts.framerate, (float)stop.GetFrameRate(FbxTime::eDefaultMode));
 		}
+        
+        inline void collectKeyFrames(FbxAnimCurve *const &curve, std::list<float>& keyframesTime)
+        {
+            int key_cout = curve->KeyGetCount();
+            for (int i = 0; i < key_cout; ++i)
+            {
+                FbxAnimCurveKey curveKey = curve->KeyGet(i);
+                FbxTime fbx_time = curveKey.GetTime();
+                float keytime = (float)fbx_time.GetMilliSeconds();
+                if(keytime < 0) continue;
+                
+                std::list<float>::iterator iter = std::find(keyframesTime.begin(), keyframesTime.end(), keytime);
+                if (iter == keyframesTime.end())
+                {
+                    keyframesTime.push_back(keytime);
+                }
+            }
+        }
 
-		void addKeyframes(NodeAnimation *const &anim, std::vector<Keyframe *> &keyframes) {
-			bool translate = false, rotate = false, scale = false;
-			// Check which components are actually changed
-			for (std::vector<Keyframe *>::const_iterator itr = keyframes.begin(); itr != keyframes.end(); ++itr) {
-				if (!translate && !cmp(anim->node->transform.translation, (*itr)->translation, 3))
-					translate = true;
-				if (!rotate && !cmp(anim->node->transform.rotation, (*itr)->rotation, 3))
-					rotate = true;
-				if (!scale && !cmp(anim->node->transform.scale, (*itr)->scale, 3))
-					scale = true;
-			}
-			// This allows to only export the values actual needed
-			anim->translate = translate;
-			anim->rotate = rotate;
-			anim->scale = scale;
-			for (std::vector<Keyframe *>::const_iterator itr = keyframes.begin(); itr != keyframes.end(); ++itr) {
-				(*itr)->hasRotation = rotate;
-				(*itr)->hasScale = scale;
-				(*itr)->hasTranslation = translate;
-			}
-
-			if (!keyframes.empty()) {
-				anim->keyframes.push_back(keyframes[0]);
+//		void addKeyframes(NodeAnimation *const &anim, std::vector<Keyframe *> &keyframes) {
+//			bool translate = false, rotate = false, scale = false;
+//			// Check which components are actually changed
+//			for (std::vector<Keyframe *>::const_iterator itr = keyframes.begin(); itr != keyframes.end(); ++itr) {
+//				if (!translate && !cmp(anim->node->transform.translation, (*itr)->translation, 3))
+//					translate = true;
+//				if (!rotate && !cmp(anim->node->transform.rotation, (*itr)->rotation, 3))
+//					rotate = true;
+//				if (!scale && !cmp(anim->node->transform.scale, (*itr)->scale, 3))
+//					scale = true;
+//			}
+//			// This allows to only export the values actual needed
+//			anim->translate = translate;
+//			anim->rotate = rotate;
+//			anim->scale = scale;
+//			for (std::vector<Keyframe *>::const_iterator itr = keyframes.begin(); itr != keyframes.end(); ++itr) {
+//				(*itr)->hasRotation = rotate;
+//				(*itr)->hasScale = scale;
+//				(*itr)->hasTranslation = translate;
+//			}
+//
+//			if (!keyframes.empty()) {
+//				anim->keyframes.push_back(keyframes[0]);
+//				const int last = (int)keyframes.size()-1;
+//                float max = keyframes[last]->time;
+//				Keyframe *k1 = keyframes[0], *k2, *k3;
+//				for (int i = 1; i < last; i++) {
+//					k2 = keyframes[i];
+//					k3 = keyframes[i+1];
+//					// Check if the middle keyframe can be calculated by information, if so dont add it
+//					if ((translate && !isLerp(k1->translation, k1->time, k2->translation, k2->time, k3->translation, k3->time, 3)) ||
+//						(rotate && !isLerp(k1->rotation, k1->time, k2->rotation, k2->time, k3->rotation, k3->time, 3)) || // FIXME use slerp for quaternions
+//						(scale && !isLerp(k1->scale, k1->time, k2->scale, k2->time, k3->scale, k3->time, 3))) {
+//                            k2->time /= max;
+//							anim->keyframes.push_back(k2);
+//							k1 = k2;
+//					} else
+//						delete k2;
+//				}
+//				if (last > 0)
+//                {
+//                    keyframes[last]->time = 1;
+//					anim->keyframes.push_back(keyframes[last]);
+//                }
+//			}
+//		}
+        
+        void addKeyframes(NodeAnimation *const &anim, std::vector<Keyframe *> &keyframes)
+        {
+            if (!keyframes.empty()) {
+                keyframes[0]->hasTranslation = true;
+                keyframes[0]->hasRotation = true;
+                keyframes[0]->hasScale = true;
+                anim->keyframes.push_back(keyframes[0]);
+                
+                // translation frame
 				const int last = (int)keyframes.size()-1;
                 float max = keyframes[last]->time;
 				Keyframe *k1 = keyframes[0], *k2, *k3;
@@ -764,22 +894,70 @@ namespace readers {
 					k2 = keyframes[i];
 					k3 = keyframes[i+1];
 					// Check if the middle keyframe can be calculated by information, if so dont add it
-					if ((translate && !isLerp(k1->translation, k1->time, k2->translation, k2->time, k3->translation, k3->time, 3)) ||
-						(rotate && !isLerp(k1->rotation, k1->time, k2->rotation, k2->time, k3->rotation, k3->time, 3)) || // FIXME use slerp for quaternions
-						(scale && !isLerp(k1->scale, k1->time, k2->scale, k2->time, k3->scale, k3->time, 3))) {
-                            k2->time /= max;
-							anim->keyframes.push_back(k2);
-							k1 = k2;
-					} else
-						delete k2;
+					if (!isLerp(k1->translation, k1->time, k2->translation, k2->time, k3->translation, k3->time, 3)) {
+                        k2->hasTranslation = true;
+                        k1 = k2;
+					}
+                    else{
+                        k2->hasTranslation = false;
+                    }
 				}
+                
+                std::vector<Keyframe *> keyframesTemp;
+                // rotation frame
+				k1 = keyframes[0];
+				for (int i = 1; i < last; i++) {
+					k2 = keyframes[i];
+					k3 = keyframes[i+1];
+					// Check if the middle keyframe can be calculated by information, if so dont add it
+					//if (!isLerp(k1->rotation, k1->time, k2->rotation, k2->time, k3->rotation, k3->time, 3))// FIXME use slerp for quaternions
+                    if (!isSlerp(k1->rotation, k1->time, k2->rotation, k2->time, k3->rotation, k3->time, 4))
+                    {
+                        k2->hasRotation = true;
+                        k1 = k2;
+                        keyframesTemp.push_back(k2);
+					}
+                    else{
+                        k2->hasRotation = false;
+                    }
+				}
+                
+                // scale frame
+				k1 = keyframes[0];
+				for (int i = 1; i < last; i++) {
+					k2 = keyframes[i];
+					k3 = keyframes[i+1];
+					// Check if the middle keyframe can be calculated by information, if so dont add it
+					if (!isLerp(k1->scale, k1->time, k2->scale, k2->time, k3->scale, k3->time, 3)) {
+                        k2->hasScale = true;
+                        k1 = k2;
+					} else{
+						k2->hasScale = false;
+                    }
+				}
+                
+                // check, if keyframe has translation or scale or rotation then push it to anim's key frames
+                for (int i = 1; i < last; i++) {
+					k2 = keyframes[i];
+                    if(k2->hasTranslation || k2->hasScale || k2->hasRotation){
+                        k2->time /= max;
+                        anim->keyframes.push_back(k2);
+                    }
+                    else{
+                        delete k2;
+                    }
+				}
+                
 				if (last > 0)
                 {
                     keyframes[last]->time = 1;
+                    keyframes[last]->hasTranslation = true;
+                    keyframes[last]->hasRotation = true;
+                    keyframes[last]->hasScale = true;
 					anim->keyframes.push_back(keyframes[last]);
                 }
 			}
-		}
+        }
 
 		inline bool cmp(const float &v1, const float &v2, const float &epsilon = 0.000001) {
 			const double d = v1 - v2;
@@ -800,6 +978,113 @@ namespace readers {
 					return false;
 			return true;
 		}
+        
+        inline bool isSlerp(const float *v1, const float &t1, const float *v2, const float &t2, const float *v3, const float &t3, const int size)
+        {
+            assert(size==4);
+            const double d = (t2 - t1) / (t3 - t1);
+            float q[4] = {0};
+            slerp(v1[0], v1[1], v1[2], v1[3], v3[0], v3[1], v3[2], v3[3], d, &q[0], &q[1], &q[2], &q[3]);
+            
+            if (!cmp(q, v2, size))
+                return false;
+            return true;
+        }
+        
+        void slerp(float q1x, float q1y, float q1z, float q1w, float q2x, float q2y, float q2z, float q2w, float t, float* dstx, float* dsty, float* dstz, float* dstw)
+        {
+            assert(dstx && dsty && dstz && dstw);
+            assert(!(t < 0.0f || t > 1.0f));
+            
+            if (t == 0.0f)
+            {
+                *dstx = q1x;
+                *dsty = q1y;
+                *dstz = q1z;
+                *dstw = q1w;
+                return;
+            }
+            else if (t == 1.0f)
+            {
+                *dstx = q2x;
+                *dsty = q2y;
+                *dstz = q2z;
+                *dstw = q2w;
+                return;
+            }
+            
+            if (q1x == q2x && q1y == q2y && q1z == q2z && q1w == q2w)
+            {
+                *dstx = q1x;
+                *dsty = q1y;
+                *dstz = q1z;
+                *dstw = q1w;
+                return;
+            }
+            
+            float halfY, alpha, beta;
+            float u, f1, f2a, f2b;
+            float ratio1, ratio2;
+            float halfSecHalfTheta, versHalfTheta;
+            float sqNotU, sqU;
+            
+            float cosTheta = q1w * q2w + q1x * q2x + q1y * q2y + q1z * q2z;
+            
+            // As usual in all slerp implementations, we fold theta.
+            alpha = cosTheta >= 0 ? 1.0f : -1.0f;
+            halfY = 1.0f + alpha * cosTheta;
+            
+            // Here we bisect the interval, so we need to fold t as well.
+            f2b = t - 0.5f;
+            u = f2b >= 0 ? f2b : -f2b;
+            f2a = u - f2b;
+            f2b += u;
+            u += u;
+            f1 = 1.0f - u;
+            
+            // One iteration of Newton to get 1-cos(theta / 2) to good accuracy.
+            halfSecHalfTheta = 1.09f - (0.476537f - 0.0903321f * halfY) * halfY;
+            halfSecHalfTheta *= 1.5f - halfY * halfSecHalfTheta * halfSecHalfTheta;
+            versHalfTheta = 1.0f - halfY * halfSecHalfTheta;
+            
+            // Evaluate series expansions of the coefficients.
+            sqNotU = f1 * f1;
+            ratio2 = 0.0000440917108f * versHalfTheta;
+            ratio1 = -0.00158730159f + (sqNotU - 16.0f) * ratio2;
+            ratio1 = 0.0333333333f + ratio1 * (sqNotU - 9.0f) * versHalfTheta;
+            ratio1 = -0.333333333f + ratio1 * (sqNotU - 4.0f) * versHalfTheta;
+            ratio1 = 1.0f + ratio1 * (sqNotU - 1.0f) * versHalfTheta;
+            
+            sqU = u * u;
+            ratio2 = -0.00158730159f + (sqU - 16.0f) * ratio2;
+            ratio2 = 0.0333333333f + ratio2 * (sqU - 9.0f) * versHalfTheta;
+            ratio2 = -0.333333333f + ratio2 * (sqU - 4.0f) * versHalfTheta;
+            ratio2 = 1.0f + ratio2 * (sqU - 1.0f) * versHalfTheta;
+            
+            // Perform the bisection and resolve the folding done earlier.
+            f1 *= ratio1 * halfSecHalfTheta;
+            f2a *= ratio2;
+            f2b *= ratio2;
+            alpha *= f1 + f2a;
+            beta = f1 + f2b;
+            
+            // Apply final coefficients to a and b as usual.
+            float w = alpha * q1w + beta * q2w;
+            float x = alpha * q1x + beta * q2x;
+            float y = alpha * q1y + beta * q2y;
+            float z = alpha * q1z + beta * q2z;
+            
+            // This final adjustment to the quaternion's length corrects for
+            // any small constraint error in the inputs q1 and q2 But as you
+            // can see, it comes at the cost of 9 additional multiplication
+            // operations. If this error-correcting feature is not required,
+            // the following code may be removed.
+            f1 = 1.5f - 0.5f * (w * w + x * x + y * y + z * z);
+            *dstw = w * f1;
+            *dstx = x * f1;
+            *dsty = y * f1;
+            *dstz = z * f1;
+        }
 
 		template<int n> inline static void set(float * const &dest, const FbxDouble * const &source) {
 			for (int i = 0; i < n; i++)

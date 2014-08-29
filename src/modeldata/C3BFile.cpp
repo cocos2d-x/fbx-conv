@@ -1,21 +1,21 @@
-#include "CKBFile.h"
+#include "C3BFile.h"
 #include "Animation.h"
 #include "Model.h"
 namespace fbxconv{
 	using namespace modeldata;
-    unsigned char GPB_VERSION[2] = {0, 3};
-	CKBFile::CKBFile(void)
+    unsigned char GPB_VERSION[2] = {VERSION_HI, VERSION_LO};
+	C3BFile::C3BFile(void)
 		:_file(NULL)
 	{
 
 	}
 
-	CKBFile::~CKBFile(void)
+	C3BFile::~C3BFile(void)
 	{
 
 	}
 
-	bool CKBFile::saveBinary(const std::string& filepath)
+	bool C3BFile::saveBinary(const std::string& filepath)
 	{
 		_file = fopen(filepath.c_str(), "w+b");
 
@@ -40,7 +40,7 @@ namespace fbxconv{
 		return true;
 	}
 
-	void CKBFile::addToRefTable(ObjRef* obj)
+	void C3BFile::addToRefTable(ObjRef* obj)
 	{
 		if(obj)
 		{
@@ -55,7 +55,7 @@ namespace fbxconv{
 		}
 	}
 
-	void CKBFile::AddModel(modeldata::Model* model)
+	void C3BFile::AddModel(modeldata::Model* model)
 	{
 		_models = model;
 

@@ -38,6 +38,7 @@ LOG_ADD_CODE(eCommandLineInvalidVertexWeight)
 LOG_ADD_CODE(eCommandLineInvalidBoneCount)
 LOG_ADD_CODE(eCommandLineInvalidVertexCount)
 LOG_ADD_CODE(eCommandLineUnknownFiletype)
+LOG_ADD_CODE(eCommandLineUnknownCompressLevel)
 
 LOG_ADD_CODE(sSourceLoad)
 LOG_ADD_CODE(pSourceLoadFbxImport)

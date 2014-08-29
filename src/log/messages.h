@@ -30,7 +30,7 @@ LOG_START_MESSAGES(DefaultMessages)
 LOG_SET_MSG(iNoError,							"No error")
 
 LOG_SET_MSG(iVersion,							"%d.%02d.%s x%d (%s)")
-LOG_SET_MSG(iNameAndVersion,					"FBX to c3x converter, version %d.%02d.%s x%d (%s)")
+LOG_SET_MSG(iNameAndVersion,					"FBX to c3x converter, version %d.%d x%d (%s)")
 
 LOG_SET_MSG(eCommandLineUnknownOption,			"Unknown command line option: %s")
 LOG_SET_MSG(eCommandLineUnknownArgument,		"Unknown command line argument: %s")
@@ -39,7 +39,8 @@ LOG_SET_MSG(eCommandLineInvalidVertexWeight,	"Maximum vertex weights must be bet
 LOG_SET_MSG(eCommandLineInvalidBoneCount,		"Maximum bones per nodepart must be greater or equal to the maximum vertex weights")
 LOG_SET_MSG(eCommandLineInvalidVertexCount,		"Maximum vertex count must be between 0 and 32k")
 LOG_SET_MSG(eCommandLineUnknownFiletype,		"Unknown filetype: %s")
-
+LOG_SET_MSG(eCommandLineUnknownCompressLevel,   "Max compress level is: %d")
+    
 LOG_SET_MSG(sSourceLoad,						"Loading source file")
 LOG_SET_MSG(pSourceLoadFbxImport,				"Import FBX %01.2f%% %s")
 LOG_SET_MSG(wSourceLoadFbxNodeRrSs,				"[%s] Node uses RrSs mode, transformation might be incorrect")
