@@ -138,7 +138,7 @@ namespace modeldata {
 		}
 
 		virtual void serialize(json::BaseJSONWriter &writer) const;
-        void writeBinary(FILE* file, bool exportModel,bool exportAnimation);
+        void writeBinary(FILE* file);
 	};
 }
 }

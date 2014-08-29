@@ -55,10 +55,6 @@ struct Settings {
 	int maxIndexCount;
     /** Whether to merge same attributes mesh. */
     bool needReusableMesh;
-    //Only export animation
-    bool exportAnimation;
-    //Only export model
-    bool exportModel;
 };
 
 }

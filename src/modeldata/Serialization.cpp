@@ -98,16 +98,10 @@ void Model::serialize(json::BaseJSONWriter &writer) const {
 	writer.obj(6);
 	writer << "version" = versions;
 	writer << "id" = id;
-    if(writer.exportModel)
-    {
-        writer << "meshes" = meshes;
-        writer << "materials" = materials;
-        writer << "nodes" = nodes;
-    }
-    if(writer.exportAnimation)
-    {
-        writer << "animations" = animations;
-    }
+	writer << "meshes" = meshes;
+	writer << "materials" = materials;
+	writer << "nodes" = nodes;
+	writer << "animations" = animations;
 	writer.end();
 }
 

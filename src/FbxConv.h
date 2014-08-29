@@ -57,7 +57,7 @@ class FbxConv {
 		fbxconv::log::Log *log;
 
 		FbxConv(fbxconv::log::Log *log) : log(log) {
-			log->info(log::iNameAndVersion/*, modeldata::VERSION_HI, modeldata::VERSION_LO, BUILD_NUMBER, BIT_COUNT, BUILD_ID*/);
+			log->info(log::iNameAndVersion, modeldata::VERSION_HI, modeldata::VERSION_LO, BUILD_NUMBER, BIT_COUNT, BUILD_ID);
 		}
 
 		const char *getVersionString() {
@@ -148,23 +148,13 @@ class FbxConv {
 			{
 				std::string out = settings->outFile;
 				int o = out.find_first_of(".");
-                if(o==-1)
-                {
-                    out +=".c3t";
-                }
-                else
-                {
-                    out = out.substr(0, o+1) +  "c3t";
-                }
-				
+				out = out.substr(0, o+1) +  "c3t";
 
 				std::ofstream myfile;
 				myfile.open (out.c_str(), std::ios::binary);
 
 				log->status(log::sExportToG3DJ, out.c_str());
 				jsonWriter = new json::JSONWriter(myfile);
-                jsonWriter->exportModel= settings->exportModel;
-                jsonWriter->exportAnimation= settings->exportAnimation;
 				(*jsonWriter) << model;
 				delete jsonWriter;
 				result = true;
@@ -174,17 +164,10 @@ class FbxConv {
 			{
 				std::string out = settings->outFile;
 				int o = out.find_first_of(".");
-                if(o==-1)
-                {
-                    out += ".c3b";
-                }
-                else
-                {
-                    out = out.substr(0, o+1) +  "c3b";
-                }
+				out = out.substr(0, o+1) + "c3b";
 				CKBFile file;
 				file.AddModel(model);
-				file.saveBinary(out,settings->exportModel,settings->exportAnimation);
+				file.saveBinary(out);
 				log->status(log::sExportToG3DB, out.c_str());
 			}
 
