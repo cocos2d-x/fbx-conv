@@ -93,9 +93,6 @@
     <ClInclude Include="..\..\src\readers\util.h">
       <Filter>src\readers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\modeldata\CKBFile.h">
-      <Filter>src\modeldata</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\modeldata\FileIO.h">
       <Filter>src\modeldata</Filter>
     </ClInclude>
@@ -105,15 +102,15 @@
     <ClInclude Include="..\..\src\modeldata\ReferenceTable.h">
       <Filter>src\modeldata</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\modeldata\C3BFile.h">
+      <Filter>src\modeldata</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\modeldata\Serialization.cpp">
-      <Filter>src\modeldata</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\modeldata\CKBFile.cpp">
       <Filter>src\modeldata</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\modeldata\FileIO.cpp">
@@ -126,6 +123,9 @@
       <Filter>src\modeldata</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\modeldata\WriteBinnary.cpp">
+      <Filter>src\modeldata</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\modeldata\C3BFile.cpp">
       <Filter>src\modeldata</Filter>
     </ClCompile>
   </ItemGroup>
