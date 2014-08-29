@@ -65,8 +65,8 @@ struct FbxConvCommand {
 					settings->needReusableMesh = false;
 				else if ((arg[1] == 'i') && (i + 1 < argc))
 					settings->inType = parseType(argv[++i]);
-				else if ((arg[1] == 'o') && (i + 1 < argc))
-					settings->outType = parseType(argv[++i]);
+				//else if ((arg[1] == 'o') && (i + 1 < argc))
+				//	settings->outType = parseType(argv[++i]);
 				else if ((arg[1] == 'n') && (i + 1 < argc))
 					settings->maxNodePartBonesCount = atoi(argv[++i]);
 				else if ((arg[1] == 'w') && (i + 1 < argc))
