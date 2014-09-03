@@ -194,12 +194,16 @@ namespace readers {
 				return;
 			}
             int i= 0;
-            while(model->getNode(node->GetName()))
+            char nodeName[256];
+            while(model->getNode(nodeName))
             {
                  i++;
-                 char nodeName[256];
                  sprintf(nodeName,"%s%d",node->GetName(),i);
-                 node->SetName(nodeName);
+                
+            }
+            if(i>0)
+            {
+                node->SetName(nodeName);
             }
 			/*if (model->getNode(node->GetName())) {
 
