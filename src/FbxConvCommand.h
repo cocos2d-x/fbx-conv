@@ -69,8 +69,8 @@ struct FbxConvCommand {
 				//	settings->outType = parseType(argv[++i]);
 				else if ((arg[1] == 'n') && (i + 1 < argc))
 					settings->maxNodePartBonesCount = atoi(argv[++i]);
-				else if ((arg[1] == 'w') && (i + 1 < argc))
-					settings->maxVertexBonesCount = atoi(argv[++i]);
+				//else if ((arg[1] == 'w') && (i + 1 < argc))
+				//	settings->maxVertexBonesCount = atoi(argv[++i]);
 				else if ((arg[1] == 'm') && (i + 1 < argc))
 					settings->maxVertexCount = settings->maxIndexCount = atoi(argv[++i]);
                 else if((arg[1] == 'c') && (i + 1 < argc))
@@ -119,7 +119,7 @@ struct FbxConvCommand {
 		printf("-p       : Pack vertex colors to one float.\n");
 		printf("-m <size>: The maximum amount of vertices or indices a mesh may contain (default: 32k)\n");
 		printf("-n <size>: The maximum amount of bones a nodepart can contain (default: 40)\n");
-		printf("-w <size>: The maximum amount of bone weights per vertex (default: 4)\n");
+		//printf("-w <size>: The maximum amount of bone weights per vertex (default: 4)\n");
 		printf("-v       : Verbose: print additional progress information\n");
 		printf("-g       : Not merge meshs with same attributes, keep original\n");
         printf("-a       : export c3b(binary) and c3t(text)\n");
