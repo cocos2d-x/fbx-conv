@@ -14,7 +14,7 @@ FBX_SDK_ROOT to the directory where you installed the FBX SDK. Then run the proj
 . These we generate Visual Studio and XCode project.
 
 USAGE:
-
+========
 Open a command line and enter into the fbx-conv directory, and then input the full path fbx-conv file (you can drag fbx-conv to command line directly) and then enter the parameters -a (-a means export both of c3t and c3b file, if parameter is empty we export c3b file by default), and then enter the file name which you want to convert.
 
 Command line: cd [path of fbx-conv] xx/xx/fbx-conv [options]
@@ -24,7 +24,7 @@ For example: 1. cd /Users/xx/cocos2d-x-3rd-party-libs-bin/fbx-conv/mac 2. /Users
 You can use the -? option to see more help information.
 
 Note:
-
+========
 1. Model need to have a material that contain one texture in the diffuse-channel at least.
 
 2. About animation, we just support skeletal animation.
