@@ -59,8 +59,8 @@ struct FbxConvCommand {
 					settings->flipV = true;
 				else if (arg[1] == 'v')
 					settings->verbose = true;
-				else if (arg[1] == 'p')
-					settings->packColors = true;
+				//else if (arg[1] == 'p')
+				//	settings->packColors = true;
 				else if (arg[1] == 'g')
 					settings->needReusableMesh = false;
 				else if ((arg[1] == 'i') && (i + 1 < argc))
@@ -116,12 +116,12 @@ struct FbxConvCommand {
 #endif
 		//printf("-o <type>: Set the type of the output file to <type>\n");
 		printf("-f       : Flip the V texture coordinates.\n");
-		printf("-p       : Pack vertex colors to one float.\n");
+		//printf("-p       : Pack vertex colors to one float.\n");
 		printf("-m <size>: The maximum amount of vertices or indices a mesh may contain (default: 32k)\n");
 		printf("-n <size>: The maximum amount of bones a nodepart can contain (default: 40)\n");
 		//printf("-w <size>: The maximum amount of bone weights per vertex (default: 4)\n");
 		printf("-v       : Verbose: print additional progress information\n");
-		printf("-g       : Not merge meshs with same attributes, keep original\n");
+		printf("-g       : Merge meshs which have the same vertex attribute\n");
         printf("-a       : export c3b(binary) and c3t(text)\n");
         printf("-b       : export c3b(binary)\n");
         printf("-t       : export c3t(text)\n");
