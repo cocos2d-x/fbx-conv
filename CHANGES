@@ -1,4 +1,10 @@
-[0.2]
-
+[0.3]
+	[NEW]	export new file format that depends on libgdx's file structure
+	[NEW]	complex FBX model support.
+	[NEW]	Useful for Reskin.
+	[NEW]	multiple meshes and multiple materials support
+	
+	[FIX]	animation has 0 Frame export problem
 [0.1]
-Initial release
+	[NEW]	modify for cocos2d-x 3d
+	[NEW]	support simple model to export
