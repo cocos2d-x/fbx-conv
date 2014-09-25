@@ -773,7 +773,7 @@ namespace readers {
                         time = std::min(time, (*itr).second.stop);
                         fbxTime.SetMilliSeconds((FbxLongLong)time);
                         Keyframe *kf = new Keyframe();
-                        kf->time = (time - animStart);
+                        kf->time = time;//(time - animStart); fix bug
                         FbxAMatrix *m = &(*itr).first->EvaluateLocalTransform(fbxTime);
                         FbxVector4 v = m->GetT();
                         kf->translation[0] = (float)v.mData[0];
