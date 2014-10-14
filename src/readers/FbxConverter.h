@@ -161,7 +161,7 @@ namespace readers {
 
 		virtual bool convert(Model * const &model) {
 			if (!scene) {
-				log->error(log::eSourceLoadGeneral);
+                log->error(log::eSourceLoadGeneral, settings->inFile.c_str());
 				return false;
 			}
 			if (textureCallback)
