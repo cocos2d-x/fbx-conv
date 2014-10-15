@@ -747,7 +747,7 @@ namespace readers {
                         time = std::min(time, (*itr).second.stop);
                         fbxTime.SetMilliSeconds((FbxLongLong)time);
                         Keyframe *kf = new Keyframe();
-                        kf->time = (time - animStart);
+                        kf->time = time;//time - animStart;
                         FbxAMatrix *m = &(*itr).first->EvaluateLocalTransform(fbxTime);
                         FbxVector4 v = m->GetT();
                         kf->translation[0] = (float)v.mData[0];
@@ -773,7 +773,7 @@ namespace readers {
                         time = std::min(time, (*itr).second.stop);
                         fbxTime.SetMilliSeconds((FbxLongLong)time);
                         Keyframe *kf = new Keyframe();
-                        kf->time = time;//(time - animStart); fix bug
+                        kf->time = time;//time - animStart;
                         FbxAMatrix *m = &(*itr).first->EvaluateLocalTransform(fbxTime);
                         FbxVector4 v = m->GetT();
                         kf->translation[0] = (float)v.mData[0];
@@ -791,16 +791,24 @@ namespace readers {
                         frames.push_back(kf);
                     }
                 }
-                
+
                 //animation->length = frames[frames.size()-1]->time;
+                float offsetTime = 0;
                 if(frames.size() > 0)
                 {
-                    float time = frames[frames.size()-1]->time / 1000;
+                    offsetTime = frames[0]->time;
+                    float time = (frames[frames.size()-1]->time - frames[0]->time) / 1000;
                     animation->length = animation->length < time ? time : animation->length;
                 }
                 
+                // revise the frame's time if the frame is not start as 0 frame.
+                for (int i = 0; i < frames.size(); i++) {
+                    Keyframe *k = frames[i];
+                    k->time = k->time - offsetTime;
+                }
+                
 				// Only add keyframes really needed
-                addKeyframes(nodeAnim, frames);
+                addKeyframes(nodeAnim, frames, animation->length * 1000);
 				if (nodeAnim->rotate || nodeAnim->scale || nodeAnim->translate)
 					animation->nodeAnimations.push_back(nodeAnim);
 				else
@@ -884,7 +892,7 @@ namespace readers {
 //			}
 //		}
         
-        void addKeyframes(NodeAnimation *const &anim, std::vector<Keyframe *> &keyframes)
+        void addKeyframes(NodeAnimation *const &anim, std::vector<Keyframe *> &keyframes, float timeLength)
         {
             if (!keyframes.empty()) {
                 keyframes[0]->hasTranslation = true;
@@ -894,7 +902,7 @@ namespace readers {
                 
                 // translation frame
 				const int last = (int)keyframes.size()-1;
-                float max = keyframes[last]->time;
+                //float max = keyframes[last]->time;
 				Keyframe *k1 = keyframes[0], *k2, *k3;
 				for (int i = 1; i < last; i++) {
 					k2 = keyframes[i];
@@ -946,7 +954,7 @@ namespace readers {
                 for (int i = 1; i < last; i++) {
 					k2 = keyframes[i];
                     if(k2->hasTranslation || k2->hasScale || k2->hasRotation){
-                        k2->time /= max;
+                        k2->time /= timeLength;
                         anim->keyframes.push_back(k2);
                     }
                     else{
