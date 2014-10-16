@@ -627,7 +627,7 @@ namespace readers {
 			float animStop = (float)(animTimeSpan.GetStop().GetMilliSeconds());
 			if (animStop <= animStart)
 				animStop = 999999999.0f;
-
+            
             //
             static std::map<FbxNode *, std::list<float> > keyframesTimeMap;
             
@@ -724,7 +724,7 @@ namespace readers {
 			model->animations.push_back(animation);
 			animation->id = animStack->GetName();
 			animStack->GetScene()->SetCurrentAnimationStack(animStack);
-
+            
 			// Add the NodeAnimations to the Animation
 			for (std::map<FbxNode *, AnimInfo>::const_iterator itr = affectedNodes.begin(); itr != affectedNodes.end(); itr++) {
 				Node *node = model->getNode((*itr).first->GetName());
@@ -745,9 +745,10 @@ namespace readers {
                     for (const auto& val : keytimeList) {
                         float time = val;
                         time = std::min(time, (*itr).second.stop);
+                        if(time < 0) continue;// discard time < 0
                         fbxTime.SetMilliSeconds((FbxLongLong)time);
                         Keyframe *kf = new Keyframe();
-                        kf->time = time;//time - animStart;
+                        kf->time = time;// - animStart;
                         FbxAMatrix *m = &(*itr).first->EvaluateLocalTransform(fbxTime);
                         FbxVector4 v = m->GetT();
                         kf->translation[0] = (float)v.mData[0];
@@ -771,9 +772,10 @@ namespace readers {
                     
                     for (float time = (*itr).second.start; time <= last; time += stepSize) {
                         time = std::min(time, (*itr).second.stop);
+                        if(time < 0) continue;// discard time < 0
                         fbxTime.SetMilliSeconds((FbxLongLong)time);
                         Keyframe *kf = new Keyframe();
-                        kf->time = time;//time - animStart;
+                        kf->time = time;// - animStart;
                         FbxAMatrix *m = &(*itr).first->EvaluateLocalTransform(fbxTime);
                         FbxVector4 v = m->GetT();
                         kf->translation[0] = (float)v.mData[0];
@@ -791,24 +793,16 @@ namespace readers {
                         frames.push_back(kf);
                     }
                 }
+                
+                if(frames.size() == 0)
+                    continue;
 
-                //animation->length = frames[frames.size()-1]->time;
-                float offsetTime = 0;
-                if(frames.size() > 0)
-                {
-                    offsetTime = frames[0]->time;
-                    float time = (frames[frames.size()-1]->time - frames[0]->time) / 1000;
-                    animation->length = animation->length < time ? time : animation->length;
-                }
+                float lengh = animStop;
                 
-                // revise the frame's time if the frame is not start as 0 frame.
-                for (int i = 0; i < frames.size(); i++) {
-                    Keyframe *k = frames[i];
-                    k->time = k->time - offsetTime;
-                }
-                
+                animation->length = lengh / 1000.f;
+
 				// Only add keyframes really needed
-                addKeyframes(nodeAnim, frames, animation->length * 1000);
+                addKeyframes(nodeAnim, frames, lengh);
 				if (nodeAnim->rotate || nodeAnim->scale || nodeAnim->translate)
 					animation->nodeAnimations.push_back(nodeAnim);
 				else
@@ -898,6 +892,7 @@ namespace readers {
                 keyframes[0]->hasTranslation = true;
                 keyframes[0]->hasRotation = true;
                 keyframes[0]->hasScale = true;
+                keyframes[0]->time /= timeLength;
                 anim->keyframes.push_back(keyframes[0]);
                 
                 // translation frame
@@ -964,7 +959,7 @@ namespace readers {
                 
 				if (last > 0)
                 {
-                    keyframes[last]->time = 1;
+                    keyframes[last]->time /= timeLength;
                     keyframes[last]->hasTranslation = true;
                     keyframes[last]->hasRotation = true;
                     keyframes[last]->hasScale = true;
