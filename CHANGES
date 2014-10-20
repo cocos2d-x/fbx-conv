@@ -1,3 +1,6 @@
+[0.4]	[NEW]	add compression parameter -c
+	[NEW]	can export transparent channel
+	[FIX]	modify export frame segment bug, you should export animation begin as 0 frame.
 [0.3]
 	[NEW]	export new file format that depends on libgdx's file structure
 	[NEW]	complex FBX model support.
