@@ -367,6 +367,7 @@ namespace readers {
 
 			float *vertex = new float[mesh->vertexSize];
 			unsigned int pidx = 0;
+            bool is_error = false;
 			for (unsigned int poly = 0; poly < meshInfo->polyCount; poly++) {
 				unsigned int ps = meshInfo->mesh->GetPolygonSize(poly);
 				int index_1 = meshInfo->polyPartMap[poly];
@@ -383,12 +384,15 @@ namespace readers {
 						pidx++;
 					}
 				}else {
-                    char warning_str[100];
-                    sprintf(warning_str,"%d",meshInfo->id);
-					log->error(log::wSourceConvertFbxMeshIndicesIgnore,warning_str);
+                    is_error = true;
 					}
 			}
-
+            if(is_error)
+            {
+                char warning_str[100];
+                sprintf(warning_str,"%d",getGeometryName(meshInfo->mesh));
+                log->warning(log::wSourceConvertFbxPolyMaterialInvalid,warning_str);
+            }
 			int idx = 0;
 			for (int i = parts.size() - 1; i >= 0; --i) {
 				for (int j = parts[i].size() - 1; j >= 0; --j) {
