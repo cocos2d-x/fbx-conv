@@ -30,6 +30,7 @@
 #include "FbxMeshInfo.h"
 #include "../log/log.h"
 
+
 using namespace fbxconv::modeldata;
 
 namespace fbxconv {
@@ -598,10 +599,56 @@ namespace readers {
 			return result;
 		}
 
+        inline void RecursivefindTexture(std::vector<Material::Texture *> &textures,FbxObject * obj,int index,const Material::Texture::Usage &usage )
+        {
+            auto result = obj->GetSrcObject<FbxFileTexture>(index);
+            if(result){
+                add_if_not_null(textures, createTexture(result, usage));
+                return ;
+            }
+            else if( obj->GetSrcObject(index)){
+                unsigned int n = obj->GetSrcObject(index)->GetSrcObjectCount();
+                for(int i = 0; i < n ; i++)
+                {
+                    auto a = obj->GetSrcObject<FbxTexture>(index);
+                    RecursivefindTexture(textures,a,i,usage);
+                }
+            }
+            else if(!obj->GetSrcObjectCount())
+            {
+                return ;
+            }
+        }
+
+        inline void findTextureFile(std::vector<Material::Texture *> &textures,const FbxProperty &prop,int index,  const Material::Texture::Usage &usage)
+        {
+            auto result = prop.GetSrcObject<FbxFileTexture>(index);
+            if(result){
+                add_if_not_null(textures, createTexture(result, usage));
+                return ;
+            }
+            else if( prop.GetSrcObject(index)){
+                unsigned int n = prop.GetSrcObject(index)->GetSrcObjectCount();
+                for(int i = 0; i < n ; i++)
+                {
+                    auto a = prop.GetSrcObject<FbxTexture>(index);
+                    RecursivefindTexture(textures,a,i,usage);
+                    return;
+                }
+            }
+            else if(!prop.GetSrcObjectCount())
+            {
+                return ;
+            }
+        }
+
 		inline void addTextures(std::vector<Material::Texture *> &textures, const FbxProperty &prop,  const Material::Texture::Usage &usage) {
-			const unsigned int n = prop.GetSrcObjectCount<FbxFileTexture>();
+			const unsigned int n = prop.GetSrcObjectCount();
+            FbxObject * a = prop.GetSrcObject();
 			for (unsigned int i = 0; i < n; i++)
-				add_if_not_null(textures, createTexture(prop.GetSrcObject<FbxFileTexture>(i), usage));
+            {
+                findTextureFile(textures,prop,i,usage);
+            }
 		}
 
 		Material::Texture *createTexture(FbxFileTexture * const &texture, const Material::Texture::Usage &usage = Material::Texture::Unknown) {
