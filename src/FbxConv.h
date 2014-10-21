@@ -129,7 +129,7 @@ class FbxConv {
 
 			bool result = reader->load(settings);
 			if (!result)
-				log->error(log::eSourceLoadGeneral);
+				log->error(log::eSourceLoadGeneral, settings->inFile.c_str());
 			else {
 				result = reader->convert(model);
 				log->status(log::sSourceConvert);
