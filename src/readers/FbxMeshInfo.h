@@ -71,7 +71,7 @@ namespace readers {
 		// The collection of bones per mesh part
 		std::vector<BlendBonesCollection> partBones;
 		// Mapping between the polygon and the index of its meshpart
-		unsigned int * const polyPartMap;
+		int * const polyPartMap;
 		// Mapping between the polygon and the index of its weight bones within its meshpart
 		unsigned int * const polyPartBonesMap;
 		// The UV bounds per part per uv coords
@@ -115,7 +115,7 @@ namespace readers {
 			pointBlendWeights(0),
 			skin((maxNodePartBoneCount > 0 && maxVertexBlendWeightCount > 0 && (unsigned int)mesh->GetDeformerCount(FbxDeformer::eSkin) > 0) ? static_cast<FbxSkin*>(mesh->GetDeformer(0, FbxDeformer::eSkin)) : 0),
 			bonesOverflow(false),
-			polyPartMap(new unsigned int[polyCount]),
+			polyPartMap(new  int[polyCount]),
 			polyPartBonesMap(new unsigned int[polyCount]),
 			id(getID(mesh))
 		{

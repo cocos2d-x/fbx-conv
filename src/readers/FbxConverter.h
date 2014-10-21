@@ -369,15 +369,24 @@ namespace readers {
 			unsigned int pidx = 0;
 			for (unsigned int poly = 0; poly < meshInfo->polyCount; poly++) {
 				unsigned int ps = meshInfo->mesh->GetPolygonSize(poly);
-				MeshPart * const &part = parts[meshInfo->polyPartMap[poly]][meshInfo->polyPartBonesMap[poly]];
+				int index_1 = meshInfo->polyPartMap[poly];
+				auto index_2 = meshInfo->polyPartBonesMap[poly];
+				if(index_1 >= 0 && index_2 >= 0 )
+				{
+				MeshPart * const &part = parts[index_1][index_2];
 				//Material * const &material = materialsMap[node->GetMaterial(meshInfo->polyPartMap[poly])];
 
-				for (unsigned int i = 0; i < ps; i++) {
-					const unsigned int v = meshInfo->mesh->GetPolygonVertex(poly, i);
-					meshInfo->getVertex(vertex, poly, pidx, v, uvTransforms);
-					part->indices.push_back(mesh->add(vertex));
-					pidx++;
-				}
+					for (unsigned int i = 0; i < ps; i++) {
+						const unsigned int v = meshInfo->mesh->GetPolygonVertex(poly, i);
+						meshInfo->getVertex(vertex, poly, pidx, v, uvTransforms);
+						part->indices.push_back(mesh->add(vertex));
+						pidx++;
+					}
+				}else {
+                    char warning_str[100];
+                    sprintf(warning_str,"%d",meshInfo->id);
+					log->error(log::wSourceConvertFbxMeshIndicesIgnore,warning_str);
+					}
 			}
 
 			int idx = 0;
