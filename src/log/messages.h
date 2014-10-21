@@ -40,7 +40,7 @@ LOG_SET_MSG(eCommandLineInvalidBoneCount,		"Maximum bones per nodepart must be g
 LOG_SET_MSG(eCommandLineInvalidVertexCount,		"Maximum vertex count must be between 0 and 32k")
 LOG_SET_MSG(eCommandLineUnknownFiletype,		"Unknown filetype: %s")
 LOG_SET_MSG(eCommandLineUnknownCompressLevel,   "Max compress level is: %d")
-    
+
 LOG_SET_MSG(sSourceLoad,						"Loading source file")
 LOG_SET_MSG(pSourceLoadFbxImport,				"Import FBX %01.2f%% %s")
 LOG_SET_MSG(wSourceLoadFbxNodeRrSs,				"[%s] Node uses RrSs mode, transformation might be incorrect")
@@ -64,6 +64,7 @@ LOG_SET_MSG(wSourceConvertFbxEmptyMeshpart,		"[%s] Skipping empty node part, mat
 LOG_SET_MSG(wSourceConvertFbxMaterialUnknown,	"[%s] Material doesn\'t extend FbxSurfaceLambert, replaced with RED diffuse")
 LOG_SET_MSG(wSourceConvertFbxMaterialHLSL,		"[%s] Material HLSL shading not supported, replaced with RED diffuse")
 LOG_SET_MSG(wSourceConvertFbxMaterialCgFX,		"[%s] Material CgFX shading not supported, replaced with RED diffuse")
+LOG_SET_MSG(wSourceConvertFbxPolyMaterialInvalid,"[%s] Skipping vertices without material,please check the material ID")
 LOG_SET_MSG(eSourceConvert,						"Error converting source file")
 
 LOG_SET_MSG(sSourceClose,						"Closing source file")

@@ -63,6 +63,7 @@ LOG_ADD_CODE(wSourceConvertFbxNoMaterial)
 LOG_ADD_CODE(wSourceConvertFbxMaterialUnknown)
 LOG_ADD_CODE(wSourceConvertFbxMaterialHLSL)
 LOG_ADD_CODE(wSourceConvertFbxMaterialCgFX)
+LOG_ADD_CODE(wSourceConvertFbxPolyMaterialInvalid)
 LOG_ADD_CODE(eSourceConvert)
 
 LOG_ADD_CODE(sSourceClose)
