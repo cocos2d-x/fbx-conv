@@ -26,9 +26,9 @@
 
 #ifndef BUILD_ID
 #ifdef DEBUG
-#define BUILD_ID "debug version for v3.3 alpha1"
+#define BUILD_ID "debug version for v3.3 rc0"
 #else
-#define BUILD_ID "pre-release for v3.3 alpha1"
+#define BUILD_ID "pre-release for v3.3 rc0"
 #endif
 #endif
 
