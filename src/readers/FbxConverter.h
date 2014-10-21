@@ -390,7 +390,7 @@ namespace readers {
             if(is_error)
             {
                 char warning_str[100];
-                sprintf(warning_str,"%d",getGeometryName(meshInfo->mesh));
+                sprintf(warning_str,"%s",getGeometryName(meshInfo->mesh));
                 log->warning(log::wSourceConvertFbxPolyMaterialInvalid,warning_str);
             }
 			int idx = 0;
@@ -543,7 +543,7 @@ namespace readers {
 			Material * const result = new Material();
 			result->source = material;
 			result->id = material->GetName();
-
+            
 			if ((!material->Is<FbxSurfaceLambert>()) || GetImplementation(material, FBXSDK_IMPLEMENTATION_HLSL) || GetImplementation(material, FBXSDK_IMPLEMENTATION_CGFX)) {
 				if (!material->Is<FbxSurfaceLambert>())
 					log->warning(log::wSourceConvertFbxMaterialUnknown, result->id.c_str());

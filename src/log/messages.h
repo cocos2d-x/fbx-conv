@@ -64,7 +64,7 @@ LOG_SET_MSG(wSourceConvertFbxEmptyMeshpart,		"[%s] Skipping empty node part, mat
 LOG_SET_MSG(wSourceConvertFbxMaterialUnknown,	"[%s] Material doesn\'t extend FbxSurfaceLambert, replaced with RED diffuse")
 LOG_SET_MSG(wSourceConvertFbxMaterialHLSL,		"[%s] Material HLSL shading not supported, replaced with RED diffuse")
 LOG_SET_MSG(wSourceConvertFbxMaterialCgFX,		"[%s] Material CgFX shading not supported, replaced with RED diffuse")
-LOG_SET_MSG(wSourceConvertFbxPolyMaterialInvalid,		"Poly [%s]'s material is invalid")
+LOG_SET_MSG(wSourceConvertFbxPolyMaterialInvalid,"[%s] Skipping vertices without material,please check the material ID")
 LOG_SET_MSG(eSourceConvert,						"Error converting source file")
 
 LOG_SET_MSG(sSourceClose,						"Closing source file")
