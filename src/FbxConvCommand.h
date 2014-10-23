@@ -121,7 +121,7 @@ struct FbxConvCommand {
 		printf("-n <size>: The maximum amount of bones a nodepart can contain (default: 40)\n");
 		//printf("-w <size>: The maximum amount of bone weights per vertex (default: 4)\n");
 		printf("-v       : Verbose: print additional progress information\n");
-		printf("-g       : Merge meshs which have the same vertex attribute\n");
+		printf("-g       : Whether you need to merge the same mesh which have the same vertex attribute\n");
         printf("-a       : export c3b(binary) and c3t(text)\n");
         printf("-b       : export c3b(binary)\n");
         printf("-t       : export c3t(text)\n");
