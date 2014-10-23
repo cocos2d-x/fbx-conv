@@ -255,7 +255,9 @@ namespace readers {
 									nodePart->bones.push_back(p);
 								}
 								else {
-									log->warning(log::wSourceConvertFbxInvalidBone, node->id.c_str(), nodePart->meshPart->sourceBones[k]->GetLink()->GetName());
+                                    FbxNode* linknode = nodePart->meshPart->sourceBones[k]->GetLink();
+                                    if(linknode)
+                                        log->warning(log::wSourceConvertFbxInvalidBone, node->id.c_str(), linknode->GetName());
 								}
 							}
 
