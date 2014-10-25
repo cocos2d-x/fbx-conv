@@ -413,7 +413,11 @@ namespace readers {
 					}
 				}
 			}
-
+            
+            if (settings->normalizeVertexNormal) {
+                mesh->calcNormal();
+            }
+            
 			delete[] vertex;
 		}
 

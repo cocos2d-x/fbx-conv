@@ -46,6 +46,7 @@ struct FbxConvCommand {
 		settings->outType = FILETYPE_C3B;
 		settings->inType = FILETYPE_AUTO;
         settings->needReusableMesh = true;
+        settings->normalizeVertexNormal = false;
         settings->forceMaxVertexBoneCount = true;
         settings->compressLevel = COMPRESS_LEVEL_DEFAULT;
             
@@ -63,6 +64,8 @@ struct FbxConvCommand {
 				//	settings->packColors = true;
 				else if (arg[1] == 'g')
 					settings->needReusableMesh = false;
+                else if (arg[1] == 'r')
+                    settings->normalizeVertexNormal = true;
 				else if ((arg[1] == 'i') && (i + 1 < argc))
 					settings->inType = parseType(argv[++i]);
 				//else if ((arg[1] == 'o') && (i + 1 < argc))

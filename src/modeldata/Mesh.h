@@ -25,8 +25,15 @@
 #include "Attributes.h"
 #include "../json/BaseJSONWriter.h"
 #include "Reference.h"
+
 namespace fbxconv {
 namespace modeldata {
+    
+    struct PN{
+        FbxVector4 position;
+        FbxVector4 normal;
+    };
+    
 	/** A mesh is responsable for freeing all parts and vertices it contains. */
 	struct Mesh : public json::ConstSerializable {
 		/** the attributes the vertices in this mesh describe */
@@ -40,6 +47,10 @@ namespace modeldata {
 		/** the indexed parts of this mesh */
 		std::vector<MeshPart *> parts;
         std::string id;
+        
+        /** save position and normal */
+        std::list<PN> pnList;
+        
 		/** ctor */
 		Mesh() : attributes(0), vertexSize(0) {}
 
@@ -63,6 +74,7 @@ namespace modeldata {
 			for (std::vector<MeshPart *>::iterator itr = parts.begin(); itr != parts.end(); ++itr)
 				delete (*itr);
 			parts.clear();
+            pnList.clear();
 		}
 
 		inline unsigned int indexCount() {
@@ -96,6 +108,71 @@ namespace modeldata {
 					return false;
 			return true;
 		}
+        
+        inline bool addN(const FbxVector4& position, const FbxVector4& normal){
+            std::list<PN>::iterator iter = pnList.begin();
+            for (; iter != pnList.end(); iter++) {
+                if (iter->position == position) {
+                    iter->normal += normal;
+                    return true;
+                }
+            }
+            
+            PN pn;
+            pn.position = position;
+            pn.normal = normal;
+            pnList.push_back(pn);
+            return false;
+        }
+        
+        inline bool getN(const FbxVector4& position, FbxVector4& normal){
+            std::list<PN>::iterator iter = pnList.begin();
+            for (; iter != pnList.end(); iter++) {
+                if (iter->position == position) {
+                    normal = iter->normal;
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        inline void calcNormal(){
+            int stride = attributes.size();
+            unsigned int num = vertices.size();
+            for (int i = 0; i < num; i += stride) {
+                // get position
+                float *position = &vertices[i];
+                FbxVector4 pos(position[0], position[1], position[2]);
+                
+                // get normal
+                float *normal = &vertices[i + 3];
+                FbxVector4 tnormal(normal[0], normal[1], normal[2]);
+            
+                // sum the target position's normal
+                addN(pos, tnormal);
+            }
+            
+            // normalize the normal in pnList
+            std::list<PN>::iterator iter = pnList.begin();
+            for (; iter != pnList.end(); iter++) {
+                iter->normal.Normalize();
+            }
+            
+            // modify the vertex buffer data
+            for (int i = 0; i < num; i += stride) {
+                // get position
+                float *position = &vertices[i];
+                FbxVector4 pos(position[0], position[1], position[2]);
+                
+                float *normal = &vertices[i + 3];
+                FbxVector4 tnormal;
+                getN(pos, tnormal);
+                normal[0] = tnormal[0];
+                normal[1] = tnormal[1];
+                normal[2] = tnormal[2];
+            }
+        }
+        
         ObjRef object;
 		ObjRef* GetObj() 
 		{
