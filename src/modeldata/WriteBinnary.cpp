@@ -98,16 +98,12 @@ namespace modeldata {
             (*itr)->writeBinary(file);
         }
 
-		// animation
-        size = animations.size();
-         if(size>0)
-        {
-            animations[0]->object.fPosition = ftell(file);	
-        }
+		// animations
 		write(size, file);
-		for(auto itr = animations.begin(); itr != animations.end(); itr++)
+        for(auto itr : animations)
 		{
-			(*itr)->writeBinary(file);
+            itr->object.fPosition = ftell(file);
+			itr->writeBinary(file);
 		}
 	}
 

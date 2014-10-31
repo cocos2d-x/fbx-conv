@@ -53,7 +53,7 @@ bool Reference::updateOffset(FILE* file, long newOffset)
 		//Skip over the id string
 		skipString(file);
 
-		// Skip
+		// Skip TypeID unsigned int
 		skipUint(file);
 
 		// write over the old offset.

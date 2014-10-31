@@ -80,10 +80,15 @@ namespace fbxconv{
             Node* node = model->nodes[0];
             addToRefTable(node->GetObj());
         }
+        
+        // Add animations
 	    if(model->animations.size()>0)
         {
-            Animation* anim = model->animations[0];
-            addToRefTable(anim->GetObj());
+            for (int i = 0; i < model->animations.size(); i++)
+            {
+                Animation* anim = model->animations[i];
+                addToRefTable(anim->GetObj());
+            }
         }
 
 	}
