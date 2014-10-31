@@ -99,12 +99,12 @@ namespace modeldata {
         }
 
 		// animations
-		write(size, file);
+        write(size, file);
         for(auto itr : animations)
-		{
+        {
             itr->object.fPosition = ftell(file);
-			itr->writeBinary(file);
-		}
+            itr->writeBinary(file);
+        }
 	}
 
 	void Mesh::writeBinary(FILE* file)
