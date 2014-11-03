@@ -31,13 +31,19 @@ namespace fbxconv {
 #define FILETYPE_OUT_DEFAULT	FILETYPE_G3DB
 #define FILETYPE_IN_DEFAULT		FILETYPE_FBX
 #define FILETYPE_C3B			0X30
-#define FILETYPE_C3J			0X31
+#define FILETYPE_C3T			0X31
 #define FILETYPE_ALL			0X32
     
 enum COMPRESS_LEVEL{
     COMPRESS_LEVEL_DEFAULT,
     COMPRESS_LEVEL_1,
     COMPRESS_LEVEL_NUM
+};
+    
+enum EXPORT_PART{
+    EXPORT_PART_ALL,
+    EXPORT_PART_MODEL,
+    EXPORT_PART_ANIMATION
 };
 
 struct Settings {
@@ -66,6 +72,8 @@ struct Settings {
     bool normalizeVertexNormal;
     /** The level of compression, you may lose some animation detail when useing high compression level*/
     COMPRESS_LEVEL compressLevel;
+    /** export specific part*/
+    EXPORT_PART exportPart;
 };
 
 }

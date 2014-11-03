@@ -144,7 +144,8 @@ class FbxConv {
 		bool save(Settings * const &settings, modeldata::Model *model) {
 			bool result = false;
 			json::BaseJSONWriter *jsonWriter = 0;
-			if(settings->outType == FILETYPE_ALL || settings->outType == FILETYPE_C3J)
+            model->exportPart = settings->exportPart;
+			if(settings->outType == FILETYPE_ALL || settings->outType == FILETYPE_C3T)
 			{
 				std::string out = settings->outFile;
 				int o = out.find_last_of(".");
@@ -171,12 +172,7 @@ class FbxConv {
 				log->status(log::sExportToG3DB, out.c_str());
 			}
 
-
 			log->status(log::sExportClose);
-
-
-
-
 			return result;
 		}
 

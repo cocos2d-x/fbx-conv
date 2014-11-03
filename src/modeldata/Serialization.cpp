@@ -101,11 +101,18 @@ void Model::serialize(json::BaseJSONWriter &writer) const {
     char szVersion[64] = {0};
     sprintf(szVersion, "%d.%d", VERSION_HI, VERSION_LO);
 	writer << "version" = szVersion;
-	writer << "id" = id;
-	writer << "meshes" = meshes;
-	writer << "materials" = materials;
-	writer << "nodes" = nodes;
-	writer << "animations" = animations;
+    if(exportPart == EXPORT_PART_ALL || exportPart == EXPORT_PART_MODEL)
+    {
+        writer << "id" = id;
+        writer << "meshes" = meshes;
+        writer << "materials" = materials;
+        writer << "nodes" = nodes;
+    }
+    
+    if(exportPart == EXPORT_PART_ALL || exportPart == EXPORT_PART_ANIMATION)
+    {
+        writer << "animations" = animations;
+    }
 	writer.end();
 }
 

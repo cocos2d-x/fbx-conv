@@ -41,13 +41,14 @@ struct FbxConvCommand {
 		settings->verbose = false;
 		settings->maxNodePartBonesCount = 40;
 		settings->maxVertexBonesCount = 4;
+        settings->forceMaxVertexBoneCount = true;
 		settings->maxVertexCount = (1<<15)-1;
 		settings->maxIndexCount = (1<<15)-1;
 		settings->outType = FILETYPE_C3B;
 		settings->inType = FILETYPE_AUTO;
         settings->needReusableMesh = true;
         settings->normalizeVertexNormal = false;
-        settings->forceMaxVertexBoneCount = true;
+        settings->exportPart = EXPORT_PART_ALL;
         settings->compressLevel = COMPRESS_LEVEL_DEFAULT;
             
 		for (int i = 1; i < argc; i++) {
@@ -81,9 +82,13 @@ struct FbxConvCommand {
                 else if(arg[1] == 'b')
 					settings->outType = FILETYPE_C3B;
 				else if(arg[1] == 't')
-					settings->outType = FILETYPE_C3J;
+					settings->outType = FILETYPE_C3T;
 				else if(arg[1] == 'a')
 					settings->outType = FILETYPE_ALL;
+                else if(arg[1] == 'l')
+                    settings->exportPart = EXPORT_PART_MODEL;
+                else if(arg[1] == 'j')
+                    settings->exportPart = EXPORT_PART_ANIMATION;
 				else
 					log->error(error = log::eCommandLineUnknownOption, arg);
 			}
@@ -129,6 +134,8 @@ struct FbxConvCommand {
         printf("-b       : export c3b(binary)\n");
         printf("-t       : export c3t(text)\n");
         printf("-c <size>: The compression level: 0 , 1 (default: 0)\n");
+        printf("-l       : Just export model data.\n");
+        printf("-j       : Just export animation data.\n");
 		printf("\n");
 		printf("<input>  : The filename of the file to convert.\n");
 		printf("<output> : The filename of the converted file.\n");

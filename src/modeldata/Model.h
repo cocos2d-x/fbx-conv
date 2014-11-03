@@ -27,6 +27,7 @@
 #include "Mesh.h"
 #include "Node.h"
 #include "../json/BaseJSONWriter.h"
+#include "Settings.h"
 
 namespace fbxconv {
 namespace modeldata {
@@ -41,8 +42,9 @@ namespace modeldata {
 		std::vector<Material *> materials;
 		std::vector<Mesh *> meshes;
 		std::vector<Node *> nodes;
+        EXPORT_PART exportPart;
 
-		Model() { version[0] = VERSION_HI; version[1] = VERSION_LO; }
+        Model() { version[0] = VERSION_HI; version[1] = VERSION_LO; exportPart = EXPORT_PART_ALL;}
 
 		Model(const Model &copyFrom) {
 			version[0] = copyFrom.version[0];
@@ -56,6 +58,7 @@ namespace modeldata {
 				meshes.push_back(new Mesh(**itr));
 			for (std::vector<Node *>::const_iterator itr = copyFrom.nodes.begin(); itr != copyFrom.nodes.end(); ++itr)
 				nodes.push_back(new Node(**itr));
+            exportPart = copyFrom.exportPart;
 		}
 
 		~Model() {
