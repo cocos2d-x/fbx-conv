@@ -417,7 +417,9 @@ namespace readers {
             if (settings->normalizeVertexNormal) {
                 mesh->calcNormal();
             }
-            
+
+			mesh->calcAABB();
+
 			delete[] vertex;
 		}
 

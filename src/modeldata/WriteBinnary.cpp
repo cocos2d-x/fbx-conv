@@ -137,6 +137,9 @@ namespace modeldata {
     void  MeshPart::writeBinary(FILE* file)
     {
         write(id, file);
+		//aabb
+		write((unsigned int)6, file);
+		write(aabb, 6, file);
         // indices size
         unsigned int size = indices.size();
         write(size, file);
