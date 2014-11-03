@@ -147,7 +147,7 @@ class FbxConv {
 			if(settings->outType == FILETYPE_ALL || settings->outType == FILETYPE_C3J)
 			{
 				std::string out = settings->outFile;
-				int o = out.find_first_of(".");
+				int o = out.find_last_of(".");
 				out = out.substr(0, o+1) +  "c3t";
 
 				std::ofstream myfile;
@@ -163,7 +163,7 @@ class FbxConv {
 			if(settings->outType == FILETYPE_ALL || settings->outType == FILETYPE_C3B)
 			{
 				std::string out = settings->outFile;
-				int o = out.find_first_of(".");
+				int o = out.find_last_of(".");
 				out = out.substr(0, o+1) + "c3b";
 				C3BFile file;
 				file.AddModel(model);
