@@ -52,7 +52,8 @@ namespace modeldata {
         std::list<PN> pnList;
         
 		/** ctor */
-		Mesh() : attributes(0), vertexSize(0) {}
+		Mesh() : attributes(0), vertexSize(0) {
+		}
 
 		/** copy constructor */
 		Mesh(const Mesh &copyFrom) {
@@ -170,6 +171,26 @@ namespace modeldata {
                 normal[0] = tnormal[0];
                 normal[1] = tnormal[1];
                 normal[2] = tnormal[2];
+            }
+        }
+
+        inline void calcAABB(){
+            int stride = attributes.size();
+            unsigned int num = vertices.size();
+
+            for (unsigned int i = 0; i < parts.size(); ++i){
+                auto meshPart = parts[i];
+                for (auto iter : meshPart->indices){
+                    float *position = &vertices[iter * stride];
+                    //update aabb min
+                    meshPart->aabb[0] = position[0] < meshPart->aabb[0]? position[0]: meshPart->aabb[0];
+                    meshPart->aabb[1] = position[1] < meshPart->aabb[1]? position[1]: meshPart->aabb[1];
+                    meshPart->aabb[2] = position[2] < meshPart->aabb[2]? position[2]: meshPart->aabb[2];
+                    //update aabb max
+                    meshPart->aabb[3] = position[0] > meshPart->aabb[3]? position[0]: meshPart->aabb[3];
+                    meshPart->aabb[4] = position[1] > meshPart->aabb[4]? position[1]: meshPart->aabb[4];
+                    meshPart->aabb[5] = position[2] > meshPart->aabb[5]? position[2]: meshPart->aabb[5];
+                }
             }
         }
         

@@ -146,6 +146,8 @@ namespace modeldata {
         // indices.
         for(auto itr1 = indices.begin(); itr1 != indices.end(); itr1++)
             write(*itr1,file);
+        //aabb
+        write(aabb, 6, file);
     }
 	void Attributes::writeBinary(FILE* file)
 	{

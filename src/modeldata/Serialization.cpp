@@ -153,10 +153,11 @@ void Attributes::serialize(json::BaseJSONWriter &writer) const {
 	writer.end();
 }
 void MeshPart::serialize(json::BaseJSONWriter &writer) const {
-	writer.obj(3);
+	writer.obj(4);
 	writer << "id" = id;
 	writer << "type" = getPrimitiveTypeString(primitiveType);
 	writer.val("indices").is().data(indices, 12);
+	writer << "aabb" = aabb;
 	writer << json::end;
 }
 
