@@ -865,12 +865,11 @@ namespace readers {
                 if(frames.size() == 0)
                     continue;
 
-                float lengh = animStop;
-                
-                animation->length = lengh / 1000.f;
+                float length = animStop;
+                animation->length = length / 1000.f;
 
 				// Only add keyframes really needed
-                addKeyframes(nodeAnim, frames, lengh);
+                addKeyframes(nodeAnim, frames, length);
 				if (nodeAnim->rotate || nodeAnim->scale || nodeAnim->translate)
 					animation->nodeAnimations.push_back(nodeAnim);
 				else
