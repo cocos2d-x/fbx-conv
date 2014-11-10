@@ -27,7 +27,7 @@
 #include "Mesh.h"
 #include "Node.h"
 #include "../json/BaseJSONWriter.h"
-#include "Settings.h"
+#include "../Settings.h"
 
 namespace fbxconv {
 namespace modeldata {
