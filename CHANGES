@@ -1,6 +1,12 @@
-[0.5]	[NEW]	add every animation to reference table  
+[0.5]	
+	[NEW]	separate export data about model and animation(-l or -j).
+	[NEW]	add AABB calculate.
+	[NEW]	optimize animation to read.  
 	[FIX]	fix bug that the file path include “.”
-[0.4]	[NEW]	add compression parameter -c
+	[FIX]	fix log crash.
+
+[0.4]	
+	[NEW]	add compression parameter -c
 	[NEW]	can export transparent channel
 	[FIX]	modify export frame segment bug, you should export animation begin as 0 frame
 	[FIX]	fix material-component export bug
