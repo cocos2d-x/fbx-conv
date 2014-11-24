@@ -1,8 +1,7 @@
 [0.5]	
 	[NEW]	separate export data about model and animation(-l or -j).
-	[NEW]	add AABB calculate.
-	[NEW]	optimize animation to read.  
-	[FIX]	fix bug that the file path include “.”
+	[NEW]	optimize read animation.
+	[FIX]	fix bug about the file path include “.”
 	[FIX]	fix log crash.
 
 [0.4]	
