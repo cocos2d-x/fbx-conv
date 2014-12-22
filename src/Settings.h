@@ -70,6 +70,8 @@ struct Settings {
     bool needReusableMesh;
     /** average the same position vertex's normal*/
     bool normalizeVertexNormal;
+    /** export normal map*/
+    bool normalMap;
     /** The level of compression, you may lose some animation detail when useing high compression level*/
     COMPRESS_LEVEL compressLevel;
     /** export specific part*/

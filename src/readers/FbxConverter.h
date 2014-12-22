@@ -160,7 +160,7 @@ namespace readers {
 				checkNode(node->GetChild(i));
 		}
 
-		virtual bool convert(Model * const &model) {
+		virtual bool convert(Settings *settings, Model * const &model) {
 			if (!scene) {
                 log->error(log::eSourceLoadGeneral, settings->inFile.c_str());
 				return false;
@@ -178,7 +178,7 @@ namespace readers {
 				for (std::vector<Material::Texture *>::iterator tt = it->second->textures.begin(); tt != it->second->textures.end(); ++tt)
 					(*tt)->path = textureFiles[(*tt)->path].path;
 			}
-			addMesh(model);
+			addMesh(settings,model);
 			addNode(model);
 			for (std::vector<Node *>::iterator itr = model->nodes.begin(); itr != model->nodes.end(); ++itr)
 				updateNode(model, *itr);
@@ -319,31 +319,34 @@ namespace readers {
 
 		// Iterate throught the nodes (from the leaves up) and the meshes it references. This might help that meshparts that are closer together are more likely to be merged
 		// Note that in the end this is just another way of adding all items in meshInfos.
-		void addMesh(Model * const &model, FbxNode * node = 0) {
+		void addMesh(Settings *settings, Model * const &model, FbxNode * node = 0) {
 			if (node == 0)
 				node = scene->GetRootNode();
 			const int childCount = node->GetChildCount();
 			for (int i = 0; i < childCount; i++)
-				addMesh(model, node->GetChild(i));
+				addMesh(settings, model, node->GetChild(i));
 
 			FbxGeometry *geometry = node->GetGeometry();
 			if (geometry) {
 				if (fbxMeshMap.find(geometry) != fbxMeshMap.end())
-					addMesh(model, fbxMeshMap[geometry], node);
+					addMesh(settings, model, fbxMeshMap[geometry], node);
 				else
 					log->debug("Geometry(%X) of %s not found in fbxMeshMap[size=%d]", (unsigned long)(geometry), node->GetName(), fbxMeshMap.size());
 			}
 			
 		}
 
-		void addMesh(Model * const &model, FbxMeshInfo * const &meshInfo, FbxNode * const &node) {
+		void addMesh(Settings *settings, Model * const &model, FbxMeshInfo * const &meshInfo, FbxNode * const &node) {
 			if (meshParts.find(meshInfo) != meshParts.end())
 				return;
-            //liuliang delete  no use attributes
-            meshInfo->attributes.remove(ATTRIBUTE_TANGENT);
-            meshInfo->attributes.remove(ATTRIBUTE_BINORMAL);
+            
+            // if export normalMap
+            if(!settings->normalMap)
+            {
+                meshInfo->attributes.remove(ATTRIBUTE_TANGENT);
+                meshInfo->attributes.remove(ATTRIBUTE_BINORMAL);
+            }
       
-            //liuliang delete  no use attributes
 			Mesh *mesh = findReusableMesh(model, meshInfo->attributes, meshInfo->polyCount * 3);
 			if (mesh == 0) {
 				mesh = new Mesh();

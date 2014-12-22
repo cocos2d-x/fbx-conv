@@ -1,7 +1,7 @@
 fbx-conv
 ========
 
-Convert .fbx to .c3t used by cocos2d-x. Thanks to libgdx fbx-conv. We use their code and do some change.
+Convert .fbx to .c3b or .c3t used by cocos2d-x. Thanks for libgdx fbx-conv. We used their code and do some change.
 
 Precompiled Binaries
 ====================
@@ -33,5 +33,5 @@ Note:
 
 4. You can export multiple static model , so you can support a static scene.
 
-5. The maximum amount of vertices or indices a mesh should less than 32767.
+5. The maximum vertices of a mesh should less than 32767.
 

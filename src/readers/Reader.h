@@ -31,7 +31,7 @@ class Reader {
 public:
 	virtual ~Reader() {}
 	virtual bool load(Settings *settings) = 0;
-	virtual bool convert(Model * const &model) = 0;
+	virtual bool convert(Settings *settings, Model * const &model) = 0;
 };
 
 } // readers

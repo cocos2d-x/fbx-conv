@@ -1,3 +1,6 @@
+[0.6]
+	[NEW]   aabb export
+	[NEW]	add -p parameter for normal-map
 [0.5]	
 	[NEW]	separate export data about model and animation(-l or -j).
 	[NEW]	optimize read animation.
