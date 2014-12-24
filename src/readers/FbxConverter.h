@@ -357,8 +357,9 @@ namespace readers {
 			std::vector<std::vector<MeshPart *> > &parts = meshParts[meshInfo];
 			parts.resize(meshInfo->meshPartCount);
 			for (int i = 0; i < meshInfo->meshPartCount; i++) {
+                const int s = meshInfo->partSegments[i].segments.size();// add by lvlong
 				const int n = meshInfo->partBones[i].size();
-				const int m = n == 0 ? 1 : n;
+				const int m = n == 0 ? /*1*/s : n;// add by lvlong
 				parts[i].resize(m);
 				for (int j = 0; j < m; j++) {
 					MeshPart *part = new MeshPart();
@@ -378,9 +379,10 @@ namespace readers {
 				unsigned int ps = meshInfo->mesh->GetPolygonSize(poly);
 				int index_1 = meshInfo->polyPartMap[poly];
 				auto index_2 = meshInfo->polyPartBonesMap[poly];
-				if(index_1 >= 0 && index_2 >= 0 )
+                auto index_3 = meshInfo->polyPartSegmentMap[poly];
+				if(index_1 >= 0 /*&& index_2 >= 0*/ )
 				{
-				MeshPart * const &part = parts[index_1][index_2];
+				MeshPart * const &part = parts[index_1][/*index_2*/index_3];// modify by lvlong
 				//Material * const &material = materialsMap[node->GetMaterial(meshInfo->polyPartMap[poly])];
 
 					for (unsigned int i = 0; i < ps; i++) {

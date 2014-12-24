@@ -165,6 +165,12 @@ namespace readers {
 				(*itr).sort();
 		}
 	};
+    
+    // add by lvlong
+    // Collection of group of indices of part segment
+    struct PartSegmentCollection{
+        std::vector< std::vector<int> > segments;//[meshpart][segment]
+    };
 
 	// Provides information about an animation
 	struct AnimInfo {
