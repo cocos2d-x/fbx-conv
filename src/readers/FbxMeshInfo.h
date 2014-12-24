@@ -412,6 +412,7 @@ namespace readers {
 
 		void fetchMeshParts() {
 			int mp;
+			int count = 0;
             int segmentIndex = 0;// add by lvlong
             int SIZE = (polyCount * 3) / 32767 + 1;
             partSegments[0].segments.resize(SIZE);
@@ -427,14 +428,14 @@ namespace readers {
 					polyPartMap[poly] = mp;
                     
                     // add by lvlong
-                    
-                    int count = poly * 3;
-                    if(count > 32767)
+					if(count > 32767)
                     {
                         segmentIndex++;
                         count = 0;
                     }
-                    polyPartSegmentMap[poly] = segmentIndex;
+
+					polyPartSegmentMap[poly] = segmentIndex;
+                    count += 3;
                 }
 			}
 		}
