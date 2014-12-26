@@ -39,7 +39,7 @@ namespace readers {
 		// The source mesh of which the values below are extracted
 		FbxMesh * const mesh;
 		// The ID of the mesh (shape)
-		const std::string id;
+        std::string id;
 		// The maximum amount of blend weights per vertex
 		const unsigned int maxVertexBlendWeightCount;
 		// The actual amount of blend weights per vertex (<= maxVertexBlendWeightCount)
@@ -104,12 +104,19 @@ namespace readers {
 
 		fbxconv::log::Log *log;
 
-		FbxMeshInfo(fbxconv::log::Log *log, FbxMesh * const &mesh, const bool &usePackedColors, const unsigned int &maxVertexBlendWeightCount, const bool &forceMaxVertexBlendWeightCount, const unsigned int &maxNodePartBoneCount)
+        unsigned int maxPolyCount;
+        unsigned int segmentIndex;
+        unsigned int segmentCount;
+        
+		FbxMeshInfo(fbxconv::log::Log *log, FbxMesh * const &mesh, const bool &usePackedColors, const unsigned int &maxVertexBlendWeightCount, const bool &forceMaxVertexBlendWeightCount, const unsigned int &maxNodePartBoneCount, const unsigned int &maxPolyCount, const unsigned int& segmentCount, const unsigned int& segmentIndex)
 			: mesh(mesh), log(log),
 			usePackedColors(usePackedColors),
 			maxVertexBlendWeightCount(maxVertexBlendWeightCount), 
 			vertexBlendWeightCount(0),
 			forceMaxVertexBlendWeightCount(forceMaxVertexBlendWeightCount),
+            maxPolyCount(maxPolyCount),
+            segmentCount(segmentCount),
+            segmentIndex(segmentIndex),
 			pointCount(mesh->GetControlPointsCount()),
 			polyCount(mesh->GetPolygonCount()),
 			points(mesh->GetControlPoints()),
@@ -410,35 +417,18 @@ namespace readers {
 			}
 		}
 
-		void fetchMeshParts() {
-			int mp;
-			int count = 0;
-            int segmentIndex = 0;// add by lvlong
-            int SIZE = (polyCount * 3) / 32767 + 1;
-            partSegments[0].segments.resize(SIZE);
-            
-			for (unsigned int poly = 0; poly < polyCount; poly++) {
-				mp = -1;
-				for (int i = 0; i < elementMaterialCount && mp < 0; i++)
-					mp = mesh->GetElementMaterial(i)->GetIndexArray()[poly];
-				if (mp < 0 || mp >= meshPartCount)
-					polyPartMap[poly] = -1;
-				else
-                {
-					polyPartMap[poly] = mp;
-                    
-                    // add by lvlong
-					if(count > 32767)
-                    {
-                        segmentIndex++;
-                        count = 0;
-                    }
-
-					polyPartSegmentMap[poly] = segmentIndex;
-                    count += 3;
-                }
-			}
-		}
+        void fetchMeshParts() {
+            int mp;
+            for (unsigned int poly = 0; poly < polyCount; poly++) {
+                mp = -1;
+                for (int i = 0; i < elementMaterialCount && mp < 0; i++)
+                    mp = mesh->GetElementMaterial(i)->GetIndexArray()[poly];
+                if (mp < 0 || mp >= meshPartCount)
+                    polyPartMap[poly] = -1;
+                else
+                    polyPartMap[poly] = mp;
+            }
+        }
 
 		void fetchUVInfo() {
 			FbxStringList uvSetNames;
