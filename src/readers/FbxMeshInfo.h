@@ -70,13 +70,10 @@ namespace readers {
 		std::vector<BlendWeight> *pointBlendWeights;
 		// The collection of bones per mesh part
 		std::vector<BlendBonesCollection> partBones;
-        // add by lvlong
-        std::vector<PartSegmentCollection> partSegments;
 		// Mapping between the polygon and the index of its meshpart
 		int * const polyPartMap;
 		// Mapping between the polygon and the index of its weight bones within its meshpart
 		unsigned int * const polyPartBonesMap;
-        unsigned int * const polyPartSegmentMap;// add by lvlong
 		// The UV bounds per part per uv coords
 		float * partUVBounds;
 		// The mapping name of each uv to identify the cooresponding texture
@@ -123,16 +120,13 @@ namespace readers {
 			bonesOverflow(false),
 			polyPartMap(new  int[polyCount]),
 			polyPartBonesMap(new unsigned int[polyCount]),
-            polyPartSegmentMap(new unsigned int[polyCount]),
 			id(getID(mesh))
 		{
 			meshPartCount = calcMeshPartCount();
 			partBones = std::vector<BlendBonesCollection>(meshPartCount, BlendBonesCollection(maxNodePartBoneCount));
-            partSegments = std::vector<PartSegmentCollection>(meshPartCount, PartSegmentCollection());// add by lvlong
 			partUVBounds = meshPartCount * uvCount > 0 ? new float[4 * meshPartCount * uvCount] : 0;
 			memset(polyPartMap, -1, sizeof(unsigned int) * polyCount);
 			memset(polyPartBonesMap, 0, sizeof(unsigned int) * polyCount);
-            memset(polyPartSegmentMap, 0, sizeof(unsigned int) * polyCount);
 			if (partUVBounds)
 				memset(partUVBounds, -1, sizeof(float) * 4 * meshPartCount * uvCount);
 
@@ -155,8 +149,6 @@ namespace readers {
 				delete[] polyPartMap;
 			if (polyPartBonesMap)
 				delete[] polyPartBonesMap;
-            if (polyPartSegmentMap)
-                delete[] polyPartSegmentMap;
 			if (partUVBounds)
 				delete[] partUVBounds;
 		}
