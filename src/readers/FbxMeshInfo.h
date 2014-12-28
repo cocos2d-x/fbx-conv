@@ -102,23 +102,19 @@ namespace readers {
 		const FbxLayerElementArrayTemplate<int> *uvIndices[8];
 		bool uvOnPoint[8];
 
+		const unsigned int polyBegin;
+		const unsigned int segmentPolyCount;
 		fbxconv::log::Log *log;
-
-        unsigned int maxPolyCount;
-        unsigned int segmentIndex;
-        unsigned int segmentCount;
-        
-		FbxMeshInfo(fbxconv::log::Log *log, FbxMesh * const &mesh, const bool &usePackedColors, const unsigned int &maxVertexBlendWeightCount, const bool &forceMaxVertexBlendWeightCount, const unsigned int &maxNodePartBoneCount, const unsigned int &maxPolyCount, const unsigned int& segmentCount, const unsigned int& segmentIndex)
+		FbxMeshInfo(fbxconv::log::Log *log, FbxMesh * const &mesh, const bool &usePackedColors, const unsigned int &maxVertexBlendWeightCount, const bool &forceMaxVertexBlendWeightCount, const unsigned int &maxNodePartBoneCount, const unsigned int& polyBegin, const unsigned int &segmentPolyCount)
 			: mesh(mesh), log(log),
 			usePackedColors(usePackedColors),
 			maxVertexBlendWeightCount(maxVertexBlendWeightCount), 
 			vertexBlendWeightCount(0),
 			forceMaxVertexBlendWeightCount(forceMaxVertexBlendWeightCount),
-            maxPolyCount(maxPolyCount),
-            segmentCount(segmentCount),
-            segmentIndex(segmentIndex),
 			pointCount(mesh->GetControlPointsCount()),
 			polyCount(mesh->GetPolygonCount()),
+			polyBegin(polyBegin),
+			segmentPolyCount(segmentPolyCount),
 			points(mesh->GetControlPoints()),
 			elementMaterialCount(mesh->GetElementMaterialCount()),
 			uvCount((unsigned int)(mesh->GetElementUVCount() > 8 ? 8 : mesh->GetElementUVCount())),

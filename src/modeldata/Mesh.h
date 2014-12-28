@@ -96,6 +96,15 @@ namespace modeldata {
 			return (unsigned int)hashes.size() - 1;
 		}
 
+		inline unsigned int getIndex(const float* vertex){
+			const unsigned int hash = calcHash(vertex, vertexSize);
+			const unsigned int n = (unsigned int)hashes.size();
+			for (unsigned int i = 0; i < n; i++)
+				if ((hashes[i] == hash) && compare(&vertices[i*vertexSize], vertex, vertexSize))
+					return i;
+			return (unsigned int)hashes.size() - 1;
+		}
+
 		inline unsigned int calcHash(const float *vertex, const unsigned int size) {
 			unsigned int result = 0;
 			for (unsigned int i = 0; i < size; i++)

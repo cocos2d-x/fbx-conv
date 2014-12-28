@@ -385,23 +385,19 @@ namespace readers {
 //            if(meshInfo->segmentIndex == (meshInfo->segmentCount - 1))
 //                polyCount = meshInfo->pointCount - meshInfo->segmentIndex * settings->maxIndexCount;
             
-            for (unsigned int poly = 0; poly < meshInfo->polyCount; poly++) {
-                //unsigned int tpoly = meshInfo->segmentIndex * meshInfo->maxPolyCount + poly;
-                unsigned int ps = meshInfo->mesh->GetPolygonSize(poly);
-                int index_1 = meshInfo->polyPartMap[poly];// fix me
-                auto index_2 = meshInfo->polyPartBonesMap[poly];
+            for (unsigned int poly = 0; poly < meshInfo->segmentPolyCount; poly++) {
+				unsigned int tpoly = meshInfo->polyBegin + poly;
+                unsigned int ps = meshInfo->mesh->GetPolygonSize(tpoly);
+                int index_1 = meshInfo->polyPartMap[tpoly];// fix me
+                auto index_2 = meshInfo->polyPartBonesMap[tpoly];
                 if(index_1 >= 0 && index_2 >= 0 )
                 {
                     MeshPart * const &part = parts[index_1][index_2];
                     //Material * const &material = materialsMap[node->GetMaterial(meshInfo->polyPartMap[poly])];
                     
                     for (unsigned int i = 0; i < ps; i++) {
-                        const unsigned int v = meshInfo->mesh->GetPolygonVertex(poly, i);
-                        if (v > meshInfo->segmentIndex * settings->maxIndexCount + settings->maxIndexCount) {
-                            break;
-                        }
-                        
-                        meshInfo->getVertex(vertex, poly, pidx, v, uvTransforms);
+                        const unsigned int v = meshInfo->mesh->GetPolygonVertex(tpoly, i);
+                        meshInfo->getVertex(vertex, tpoly, pidx, v, uvTransforms);
                         part->indices.push_back(mesh->add(vertex));
                         pidx++;
                     }
@@ -549,22 +545,47 @@ namespace readers {
 						continue;
 					}
                     
-                    int maxPolyCount = settings->maxIndexCount / 3;
-                    
-                    int meshSegmentCount;
-                    if(indexCount % settings->maxIndexCount == 0)
-                        meshSegmentCount = mesh->GetControlPointsCount() / settings->maxIndexCount;
-                    else
-                        meshSegmentCount = mesh->GetControlPointsCount() / settings->maxIndexCount + 1;
-                    
-                    for(int meshIndex = 0; meshIndex < meshSegmentCount; meshIndex++)
-                    {
-                        FbxMeshInfo * const info = new FbxMeshInfo(log, mesh, settings->packColors, settings->maxVertexBonesCount, settings->forceMaxVertexBoneCount, settings->maxNodePartBonesCount, maxPolyCount, meshSegmentCount, meshIndex);
-                        meshInfos.push_back(info);
-                        fbxMeshMap[mesh].push_back(info);
-                        if (info->bonesOverflow)
-                            log->warning(log::wSourceConvertFbxExceedsBones);
+					unsigned int polyBegin = 0;
+					std::vector<unsigned int> hashes;
+                    for (unsigned int poly = 0; poly < mesh->GetPolygonCount(); poly++) {
+						int ps = mesh->GetPolygonSize(poly);
+						for (unsigned int i = 0; i < ps; i++) {
+							const unsigned int v = mesh->GetPolygonVertex(poly, i);
+							std::vector<unsigned int>::iterator iter = std::find(hashes.begin(), hashes.end(), v);
+							if(iter == hashes.end())
+							{
+								hashes.push_back(v);
+							}
+						}
+
+						unsigned int polyCount = 0;
+						if(hashes.size() == settings->maxIndexCount)
+							polyCount = poly - polyBegin;
+						else if(hashes.size() > settings->maxIndexCount)
+							polyCount = poly - polyBegin - 1;
+
+						if(hashes.size() >= settings->maxIndexCount)
+						{
+							FbxMeshInfo * const info = new FbxMeshInfo(log, mesh, settings->packColors, settings->maxVertexBonesCount, settings->forceMaxVertexBoneCount, settings->maxNodePartBonesCount, polyBegin, polyCount);
+							meshInfos.push_back(info);
+							fbxMeshMap[mesh].push_back(info);
+							if (info->bonesOverflow)
+								log->warning(log::wSourceConvertFbxExceedsBones);
+
+							polyBegin = polyBegin + polyCount + 1;
+							hashes.clear();
+						}
                     }
+
+					if(hashes.size() > 0)
+					{
+						unsigned int polyCount = mesh->GetPolygonCount() - polyBegin;
+						FbxMeshInfo * const info = new FbxMeshInfo(log, mesh, settings->packColors, settings->maxVertexBonesCount, settings->forceMaxVertexBoneCount, settings->maxNodePartBonesCount, polyBegin, polyCount);
+						meshInfos.push_back(info);
+						fbxMeshMap[mesh].push_back(info);
+						if (info->bonesOverflow)
+							log->warning(log::wSourceConvertFbxExceedsBones);
+					}
 				}
 				else {
 					log->warning(log::wSourceConvertFbxDuplicateMesh, getGeometryName(geometry));
