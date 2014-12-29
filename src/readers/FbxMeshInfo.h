@@ -104,7 +104,7 @@ namespace readers {
 
 		fbxconv::log::Log *log;
 
-		FbxMeshInfo(fbxconv::log::Log *log, FbxMesh * const &mesh, const bool &usePackedColors, const unsigned int &maxVertexBlendWeightCount, const bool &forceMaxVertexBlendWeightCount, const unsigned int &maxNodePartBoneCount, const unsigned int& polyBegin, const unsigned int &segmentPolyCount)
+		FbxMeshInfo(fbxconv::log::Log *log, FbxMesh * const &mesh, const bool &usePackedColors, const unsigned int &maxVertexBlendWeightCount, const bool &forceMaxVertexBlendWeightCount, const unsigned int &maxNodePartBoneCount)
 			: mesh(mesh), log(log),
 			usePackedColors(usePackedColors),
 			maxVertexBlendWeightCount(maxVertexBlendWeightCount), 
