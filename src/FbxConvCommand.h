@@ -118,7 +118,8 @@ struct FbxConvCommand {
 	}
 
 	void printHelp() const {
-		printf("Usage: fbx-conv.exe [options] <input> [<output>]\n");
+		printf("Usage: fbx-conv.exe [options] <input>\n");
+        printf("For example: fbx-conv.exe -a ./xx.fbx \n");
 		printf("\n");
 		printf("Options:\n");
 		printf("-?       : Display this help information.\n");
@@ -141,9 +142,9 @@ struct FbxConvCommand {
         printf("-j       : Export animation data only.\n");
 		printf("\n");
 		printf("<input>  : The filename of the file to convert.\n");
-		printf("<output> : The filename of the converted file.\n");
+		//printf("<output> : The filename of the converted file.\n");
 		printf("\n");
-		printf("<type>   : FBX, c3t (json) or c3b (binary).\n");
+		//printf("<type>   : FBX, c3t (json) or c3b (binary).\n");
 	}
 private:
 	void validate() {
