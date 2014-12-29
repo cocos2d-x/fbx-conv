@@ -61,7 +61,7 @@ namespace readers {
 		std::vector<FbxMeshInfo *> meshInfos;
 
 		// Helper maps/lists, resources in those will not be disposed
-		std::map<FbxGeometry *, FbxMeshInfo *> fbxMeshMap;
+		std::map<FbxGeometry *, std::vector<FbxMeshInfo *> > fbxMeshMap;
 		std::map<FbxSurfaceMaterial *, Material *> materialsMap;
 		std::map<std::string, TextureFileInfo> textureFiles;
 		std::map<FbxMeshInfo *, std::vector<std::vector<MeshPart *> > > meshParts; //[FbxMeshInfo][materialIndex][boneIndex]
@@ -236,44 +236,46 @@ namespace readers {
 			}
 
 			if (fbxMeshMap.find(node->source->GetGeometry()) != fbxMeshMap.end()) {
-				FbxMeshInfo *meshInfo = fbxMeshMap[node->source->GetGeometry()];
-				std::vector<std::vector<MeshPart *> > &parts = meshParts[meshInfo];
-				const int matCount = node->source->GetMaterialCount();
-				for (int i = 0; i < matCount && i < parts.size(); i++) {
-					Material *material = materialsMap[node->source->GetMaterial(i)];
-					for (int j = 0; j < parts[i].size(); j++) {
-						if (parts[i][j]) {
-							NodePart *nodePart = new NodePart();
-							node->parts.push_back(nodePart);
-							nodePart->material = material;
-							nodePart->meshPart = parts[i][j];
-							for (int k = 0; k < nodePart->meshPart->sourceBones.size(); k++) {
-								if (nodeMap.find(nodePart->meshPart->sourceBones[k]->GetLink()) != nodeMap.end()) {
-									std::pair<Node*, FbxAMatrix> p;
-									p.first = nodeMap[nodePart->meshPart->sourceBones[k]->GetLink()];
-									getBindPose(node->source, nodePart->meshPart->sourceBones[k], p.second);
-									nodePart->bones.push_back(p);
-								}
-								else {
-                                    FbxNode* linknode = nodePart->meshPart->sourceBones[k]->GetLink();
-                                    if(linknode)
-                                        log->warning(log::wSourceConvertFbxInvalidBone, node->id.c_str(), linknode->GetName());
-								}
-							}
+                for( const auto& iter: fbxMeshMap[node->source->GetGeometry()]){
+                    FbxMeshInfo *meshInfo = iter;
+                    std::vector<std::vector<MeshPart *> > &parts = meshParts[meshInfo];
+                    const int matCount = node->source->GetMaterialCount();
+                    for (int i = 0; i < matCount && i < parts.size(); i++) {
+                        Material *material = materialsMap[node->source->GetMaterial(i)];
+                        for (int j = 0; j < parts[i].size(); j++) {
+                            if (parts[i][j]) {
+                                NodePart *nodePart = new NodePart();
+                                node->parts.push_back(nodePart);
+                                nodePart->material = material;
+                                nodePart->meshPart = parts[i][j];
+                                for (int k = 0; k < nodePart->meshPart->sourceBones.size(); k++) {
+                                    if (nodeMap.find(nodePart->meshPart->sourceBones[k]->GetLink()) != nodeMap.end()) {
+                                        std::pair<Node*, FbxAMatrix> p;
+                                        p.first = nodeMap[nodePart->meshPart->sourceBones[k]->GetLink()];
+                                        getBindPose(node->source, nodePart->meshPart->sourceBones[k], p.second);
+                                        nodePart->bones.push_back(p);
+                                    }
+                                    else {
+                                        FbxNode* linknode = nodePart->meshPart->sourceBones[k]->GetLink();
+                                        if(linknode)
+                                            log->warning(log::wSourceConvertFbxInvalidBone, node->id.c_str(), linknode->GetName());
+                                    }
+                                }
 
-							nodePart->uvMapping.resize(meshInfo->uvCount);
-							for (unsigned int k = 0; k < meshInfo->uvCount; k++) {
-								for (std::vector<Material::Texture *>::iterator it = material->textures.begin(); it != material->textures.end(); ++it) {
-									FbxFileTexture *texture = (*it)->source;
-									TextureFileInfo &info = textureFiles[texture->GetFileName()];
-									if (meshInfo->uvMapping[k] == texture->UVSet.Get().Buffer()) {
-										nodePart->uvMapping[k].push_back(*it);
-									}
-								}
-							}
-						}
-					}
-				}
+                                nodePart->uvMapping.resize(meshInfo->uvCount);
+                                for (unsigned int k = 0; k < meshInfo->uvCount; k++) {
+                                    for (std::vector<Material::Texture *>::iterator it = material->textures.begin(); it != material->textures.end(); ++it) {
+                                        FbxFileTexture *texture = (*it)->source;
+                                        TextureFileInfo &info = textureFiles[texture->GetFileName()];
+                                        if (meshInfo->uvMapping[k] == texture->UVSet.Get().Buffer()) {
+                                            nodePart->uvMapping[k].push_back(*it);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 			}
 
 			for (std::vector<Node *>::iterator itr = node->children.begin(); itr != node->children.end(); ++itr)
@@ -328,8 +330,12 @@ namespace readers {
 
 			FbxGeometry *geometry = node->GetGeometry();
 			if (geometry) {
-				if (fbxMeshMap.find(geometry) != fbxMeshMap.end())
-					addMesh(settings, model, fbxMeshMap[geometry], node);
+                if (fbxMeshMap.find(geometry) != fbxMeshMap.end()){
+                    std::vector<FbxMeshInfo *> meshInfoList = fbxMeshMap.find(geometry)->second;
+                    for(const auto& iter : meshInfoList){
+                        addMesh(settings, model, iter, node);
+                    }
+                }
 				else
 					log->debug("Geometry(%X) of %s not found in fbxMeshMap[size=%d]", (unsigned long)(geometry), node->GetName(), fbxMeshMap.size());
 			}
@@ -374,18 +380,19 @@ namespace readers {
 			float *vertex = new float[mesh->vertexSize];
 			unsigned int pidx = 0;
             bool is_error = false;
-			for (unsigned int poly = 0; poly < meshInfo->polyCount; poly++) {
-				unsigned int ps = meshInfo->mesh->GetPolygonSize(poly);
-				int index_1 = meshInfo->polyPartMap[poly];
-				auto index_2 = meshInfo->polyPartBonesMap[poly];
+			for (unsigned int poly = 0; poly < meshInfo->segmentPolyCount; poly++) {
+                unsigned int tpoly = meshInfo->polyBegin + poly;
+				unsigned int ps = meshInfo->mesh->GetPolygonSize(tpoly);
+				int index_1 = meshInfo->polyPartMap[tpoly];
+				auto index_2 = meshInfo->polyPartBonesMap[tpoly];
 				if(index_1 >= 0 && index_2 >= 0 )
 				{
 				MeshPart * const &part = parts[index_1][index_2];
 				//Material * const &material = materialsMap[node->GetMaterial(meshInfo->polyPartMap[poly])];
 
 					for (unsigned int i = 0; i < ps; i++) {
-						const unsigned int v = meshInfo->mesh->GetPolygonVertex(poly, i);
-						meshInfo->getVertex(vertex, poly, pidx, v, uvTransforms);
+						const unsigned int v = meshInfo->mesh->GetPolygonVertex(tpoly, i);
+						meshInfo->getVertex(vertex, tpoly, pidx, v, uvTransforms);
 						part->indices.push_back(mesh->add(vertex));
 						pidx++;
 					}
@@ -447,7 +454,7 @@ namespace readers {
 			FbxGeometry *geometry = node->GetGeometry();
 			if (fbxMeshMap.find(geometry) == fbxMeshMap.end())
 				return;
-			FbxMeshInfo *meshInfo = fbxMeshMap[geometry];
+			FbxMeshInfo *meshInfo = fbxMeshMap[geometry].front();
 			const int matCount = node->GetMaterialCount();
 			for (int i = 0; i < matCount; i++) {
 				FbxSurfaceMaterial *material = node->GetMaterial(i);
@@ -530,11 +537,58 @@ namespace readers {
 						log->error(log::wSourceConvertFbxNoMaterial, getGeometryName(mesh));
 						continue;
 					}
-					FbxMeshInfo * const info = new FbxMeshInfo(log, mesh, settings->packColors, settings->maxVertexBonesCount, settings->forceMaxVertexBoneCount, settings->maxNodePartBonesCount);
-					meshInfos.push_back(info);
-					fbxMeshMap[mesh] = info;
-					if (info->bonesOverflow)
-						log->warning(log::wSourceConvertFbxExceedsBones);
+                    
+                    // if indexCount > maxIndexCount, we will split this mesh.
+                    if(indexCount > settings->maxIndexCount){
+                        unsigned int polyBegin = 0;
+                        std::vector<unsigned int> hashes;
+                        for (unsigned int poly = 0; poly < mesh->GetPolygonCount(); poly++) {
+                            int ps = mesh->GetPolygonSize(poly);
+                            for (unsigned int i = 0; i < ps; i++) {
+                                const unsigned int v = mesh->GetPolygonVertex(poly, i);
+                                std::vector<unsigned int>::iterator iter = std::find(hashes.begin(), hashes.end(), v);
+                                if(iter == hashes.end())
+                                {
+                                    hashes.push_back(v);
+                                }
+                            }
+                            
+                            unsigned int polyCount = 0;
+                            if(hashes.size() == settings->maxIndexCount)
+                            polyCount = poly - polyBegin;
+                            else if(hashes.size() > settings->maxIndexCount)
+                            polyCount = poly - polyBegin - 1;
+                            
+                            if(hashes.size() >= settings->maxIndexCount)
+                            {
+                                FbxMeshInfo * const info = new FbxMeshInfo(log, mesh, settings->packColors, settings->maxVertexBonesCount, settings->forceMaxVertexBoneCount, settings->maxNodePartBonesCount, polyBegin, polyCount);
+                                meshInfos.push_back(info);
+                                fbxMeshMap[mesh].push_back(info);
+                                if (info->bonesOverflow)
+                                log->warning(log::wSourceConvertFbxExceedsBones);
+                                
+                                polyBegin = polyBegin + polyCount + 1;
+                                hashes.clear();
+                            }
+                        }
+                        
+                        if(hashes.size() > 0)
+                        {
+                            unsigned int polyCount = mesh->GetPolygonCount() - polyBegin;
+                            FbxMeshInfo * const info = new FbxMeshInfo(log, mesh, settings->packColors, settings->maxVertexBonesCount, settings->forceMaxVertexBoneCount, settings->maxNodePartBonesCount, polyBegin, polyCount);
+                            meshInfos.push_back(info);
+                            fbxMeshMap[mesh].push_back(info);
+                            if (info->bonesOverflow)
+                            log->warning(log::wSourceConvertFbxExceedsBones);
+                        }
+                    }
+                    else{
+                        FbxMeshInfo * const info = new FbxMeshInfo(log, mesh, settings->packColors, settings->maxVertexBonesCount, settings->forceMaxVertexBoneCount, settings->maxNodePartBonesCount, 0, mesh->GetPolygonCount());
+                        meshInfos.push_back(info);
+                        fbxMeshMap[mesh].push_back(info);
+                        if (info->bonesOverflow)
+                        log->warning(log::wSourceConvertFbxExceedsBones);
+                    }
 				}
 				else {
 					log->warning(log::wSourceConvertFbxDuplicateMesh, getGeometryName(geometry));
