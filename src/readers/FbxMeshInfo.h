@@ -78,6 +78,9 @@ namespace readers {
 		float * partUVBounds;
 		// The mapping name of each uv to identify the cooresponding texture
 		std::string uvMapping[8];
+        
+        const unsigned int polyBegin;
+        const unsigned int segmentPolyCount;
 
 		const FbxLayerElementArrayTemplate<FbxVector4> *normals;
 		const FbxLayerElementArrayTemplate<int> *normalIndices;
@@ -101,7 +104,7 @@ namespace readers {
 
 		fbxconv::log::Log *log;
 
-		FbxMeshInfo(fbxconv::log::Log *log, FbxMesh * const &mesh, const bool &usePackedColors, const unsigned int &maxVertexBlendWeightCount, const bool &forceMaxVertexBlendWeightCount, const unsigned int &maxNodePartBoneCount)
+		FbxMeshInfo(fbxconv::log::Log *log, FbxMesh * const &mesh, const bool &usePackedColors, const unsigned int &maxVertexBlendWeightCount, const bool &forceMaxVertexBlendWeightCount, const unsigned int &maxNodePartBoneCount,const unsigned int &polyBegin, const unsigned int &segmentPolyCount)
 			: mesh(mesh), log(log),
 			usePackedColors(usePackedColors),
 			maxVertexBlendWeightCount(maxVertexBlendWeightCount), 
@@ -109,6 +112,8 @@ namespace readers {
 			forceMaxVertexBlendWeightCount(forceMaxVertexBlendWeightCount),
 			pointCount(mesh->GetControlPointsCount()),
 			polyCount(mesh->GetPolygonCount()),
+            polyBegin(polyBegin),
+            segmentPolyCount(segmentPolyCount),
 			points(mesh->GetControlPoints()),
 			elementMaterialCount(mesh->GetElementMaterialCount()),
 			uvCount((unsigned int)(mesh->GetElementUVCount() > 8 ? 8 : mesh->GetElementUVCount())),

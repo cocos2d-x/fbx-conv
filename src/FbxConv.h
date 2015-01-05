@@ -26,9 +26,9 @@
 
 #ifndef BUILD_ID
 #ifdef DEBUG
-#define BUILD_ID "debug version for v3.3 rc1"
+#define BUILD_ID "debug version for v3.4 beta0"
 #else
-#define BUILD_ID "pre-release for v3.3 rc1"
+#define BUILD_ID "pre-release for v3.4 beta0"
 #endif
 #endif
 
@@ -131,7 +131,7 @@ class FbxConv {
 			if (!result)
 				log->error(log::eSourceLoadGeneral, settings->inFile.c_str());
 			else {
-				result = reader->convert(model);
+				result = reader->convert(settings, model);
 				log->status(log::sSourceConvert);
 			}
 
