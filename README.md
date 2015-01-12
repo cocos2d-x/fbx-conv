@@ -1,6 +1,6 @@
 fbx-conv
 ========
-Convert .fbx to .c3b or .c3t used by cocos2d-x.
+fbx-conv can convert some middle format (such as fbx, blend, obj, etc) to .c3b or .c3t which are used by cocos2d-x.
 
 Precompiled Binaries
 ====================
