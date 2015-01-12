@@ -118,40 +118,39 @@ struct FbxConvCommand {
 	}
 
 	void printHelp() const {
-		printf("\nUsage: fbx-conv [options] <input>\n");
+        printf("\nUsage: fbx-conv [options] <input>\n");
         printf("\nExample: fbx-conv -a xx.fbx \n");
-		printf("\n");
-		printf("Options:\n");
-		printf("-?       : Display this help information.\n");
+        printf("\n");
+        printf("Options:\n");
+        printf("-?       : Display this help information.\n");
 //#ifdef ALLOW_INPUT_TYPE
-//		printf("-i <type>: Set the type of the input file to <type>\n");
+//      printf("-i <type>: Set the type of the input file to <type>\n");
 //#endif
-		//printf("-o <type>: Set the type of the output file to <type>\n");
-		printf("-f       : Flip the V texture coordinates.\n");
-		//printf("-p       : Pack vertex colors to one float.\n");
-		printf("-m <size>: The maximum amount of vertices or indices a mesh may contain (default: 32k)\n");
-		printf("-n <size>: The maximum amount of bones a nodepart can contain (default: 40)\n");
-		//printf("-w <size>: The maximum amount of bone weights per vertex (default: 4)\n");
-		printf("-v       : Verbose: print additional progress information\n");
-		printf("-g       : Whether you need to merge the same mesh which have the same vertex attribute\n");
+        //printf("-o <type>: Set the type of the output file to <type>\n");
+        printf("-f       : Flip the V texture coordinates.\n");
+        //printf("-p       : Pack vertex colors to one float.\n");
+        printf("-m <size>: The maximum amount of vertices or indices a mesh may contain (default: 32k)\n");
+        printf("-n <size>: The maximum amount of bones a nodepart can contain (default: 40)\n");
+        //printf("-w <size>: The maximum amount of bone weights per vertex (default: 4)\n");
+        printf("-v       : Verbose: print additional progress information\n");
+        printf("-g       : Whether you need to merge the same mesh which have the same vertex attribute\n");
         printf("-a       : Export c3b(binary) and c3t(text)\n");
         printf("-b       : Export c3b(binary)\n");
         printf("-t       : Export c3t(text)\n");
         printf("-c <size>: The compression level: 0 , 1 (default: 0)\n");
         printf("-l       : Export model data only.\n");
         printf("-j       : Export animation data only.\n");
-		printf("\n");
-		printf("<input>  : The filename of the file to convert.\n");
-		//printf("<output> : The filename of the converted file.\n");
-		printf("\n");
-		//printf("<type>   : FBX, c3t (json) or c3b (binary).\n");
+        printf("\n");
+        printf("<input>  : The filename of the file to convert.\n");
+        //printf("<output> : The filename of the converted file.\n");
+        //printf("<type>   : FBX, c3t (json) or c3b (binary).\n");
 	}
 private:
-	void validate() {
-		if (settings->inFile.empty()) {
-			log->error(error = log::eCommandLineMissingInputFile);
-			return;
-		}
+    void validate() {
+        if (settings->inFile.empty()) {
+            log->error(error = log::eCommandLineMissingInputFile);
+            return;
+        }
 #ifdef ALLOW_INPUT_TYPE
 		if (inType == FILETYPE_AUTO)
 			inType = guessType(inFile, FILETYPE_IN_DEFAULT);
