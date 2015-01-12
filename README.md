@@ -1,8 +1,6 @@
 fbx-conv
 ========
-
-Convert .fbx to .c3b or .c3t used by cocos2d-x. Thanks for libgdx fbx-conv. 
-We used their code and do some change.
+Convert .fbx to .c3b or .c3t used by cocos2d-x.
 
 Precompiled Binaries
 ====================
@@ -37,11 +35,13 @@ Command-line USAGE:
 ###Example
 `fbx-conv -a boss.FBX`
 
-You can use the -? option to see more help information.
-
 Note:
 ========
 1. Model need to have a material.
 2. contain only one skeleton.
+
+Thanks
+========
+Special thanks to libgdx fbx-conv, We used their code and do some change.
 
 
