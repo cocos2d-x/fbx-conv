@@ -922,8 +922,10 @@ namespace readers {
                 if(frames.size() == 0)
                     continue;
 
-                float length = frames[frames.size()-1]->time;
-                animation->length = length / 1000.f;
+                float length = frames[frames.size()-1]->time ;
+                float lengthSec = length / 1000.f;
+                if(lengthSec > animation->length)
+                    animation->length = lengthSec;
 
 				// Only add keyframes really needed
                 addKeyframes(nodeAnim, frames, length);
