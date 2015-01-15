@@ -1,7 +1,8 @@
 [0.6]
         [NEW]   aabb export
         [NEW]   add -p parameter for normal-map
-        [NEW]   split mesh when it contains more indices than the specified maximum.
+        [NEW]   split mesh when it contains more indices than the specified maximum
+        [FIX]   calculate animation length use the end frame
 [0.5]
         [NEW]   separate export data about model and animation(-l or -j).
         [NEW]   optimize read animation.

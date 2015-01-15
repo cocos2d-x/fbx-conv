@@ -34,7 +34,10 @@ namespace modeldata {
         float length;
 		std::vector<NodeAnimation *> nodeAnimations;
 
-		Animation() { length = 0;}
+        Animation():
+        length(0)
+        {
+        }
 
 		Animation(const Animation &copyFrom) {
 			id = copyFrom.id;
