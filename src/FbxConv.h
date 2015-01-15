@@ -26,9 +26,9 @@
 
 #ifndef BUILD_ID
 #ifdef DEBUG
-#define BUILD_ID "debug version, backward compatible cocos2d-x-3.4-beta0"
+#define BUILD_ID "debug version, cocos2d-x-3.4-beta0 or later version can use"
 #else
-#define BUILD_ID "release version, backward compatible cocos2d-x-3.4-beta0"
+#define BUILD_ID "release version, cocos2d-x-3.4-beta0 or later version can use"
 #endif
 #endif
 
