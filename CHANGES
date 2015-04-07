@@ -1,3 +1,6 @@
+[0.7]	
+	[NEW]   add command -p, export “tangent” and “binormal” data
+
 [0.6]
         [NEW]   aabb export
         [NEW]   add -p parameter for normal-map
