@@ -128,12 +128,12 @@ struct FbxConvCommand {
 //#endif
         //printf("-o <type>: Set the type of the output file to <type>\n");
         printf("-f       : Flip the V texture coordinates.\n");
-        //printf("-p       : Pack vertex colors to one float.\n");
+        printf("-p       : Export tagent binormal data.\n");
         printf("-m <size>: The maximum amount of vertices or indices a mesh may contain (default: 32k)\n");
         printf("-n <size>: The maximum amount of bones a nodepart can contain (default: 40)\n");
         //printf("-w <size>: The maximum amount of bone weights per vertex (default: 4)\n");
         printf("-v       : Verbose: print additional progress information\n");
-        printf("-g       : Whether you need to merge the same mesh which have the same vertex attribute\n");
+        printf("-g       : Merge the mesh which have same vertex attribute\n");
         printf("-a       : Export c3b(binary) and c3t(text)\n");
         printf("-b       : Export c3b(binary)\n");
         printf("-t       : Export c3t(text)\n");
