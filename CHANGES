@@ -1,12 +1,18 @@
+[0.7]	
+        [NEW]    calculate the origin position rotation and scale when the model is single node(don’t have child node).
+                 NOTE: your single node mode may have some change after you use the new fbx-conv
+        [NEW]    add command -p, export “tangent” and “binormal” data
+
 [0.6]
-        [NEW]   aabb export
-        [NEW]   add -p parameter for normal-map
-        [NEW]   split mesh when it contains more indices than the specified maximum.
+        [NEW]    aabb export
+        [NEW]    add -p parameter for normal-map
+        [NEW]    split mesh when it contains more indices than the specified maximum
+        [FIX]    calculate animation length use the end frame
 [0.5]
-        [NEW]   separate export data about model and animation(-l or -j).
-        [NEW]   optimize read animation.
-        [FIX]   fix bug about the file path include “.”
-        [FIX]   fix log crash.
+        [NEW]    separate export data about model and animation(-l or -j).
+        [NEW]    optimize read animation.
+        [FIX]    fix bug about the file path include “.”
+        [FIX]    fix log crash.
 [0.4]
         [NEW]    add compression parameter -c
         [NEW]    can export transparent channel
