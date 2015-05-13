@@ -107,7 +107,7 @@ project "fbx-conv"
 	--- LINUX ----------------------------------------------------------
 	configuration { "linux" }
 		kind "ConsoleApp"
-		buildoptions { "-Wall" }
+		buildoptions { "-Wall -std=c++11" }
 		-- TODO: while using x64 will likely be fine for most people nowadays,
 		--       we still need to make this configurable
 		libdirs {

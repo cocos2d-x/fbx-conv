@@ -25,6 +25,7 @@
 #include "NodePart.h"
 #include "../json/BaseJSONWriter.h"
 #include <list>
+#include <algorithm>
 namespace fbxconv {
 namespace modeldata {
 	/** A node is responsable for destroying its parts and children */

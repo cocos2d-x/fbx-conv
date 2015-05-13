@@ -1,5 +1,6 @@
 #include "FileIO.h"
 #include <cassert>
+#include <cstring>
 namespace fbxconv
 {
 
