@@ -11,3 +11,6 @@ build/
 /*.ilk
 /*.pdb
 /fbx-conv
+compile_commands.json
+premake5.lua
+.cache/
